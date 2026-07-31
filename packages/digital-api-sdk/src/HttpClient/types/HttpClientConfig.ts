@@ -16,19 +16,16 @@ export interface HttpClientConfig {
     applicationKey?: string;
     /**
      * When true and `applicationKey` is set, every request is sent with the `DN-Application-Key` header
-     * (Application auth flow), in addition to any bearer/API-key auth. Off by default. The header is sent
-     * raw — `keyPrefix` is not applied.
+     * (Application auth flow), in addition to any API-key auth. Off by default. The header is sent raw —
+     * `keyPrefix` is not applied.
      */
     applicationKeyAuth?: boolean;
     /**
-     * Optional prefix prepended as-is to both:
+     * Optional prefix prepended as-is to `DN_API_KEY_HEADER` (the header name used for the API key auth flow).
      *
-     * - `DN_STORAGE_KEY` (the localStorage bucket used for the access token)
-     * - `DN_API_KEY_HEADER` (the header name used for the API key auth flow).
-     *
-     * Useful when several `HttpClient` instances coexist on the same origin (multi-tenant or multi-environment apps)
-     * and must not collide on localStorage or on the API key header namespace. Include any separator yourself — for
-     * example `'tenant_a_'` becomes `'tenant_a_DN_ACCESS_TOKEN'` and `'tenant_a_DN-Api-Key'`.
+     * Useful when several `HttpClient` instances coexist on the same origin (multi-tenant or multi-environment
+     * apps) and must not collide on the API key header namespace. Include any separator yourself — for example
+     * `'tenant_a_'` becomes `'tenant_a_DN-Api-Key'`.
      */
     keyPrefix?: string;
 }

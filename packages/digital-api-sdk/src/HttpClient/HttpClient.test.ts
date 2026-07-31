@@ -1,8 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HttpClient } from './HttpClient';
 import { HttpClientError } from './HttpClientError';
-import { DN_STORAGE_KEY } from './constants';
-import { DN_API_AUTH_USER_REFRESH } from '../Catalog';
+import {
+    DN_API_KEY_HEADER,
+    DN_APPLICATION_KEY_HEADER,
+    DN_REQUESTED_WITH_HEADER,
+    DN_REQUESTED_WITH_VALUE,
+} from './constants';
 
 const BASE_URL = 'https://api.example.test';
 
@@ -17,23 +21,13 @@ function emptyResponse(status: number): Response {
     return new Response(null, { status });
 }
 
-function createLocalStorageStub(): Storage {
-    const store = new Map<string, string>();
-    return {
-        getItem: (key: string): string | null => store.get(key) ?? null,
-        setItem: (key: string, value: string): Map<string, string> => store.set(key, String(value)),
-        removeItem: (key: string): boolean => store.delete(key),
-        clear: (): void => store.clear(),
-        key: (index: number): string | null => Array.from(store.keys())[index] ?? null,
-        get length(): number {
-            return store.size;
-        },
-    };
-}
-
 function callOf(fetchMock: ReturnType<typeof vi.fn>, index: number): { url: string; init: RequestInit } {
     const [input, init] = fetchMock.mock.calls[index] as [RequestInfo | URL, RequestInit | undefined];
     return { url: String(input), init: init ?? {} };
+}
+
+function headersOf(fetchMock: ReturnType<typeof vi.fn>, index: number): Record<string, string> {
+    return callOf(fetchMock, index).init.headers as Record<string, string>;
 }
 
 describe('HttpClient', () => {
@@ -41,7 +35,6 @@ describe('HttpClient', () => {
     let fetchMock: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
-        vi.stubGlobal('localStorage', createLocalStorageStub());
         fetchMock = vi.fn();
         vi.stubGlobal('fetch', fetchMock);
         client = new HttpClient({ baseUrl: BASE_URL });
@@ -69,26 +62,12 @@ describe('HttpClient', () => {
             expect(init.method).toBe('GET');
         });
 
-        it('adds the Authorization header when a token is in localStorage', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'tok-abc');
+        it('never sends an Authorization header', async () => {
             fetchMock.mockResolvedValueOnce(jsonResponse({}));
 
             await client.request({ path: 'user/self', method: 'GET' });
 
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['Authorization']).toBe('Bearer tok-abc');
-        });
-
-        it('does not send Authorization when skipAuth is true', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'tok-abc');
-            fetchMock.mockResolvedValueOnce(jsonResponse({}));
-
-            await client.request({ path: 'authentication/user/login', method: 'POST', skipAuth: true });
-
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['Authorization']).toBeUndefined();
+            expect(headersOf(fetchMock, 0)['Authorization']).toBeUndefined();
         });
 
         it('resolves slugs in the URL', async () => {
@@ -127,8 +106,7 @@ describe('HttpClient', () => {
             });
 
             const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['Content-Type']).toBe('application/json');
+            expect(headersOf(fetchMock, 0)['Content-Type']).toBe('application/json');
             expect(init.body).toBe('{"login":"alice","password":"pwd"}');
         });
 
@@ -144,16 +122,8 @@ describe('HttpClient', () => {
             });
 
             const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['Content-Type']).toBeUndefined();
+            expect(headersOf(fetchMock, 0)['Content-Type']).toBeUndefined();
             expect(init.body).toBe(form);
-        });
-
-        it('sends credentials: include by default', async () => {
-            fetchMock.mockResolvedValueOnce(jsonResponse({}));
-            await client.request({ path: 'user/self', method: 'GET' });
-            const { init } = callOf(fetchMock, 0);
-            expect(init.credentials).toBe('include');
         });
 
         it('returns null data on 204 No Content', async () => {
@@ -184,160 +154,70 @@ describe('HttpClient', () => {
         });
     });
 
-    describe('401 refresh flow', () => {
-        it('refreshes the token and retries the original request once on 401', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'old-token');
-
-            fetchMock
-                .mockResolvedValueOnce(emptyResponse(401))
-                .mockResolvedValueOnce(jsonResponse({ value: 'new-token' }))
-                .mockResolvedValueOnce(jsonResponse({ id: 1 }));
-
-            const response = await client.request<{ id: number }>({
-                path: 'user/self',
-                method: 'GET',
-            });
-
-            expect(response.data).toEqual({ id: 1 });
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBe('new-token');
-            expect(fetchMock).toHaveBeenCalledTimes(3);
-
-            const refreshCall = callOf(fetchMock, 1);
-            expect(refreshCall.url).toBe(`${BASE_URL}/${DN_API_AUTH_USER_REFRESH}`);
-            expect(refreshCall.init.method).toBe('POST');
-
-            const retryCall = callOf(fetchMock, 2);
-            const retryHeaders = retryCall.init.headers as Record<string, string>;
-            expect(retryHeaders['Authorization']).toBe('Bearer new-token');
+    describe('session cookie transport', () => {
+        it('sends credentials: include by default — this is what carries the session', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
+            await client.request({ path: 'user/self', method: 'GET' });
+            expect(callOf(fetchMock, 0).init.credentials).toBe('include');
         });
 
-        it('clears the token, emits authError and throws when refresh itself fails', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'old-token');
+        it('honours an explicit credentials override', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
+            await client.request({ path: 'ping', method: 'GET', credentials: 'omit' });
+            expect(callOf(fetchMock, 0).init.credentials).toBe('omit');
+        });
 
-            fetchMock.mockResolvedValueOnce(emptyResponse(401)).mockResolvedValueOnce(emptyResponse(401));
-
-            const authErrorListener = vi.fn();
-            const tokenChangeListener = vi.fn();
-            client.subscribeAuthErrorEvent(authErrorListener);
-            client.subscribeTokenChangeEvent(tokenChangeListener);
+        it('does not retry on 401 — there is nothing left to refresh', async () => {
+            fetchMock.mockResolvedValueOnce(emptyResponse(401));
 
             await expect(client.request({ path: 'user/self', method: 'GET' })).rejects.toBeInstanceOf(HttpClientError);
 
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBeNull();
-            expect(authErrorListener).toHaveBeenCalledTimes(1);
-            expect(tokenChangeListener).toHaveBeenCalledWith(undefined);
-        });
-
-        it('deduplicates concurrent refresh calls', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'old-token');
-
-            let resolveRefresh!: (_value: Response) => void;
-            const refreshPending = new Promise<Response>(resolve => {
-                resolveRefresh = resolve;
-            });
-
-            fetchMock.mockImplementation(async (input: RequestInfo | URL, init: RequestInit = {}) => {
-                const url = String(input);
-                if (url.endsWith(DN_API_AUTH_USER_REFRESH) && init.method === 'POST') {
-                    return refreshPending;
-                }
-                if ((init.headers as Record<string, string>)['Authorization'] === 'Bearer new-token') {
-                    return jsonResponse({ ok: true });
-                }
-                return emptyResponse(401);
-            });
-
-            const p1 = client.request({ path: 'user/self', method: 'GET' });
-            const p2 = client.request({ path: 'admin/user', method: 'GET' });
-
-            await Promise.resolve();
-            await Promise.resolve();
-
-            resolveRefresh(jsonResponse({ value: 'new-token' }));
-
-            await Promise.all([p1, p2]);
-
-            const refreshCalls = fetchMock.mock.calls.filter(([input, init]) => {
-                const url = String(input);
-                const i = (init ?? {}) as RequestInit;
-                return url.endsWith(DN_API_AUTH_USER_REFRESH) && i.method === 'POST';
-            });
-            expect(refreshCalls).toHaveLength(1);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
         });
     });
 
-    describe('token management', () => {
-        it('setToken stores in localStorage and emits tokenChange', () => {
-            const listener = vi.fn();
-            const unsubscribe = client.subscribeTokenChangeEvent(listener);
+    describe('CSRF header', () => {
+        it.each(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] as const)('is sent on %s', async method => {
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
 
-            client.setToken('xyz');
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBe('xyz');
-            expect(listener).toHaveBeenCalledWith('xyz');
+            await client.request({ path: 'user/self', method });
 
-            unsubscribe();
-            client.setToken('after-unsub');
-            expect(listener).toHaveBeenCalledTimes(1);
+            expect(headersOf(fetchMock, 0)[DN_REQUESTED_WITH_HEADER]).toBe(DN_REQUESTED_WITH_VALUE);
         });
 
-        it('clearToken removes the entry from localStorage and emits undefined', () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'xyz');
-            const listener = vi.fn();
-            client.subscribeTokenChangeEvent(listener);
+        it('is sent even under skipAuth — it marks the transport, it is not a credential', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
 
-            client.clearToken();
+            await client.request({ path: 'authentication/user/login', method: 'POST', skipAuth: true });
 
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBeNull();
-            expect(listener).toHaveBeenCalledWith(undefined);
-        });
-
-        it('getToken reads from localStorage', () => {
-            expect(client.getToken()).toBeUndefined();
-            localStorage.setItem(DN_STORAGE_KEY, 'abc');
-            expect(client.getToken()).toBe('abc');
+            expect(headersOf(fetchMock, 0)[DN_REQUESTED_WITH_HEADER]).toBe(DN_REQUESTED_WITH_VALUE);
         });
     });
 
     describe('API key authentication', () => {
         const API_KEY = 'KEY-XYZ-123';
 
-        it('sends DN-Api-Key header when constructed with apiKey', async () => {
+        it('sends the API key header instead of relying on the cookie', async () => {
             const apiKeyClient = new HttpClient({ baseUrl: BASE_URL, apiKey: API_KEY });
-            fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
 
             await apiKeyClient.request({ path: 'user/self', method: 'GET' });
 
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['DN-Api-Key']).toBe(API_KEY);
-        });
-
-        it('does not send Authorization header even when a JWT is in localStorage', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'jwt-tok');
-            const apiKeyClient = new HttpClient({ baseUrl: BASE_URL, apiKey: API_KEY });
-            fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
-
-            await apiKeyClient.request({ path: 'user/self', method: 'GET' });
-
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['Authorization']).toBeUndefined();
-            expect(headers['DN-Api-Key']).toBe(API_KEY);
-        });
-
-        it('skipAuth removes both DN-Api-Key and Authorization headers', async () => {
-            const apiKeyClient = new HttpClient({ baseUrl: BASE_URL, apiKey: API_KEY });
-            fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
-
-            await apiKeyClient.request({ path: 'public/health', method: 'GET', skipAuth: true });
-
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['DN-Api-Key']).toBeUndefined();
+            const headers = headersOf(fetchMock, 0);
+            expect(headers[DN_API_KEY_HEADER]).toBe(API_KEY);
             expect(headers['Authorization']).toBeUndefined();
         });
 
-        it('throws HttpClientError on 401 without attempting refresh', async () => {
+        it('omits the API key header when skipAuth is true', async () => {
+            const apiKeyClient = new HttpClient({ baseUrl: BASE_URL, apiKey: API_KEY });
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
+
+            await apiKeyClient.request({ path: 'ping', method: 'GET', skipAuth: true });
+
+            expect(headersOf(fetchMock, 0)[DN_API_KEY_HEADER]).toBeUndefined();
+        });
+
+        it('throws HttpClientError on 401 without retrying', async () => {
             const apiKeyClient = new HttpClient({ baseUrl: BASE_URL, apiKey: API_KEY });
             fetchMock.mockResolvedValueOnce(emptyResponse(401));
 
@@ -346,190 +226,128 @@ describe('HttpClient', () => {
             );
 
             expect(fetchMock).toHaveBeenCalledTimes(1);
-            const refreshCalls = fetchMock.mock.calls.filter(([input]) =>
-                String(input).endsWith(DN_API_AUTH_USER_REFRESH)
-            );
-            expect(refreshCalls).toHaveLength(0);
+        });
+    });
+
+    describe('application key authentication', () => {
+        it('sends the application key header when applicationKeyAuth is enabled', async () => {
+            const appClient = new HttpClient({
+                baseUrl: BASE_URL,
+                applicationKey: 'app-secret',
+                applicationKeyAuth: true,
+            });
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
+
+            await appClient.request({ path: 'cms/pages', method: 'GET' });
+
+            expect(headersOf(fetchMock, 0)[DN_APPLICATION_KEY_HEADER]).toBe('app-secret');
         });
 
-        it('does not clear token nor emit authError on 401 in API key mode', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'jwt-tok');
-            const apiKeyClient = new HttpClient({ baseUrl: BASE_URL, apiKey: API_KEY });
-            fetchMock.mockResolvedValueOnce(emptyResponse(401));
+        it('does not send it when applicationKeyAuth is off', async () => {
+            const appClient = new HttpClient({ baseUrl: BASE_URL, applicationKey: 'app-secret' });
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
 
-            const authErrorListener = vi.fn();
-            const tokenChangeListener = vi.fn();
-            apiKeyClient.subscribeAuthErrorEvent(authErrorListener);
-            apiKeyClient.subscribeTokenChangeEvent(tokenChangeListener);
+            await appClient.request({ path: 'cms/pages', method: 'GET' });
 
-            await expect(apiKeyClient.request({ path: 'user/self', method: 'GET' })).rejects.toBeInstanceOf(
-                HttpClientError
-            );
+            expect(headersOf(fetchMock, 0)[DN_APPLICATION_KEY_HEADER]).toBeUndefined();
+        });
 
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBe('jwt-tok');
-            expect(authErrorListener).not.toHaveBeenCalled();
-            expect(tokenChangeListener).not.toHaveBeenCalled();
+        it('does not send it when no application key is configured', async () => {
+            const appClient = new HttpClient({ baseUrl: BASE_URL, applicationKeyAuth: true });
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
+
+            await appClient.request({ path: 'cms/pages', method: 'GET' });
+
+            expect(headersOf(fetchMock, 0)[DN_APPLICATION_KEY_HEADER]).toBeUndefined();
+        });
+
+        it('never prefixes the application key header', async () => {
+            const appClient = new HttpClient({
+                baseUrl: BASE_URL,
+                applicationKey: 'app-secret',
+                applicationKeyAuth: true,
+                keyPrefix: 'TENANT_',
+            });
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
+
+            await appClient.request({ path: 'cms/pages', method: 'GET' });
+
+            const headers = headersOf(fetchMock, 0);
+            expect(headers[DN_APPLICATION_KEY_HEADER]).toBe('app-secret');
+            expect(headers[`TENANT_${DN_APPLICATION_KEY_HEADER}`]).toBeUndefined();
+        });
+
+        it('is removed by skipAuth', async () => {
+            const appClient = new HttpClient({
+                baseUrl: BASE_URL,
+                applicationKey: 'app-secret',
+                applicationKeyAuth: true,
+            });
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
+
+            await appClient.request({ path: 'ping', method: 'GET', skipAuth: true });
+
+            expect(headersOf(fetchMock, 0)[DN_APPLICATION_KEY_HEADER]).toBeUndefined();
         });
     });
 
     describe('keyPrefix', () => {
-        const PREFIX = 'tenant_a_';
-        const PREFIXED_STORAGE_KEY = `${PREFIX}${DN_STORAGE_KEY}`;
-        const PREFIXED_API_KEY_HEADER = `${PREFIX}DN-Api-Key`;
-
-        it('writes the access token under the prefixed localStorage key', () => {
-            const prefixed = new HttpClient({ baseUrl: BASE_URL, keyPrefix: PREFIX });
-
-            prefixed.setToken('tok-xyz');
-
-            expect(localStorage.getItem(PREFIXED_STORAGE_KEY)).toBe('tok-xyz');
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBeNull();
-        });
-
-        it('reads the access token from the prefixed localStorage key', () => {
-            localStorage.setItem(PREFIXED_STORAGE_KEY, 'pre-seeded');
-            const prefixed = new HttpClient({ baseUrl: BASE_URL, keyPrefix: PREFIX });
-
-            expect(prefixed.getToken()).toBe('pre-seeded');
-        });
-
         it('sends the API key under the prefixed header name', async () => {
-            const prefixed = new HttpClient({ baseUrl: BASE_URL, apiKey: 'KEY-1', keyPrefix: PREFIX });
-            fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
+            const prefixed = new HttpClient({ baseUrl: BASE_URL, apiKey: 'key-123', keyPrefix: 'TENANT_' });
+            fetchMock.mockResolvedValueOnce(jsonResponse({}));
 
             await prefixed.request({ path: 'user/self', method: 'GET' });
 
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers[PREFIXED_API_KEY_HEADER]).toBe('KEY-1');
-            expect(headers['DN-Api-Key']).toBeUndefined();
-        });
-
-        it('two clients with different prefixes do not collide on localStorage', () => {
-            const clientA = new HttpClient({ baseUrl: BASE_URL, keyPrefix: 'tenant_a_' });
-            const clientB = new HttpClient({ baseUrl: BASE_URL, keyPrefix: 'tenant_b_' });
-
-            clientA.setToken('token-A');
-
-            expect(clientA.getToken()).toBe('token-A');
-            expect(clientB.getToken()).toBeUndefined();
+            const headers = headersOf(fetchMock, 0);
+            expect(headers[`TENANT_${DN_API_KEY_HEADER}`]).toBe('key-123');
+            expect(headers[DN_API_KEY_HEADER]).toBeUndefined();
         });
     });
 
-    describe('in-memory token fallback (Node)', () => {
-        let nodeClient: HttpClient;
-
-        beforeEach(() => {
-            // Force `typeof localStorage === 'undefined'` to simulate a Node-only runtime.
-            vi.stubGlobal('localStorage', undefined);
-            fetchMock = vi.fn();
-            vi.stubGlobal('fetch', fetchMock);
-            nodeClient = new HttpClient({ baseUrl: BASE_URL });
-        });
-
-        it('stores the token in memory when localStorage is not defined', () => {
+    describe('auth error event', () => {
+        it('emits on a 401 so consumers can drop their user state', async () => {
             const listener = vi.fn();
-            nodeClient.subscribeTokenChangeEvent(listener);
-
-            nodeClient.setToken('node-tok');
-
-            expect(nodeClient.getToken()).toBe('node-tok');
-            expect(listener).toHaveBeenCalledWith('node-tok');
-        });
-
-        it('clearToken wipes the in-memory token and emits undefined', () => {
-            nodeClient.setToken('node-tok');
-            const listener = vi.fn();
-            nodeClient.subscribeTokenChangeEvent(listener);
-
-            nodeClient.clearToken();
-
-            expect(nodeClient.getToken()).toBeUndefined();
-            expect(listener).toHaveBeenCalledWith(undefined);
-        });
-
-        it('uses the in-memory token in the Authorization header on requests', async () => {
-            nodeClient.setToken('node-tok');
-            fetchMock.mockResolvedValueOnce(jsonResponse({ ok: true }));
-
-            await nodeClient.request({ path: 'user/self', method: 'GET' });
-
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['Authorization']).toBe('Bearer node-tok');
-        });
-
-        it('refreshes and persists the new token in memory on 401', async () => {
-            nodeClient.setToken('old-node-tok');
-
-            fetchMock
-                .mockResolvedValueOnce(emptyResponse(401))
-                .mockResolvedValueOnce(jsonResponse({ value: 'new-node-tok' }))
-                .mockResolvedValueOnce(jsonResponse({ id: 1 }));
-
-            const response = await nodeClient.request<{ id: number }>({
-                path: 'user/self',
-                method: 'GET',
-            });
-
-            expect(response.data).toEqual({ id: 1 });
-            expect(nodeClient.getToken()).toBe('new-node-tok');
-        });
-    });
-
-    describe('refreshToken() (public)', () => {
-        it('exposes refreshToken as a public method that returns the new token', async () => {
-            fetchMock.mockResolvedValueOnce(jsonResponse({ value: 'fresh-tok' }));
-
-            const newToken = await client.refreshToken();
-
-            expect(newToken).toBe('fresh-tok');
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBe('fresh-tok');
-
-            const { url, init } = callOf(fetchMock, 0);
-            expect(url).toBe(`${BASE_URL}/${DN_API_AUTH_USER_REFRESH}`);
-            expect(init.method).toBe('POST');
-            expect(init.credentials).toBe('include');
-        });
-
-        it('returns undefined and clears state when the refresh endpoint fails', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'old-tok');
+            client.subscribeAuthErrorEvent(listener);
             fetchMock.mockResolvedValueOnce(emptyResponse(401));
 
-            const newToken = await client.refreshToken();
+            await expect(client.request({ path: 'user/self', method: 'GET' })).rejects.toBeInstanceOf(HttpClientError);
 
-            expect(newToken).toBeUndefined();
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBeNull();
+            expect(listener).toHaveBeenCalledTimes(1);
         });
 
-        it('treats a 200 refresh response with hasError=true as a failure', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'old-tok');
-            fetchMock.mockResolvedValueOnce(
-                jsonResponse({ value: 'should-be-ignored', hasError: true, errors: [{ message: 'nope' }], infos: [] })
+        it('does not emit on a 401 from a skipAuth request', async () => {
+            const listener = vi.fn();
+            client.subscribeAuthErrorEvent(listener);
+            fetchMock.mockResolvedValueOnce(emptyResponse(401));
+
+            await expect(
+                client.request({ path: 'authentication/user/login', method: 'POST', skipAuth: true })
+            ).rejects.toBeInstanceOf(HttpClientError);
+
+            expect(listener).not.toHaveBeenCalled();
+        });
+
+        it('does not emit on other error statuses', async () => {
+            const listener = vi.fn();
+            client.subscribeAuthErrorEvent(listener);
+            fetchMock.mockResolvedValueOnce(emptyResponse(403));
+
+            await expect(client.request({ path: 'admin/user', method: 'POST' })).rejects.toBeInstanceOf(
+                HttpClientError
             );
 
-            const authErrorListener = vi.fn();
-            client.subscribeAuthErrorEvent(authErrorListener);
-
-            const newToken = await client.refreshToken();
-
-            expect(newToken).toBeUndefined();
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBeNull();
-            expect(authErrorListener).toHaveBeenCalledTimes(1);
+            expect(listener).not.toHaveBeenCalled();
         });
 
-        it('treats a 200 refresh response missing value as a failure', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'old-tok');
-            fetchMock.mockResolvedValueOnce(jsonResponse({ hasError: false, errors: [], infos: [] }));
+        it('stops emitting once unsubscribed', async () => {
+            const listener = vi.fn();
+            const unsubscribe = client.subscribeAuthErrorEvent(listener);
+            unsubscribe();
+            fetchMock.mockResolvedValueOnce(emptyResponse(401));
 
-            const authErrorListener = vi.fn();
-            client.subscribeAuthErrorEvent(authErrorListener);
+            await expect(client.request({ path: 'user/self', method: 'GET' })).rejects.toBeInstanceOf(HttpClientError);
 
-            const newToken = await client.refreshToken();
-
-            expect(newToken).toBeUndefined();
-            expect(localStorage.getItem(DN_STORAGE_KEY)).toBeNull();
-            expect(authErrorListener).toHaveBeenCalledTimes(1);
+            expect(listener).not.toHaveBeenCalled();
         });
     });
 
@@ -544,9 +362,7 @@ describe('HttpClient', () => {
             await client.request({ path: 'user/self', method: 'GET', onRequest });
 
             expect(onRequest).toHaveBeenCalledTimes(1);
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['X-Trace']).toBe('abc');
+            expect(headersOf(fetchMock, 0)['X-Trace']).toBe('abc');
         });
 
         it('onRequest hook can mutate path, slugs and params', async () => {
@@ -573,9 +389,7 @@ describe('HttpClient', () => {
 
             await client.request({ path: 'user/self', method: 'GET', onRequest });
 
-            const { init } = callOf(fetchMock, 0);
-            const headers = init.headers as Record<string, string>;
-            expect(headers['X-Async']).toBe('1');
+            expect(headersOf(fetchMock, 0)['X-Async']).toBe('1');
         });
 
         it('calls onResponse with the deserialized response on success', async () => {
@@ -603,42 +417,16 @@ describe('HttpClient', () => {
             expect(response.data).toEqual({ error: 'nope' });
         });
 
-        it('hooks run on both the initial call and the retry after a 401 refresh', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'old-token');
-            fetchMock
-                .mockResolvedValueOnce(emptyResponse(401))
-                .mockResolvedValueOnce(jsonResponse({ value: 'new-token', hasError: false, errors: [], infos: [] }))
-                .mockResolvedValueOnce(jsonResponse({ id: 1 }));
-
+        it('runs hooks exactly once per request', async () => {
+            fetchMock.mockResolvedValueOnce(jsonResponse({ id: 1 }));
             const onRequest = vi.fn(cfg => cfg);
             const onResponse = vi.fn();
 
             await client.request({ path: 'user/self', method: 'GET', onRequest, onResponse });
 
-            expect(onRequest).toHaveBeenCalledTimes(2);
-            expect(onResponse).toHaveBeenCalledTimes(2);
-        });
-
-        it('hooks do NOT run on the internal refresh-token request', async () => {
-            localStorage.setItem(DN_STORAGE_KEY, 'old-token');
-            fetchMock
-                .mockResolvedValueOnce(emptyResponse(401))
-                .mockResolvedValueOnce(jsonResponse({ value: 'new-token', hasError: false, errors: [], infos: [] }))
-                .mockResolvedValueOnce(jsonResponse({ id: 1 }));
-
-            const onRequest = vi.fn(cfg => cfg);
-            const onResponse = vi.fn();
-
-            await client.request({ path: 'user/self', method: 'GET', onRequest, onResponse });
-
-            // Si les hooks voyaient le refresh, on aurait 3 appels (initial + refresh + retry).
-            expect(onRequest).toHaveBeenCalledTimes(2);
-            expect(onResponse).toHaveBeenCalledTimes(2);
-            // Aucune des invocations ne doit être sur le path de refresh
-            for (const call of onResponse.mock.calls) {
-                const response = call[0] as { data: unknown };
-                expect(response.data).not.toMatchObject({ value: 'new-token' });
-            }
+            expect(onRequest).toHaveBeenCalledTimes(1);
+            expect(onResponse).toHaveBeenCalledTimes(1);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
         });
 
         it('propagates exceptions thrown by onResponse', async () => {

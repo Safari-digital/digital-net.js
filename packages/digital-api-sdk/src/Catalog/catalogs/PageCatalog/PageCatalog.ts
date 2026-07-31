@@ -33,17 +33,17 @@ export class PageCatalog {
         this.public = new PagePublicCatalog(http);
     }
 
-    /** GET `cms/pages/:id` — JWT/ApiKey */
+    /** GET `cms/pages/:id` */
     public async getById(id: string, options: CatalogCallbacks<PageDto> = {}): Promise<Result<PageDto>> {
         return CatalogRunner.run<PageDto>(this.http, { path: DN_API_PAGE_BY_ID, slugs: { id } }, options);
     }
 
-    /** POST `cms/pages` — body accepts `{ path, entityType? }`. Returns the new id. — JWT/ApiKey */
+    /** POST `cms/pages` — body accepts `{ path, entityType? }`. Returns the new id. */
     public async create(payload: PagePayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { method: 'POST', path: DN_API_PAGE, body: payload }, options);
     }
 
-    /** GET `cms/pages/path/availability?path=...&excludeId=...` — JWT/ApiKey */
+    /** GET `cms/pages/path/availability?path=...&excludeId=...` */
     public async checkAvailability(
         path: string,
         excludeId?: string,
@@ -61,7 +61,7 @@ export class PageCatalog {
         );
     }
 
-    /** PATCH `cms/pages/:id` — body = JSON Patch (RFC 6902) — JWT/ApiKey */
+    /** PATCH `cms/pages/:id` — body = JSON Patch (RFC 6902) */
     public async update(id: string, ops: JsonPatchOp[], options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -76,7 +76,7 @@ export class PageCatalog {
         );
     }
 
-    /** DELETE `cms/pages/:id` — JWT/ApiKey */
+    /** DELETE `cms/pages/:id` */
     public async delete(id: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -86,14 +86,14 @@ export class PageCatalog {
         );
     }
 
-    /** GET `cms/pages/open-graph-values/schema` — Returns the list of valid OpenGraph properties. — JWT/ApiKey */
+    /** GET `cms/pages/open-graph-values/schema` — Returns the list of valid OpenGraph properties. */
     public async getOpenGraphSchema(
         options: CatalogCallbacks<OpenGraphPropertySchema[]> = {}
     ): Promise<Result<OpenGraphPropertySchema[]>> {
         return CatalogRunner.run<OpenGraphPropertySchema[]>(this.http, { path: DN_API_PAGE_OG_SCHEMA }, options);
     }
 
-    /** GET `cms/pages/:id/sheets` — Editable sheet list owned by the page (ordered). — JWT/ApiKey */
+    /** GET `cms/pages/:id/sheets` — Editable sheet list owned by the page (ordered). */
     public async getSheetsForEdit(
         id: string,
         options: CatalogCallbacks<PageSheet[]> = {}
@@ -101,7 +101,7 @@ export class PageCatalog {
         return CatalogRunner.run<PageSheet[]>(this.http, { path: DN_API_PAGE_SHEETS, slugs: { id } }, options);
     }
 
-    /** GET `cms/pages/:id/open-graph` — Editable OpenGraph entries owned by the page (ordered). — JWT/ApiKey */
+    /** GET `cms/pages/:id/open-graph` — Editable OpenGraph entries owned by the page (ordered). */
     public async getOpenGraphForEdit(
         id: string,
         options: CatalogCallbacks<OpenGraphEntry[]> = {}
@@ -112,7 +112,7 @@ export class PageCatalog {
     /**
      * GET `cms/pages/template-variables/:entityType` — Lists `{{ source.field }}` placeholders
      * exposed for a given PageEntityType. Empty when the entity exposes no `[Templatable]`
-     * field. — JWT/ApiKey
+     * field.
      */
     public async getTemplateVariables(
         entityType: PageEntityType,

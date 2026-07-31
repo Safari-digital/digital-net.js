@@ -11,7 +11,7 @@
 
 `@digital-net-org/digital-api-sdk` is a vanilla TypeScript client that wraps the
 [Digital.Net](https://github.com/digital-net-org/Digital.Net.Api) REST API. It
-handles authentication (JWT + refresh), request serialization, response
+handles authentication (session cookie, API key, application key), request serialization, response
 unwrapping (`Result<T>` convention), and exposes typed entity catalogs
 (users, sessions, files, CMS, …).
 

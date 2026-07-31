@@ -1,38 +1,31 @@
-import { DigitalEvent, Env, URLResolver } from '@digital-net-org/digital-core';
+import { DigitalEvent, URLResolver } from '@digital-net-org/digital-core';
 import {
     DN_API_KEY_HEADER,
     DN_APPLICATION_KEY_HEADER,
     DN_CLIENT_ID_HEADER,
     DN_DEFAULT_HEADERS,
-    DN_STORAGE_KEY,
+    DN_REQUESTED_WITH_HEADER,
+    DN_REQUESTED_WITH_VALUE,
 } from './constants';
-import { DN_API_AUTH_USER_REFRESH } from '../Catalog';
 import { HttpClientError } from './HttpClientError';
 import { HttpSerializer } from './HttpSerializer';
 import type { HttpClientConfig, HttpRequestConfig, HttpResponse } from './types';
-import type { Result } from '../Result';
 
 export class HttpClient {
     private readonly baseUrl: string;
     private readonly apiKey?: string;
     private readonly applicationKey?: string;
     private readonly applicationKeyAuth: boolean;
-    private readonly storageKey: string;
     private readonly apiKeyHeader: string;
     private readonly clientId: string = HttpClient.generateClientId();
 
-    private readonly tokenChangeEvent: DigitalEvent<string | undefined> = new DigitalEvent();
     private readonly authErrorEvent: DigitalEvent<void> = new DigitalEvent();
-
-    private refreshPromise: Promise<string | undefined> | null = null;
-    private inMemoryToken: string | undefined;
 
     public constructor(config: HttpClientConfig) {
         this.baseUrl = config.baseUrl;
         this.apiKey = config.apiKey;
         this.applicationKey = config.applicationKey;
         this.applicationKeyAuth = config.applicationKeyAuth ?? false;
-        this.storageKey = (config.keyPrefix ?? '') + DN_STORAGE_KEY;
         this.apiKeyHeader = (config.keyPrefix ?? '') + DN_API_KEY_HEADER;
     }
 
@@ -58,50 +51,20 @@ export class HttpClient {
         }
     }
 
+    /**
+     * Sends a request and returns the deserialized response. Throws {@link HttpClientError} on any non-2xx
+     * status; a 401 additionally emits the auth error event (see {@link subscribeAuthErrorEvent}).
+     */
     public async request<T = any, B = any>(config: HttpRequestConfig<B>): Promise<HttpResponse<T>> {
-        return this.doRequest<T, B>(config, false);
+        return this.doRequest<T, B>(config);
     }
 
-    public getToken(): string | undefined {
-        return Env.hasUsableLocalStorage() ? (localStorage.getItem(this.storageKey) ?? undefined) : this.inMemoryToken;
-    }
-
-    public setToken(token: string | undefined): void {
-        if (!Env.hasUsableLocalStorage()) {
-            this.inMemoryToken = token;
-        } else if (token) {
-            localStorage.setItem(this.storageKey, token);
-        } else {
-            localStorage.removeItem(this.storageKey);
-        }
-        this.tokenChangeEvent.emit(token);
-    }
-
-    public clearToken(): void {
-        this.setToken(undefined);
-    }
-
-    public subscribeTokenChangeEvent(listener: (_token: string | undefined) => void): () => void {
-        return this.tokenChangeEvent.subscribe(listener);
-    }
-
+    /** Fires whenever the API rejects an authenticated request. */
     public subscribeAuthErrorEvent(listener: () => void): () => void {
         return this.authErrorEvent.subscribe(listener);
     }
 
-    public async refreshToken(): Promise<string | undefined> {
-        this.refreshPromise ??= this.doRefreshToken();
-        return this.refreshPromise;
-    }
-
-    private async doRequest<T = unknown, B = unknown>(
-        config: HttpRequestConfig<B>,
-        isRetry: boolean
-    ): Promise<HttpResponse<T>> {
-        if (this.refreshPromise && !config.skipRefresh && this.apiKey === undefined) {
-            await this.refreshPromise;
-        }
-
+    private async doRequest<T = unknown, B = unknown>(config: HttpRequestConfig<B>): Promise<HttpResponse<T>> {
         const effectiveConfig = !config.skipHooks && config.onRequest ? await config.onRequest(config) : config;
 
         const url = this.resolveUrl(effectiveConfig.path, effectiveConfig.slugs, effectiveConfig.params);
@@ -128,50 +91,14 @@ export class HttpClient {
             await effectiveConfig.onResponse(httpResponse as HttpResponse<unknown>);
         }
 
-        if (
-            response.status === 401 &&
-            !effectiveConfig.skipRefresh &&
-            !isRetry &&
-            this.apiKey === undefined &&
-            this.getToken()
-        ) {
-            const newToken = await this.refreshToken();
-            if (!newToken) {
-                throw new HttpClientError(response.status, data);
-            }
-            return this.doRequest<T, B>(config, true);
+        if (response.status === 401 && !effectiveConfig.skipAuth) {
+            this.authErrorEvent.emit();
         }
 
         if (!response.ok) {
             throw new HttpClientError(response.status, data);
         }
         return httpResponse;
-    }
-
-    private async doRefreshToken(): Promise<string | undefined> {
-        try {
-            const { data } = await this.doRequest<Result<string>>(
-                {
-                    method: 'POST',
-                    path: DN_API_AUTH_USER_REFRESH,
-                    skipAuth: true,
-                    skipRefresh: true,
-                    skipHooks: true,
-                },
-                true
-            );
-            if (!data?.value || data.hasError) {
-                throw new Error('refresh failed');
-            }
-            this.setToken(data.value);
-            return data.value;
-        } catch {
-            this.setToken(undefined);
-            this.authErrorEvent.emit();
-            return undefined;
-        } finally {
-            this.refreshPromise = null;
-        }
     }
 
     private resolveUrl(
@@ -187,12 +114,11 @@ export class HttpClient {
     private resolveHeaders<B>(config: HttpRequestConfig<B>): Record<string, string> {
         const headers: Record<string, string> = { ...DN_DEFAULT_HEADERS, ...(config.headers ?? {}) };
         headers[DN_CLIENT_ID_HEADER] = this.clientId;
+        headers[DN_REQUESTED_WITH_HEADER] = DN_REQUESTED_WITH_VALUE;
+
         if (!config.skipAuth) {
             if (this.apiKey !== undefined) {
                 headers[this.apiKeyHeader] = this.apiKey;
-            } else {
-                const token = this.getToken();
-                if (token) headers['Authorization'] = `Bearer ${token}`;
             }
             if (this.applicationKeyAuth && this.applicationKey !== undefined) {
                 headers[DN_APPLICATION_KEY_HEADER] = this.applicationKey;

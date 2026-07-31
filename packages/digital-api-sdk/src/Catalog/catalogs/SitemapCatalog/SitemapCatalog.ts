@@ -13,7 +13,7 @@ export class SitemapCatalog {
         this.http = http;
     }
 
-    /** GET `cms/sitemaps/data` — published & indexed pages/articles for sitemap generation. — Application/JWT/ApiKey */
+    /** GET `cms/sitemaps/data` — published & indexed pages/articles for sitemap generation.  */
     public async getData(options: CatalogCallbacks<SitemapEntryDto[]> = {}): Promise<Result<SitemapEntryDto[]>> {
         return CatalogRunner.run<SitemapEntryDto[]>(this.http, { path: DN_API_SITEMAP_DATA }, options);
     }

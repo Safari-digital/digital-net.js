@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { CircularProgress, Dialog, DialogContent, IconButton } from '@mui/material';
+import { CircularProgress, Dialog, DialogContent, Box, IconButton } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-import { BlobImage } from './BlobImage';
-import { useMediaImageBlob } from './useMediaImageBlob';
+import { useDigitalNetApi } from '../../api';
 
 export interface MediaPreviewDialogProps {
     open: boolean;
@@ -13,9 +12,10 @@ export interface MediaPreviewDialogProps {
 }
 
 export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPreviewDialogProps) {
+    const api = useDigitalNetApi();
     const [isZoomed, setIsZoomed] = React.useState(false);
 
-    const { data: blob } = useMediaImageBlob(mediaId, { enabled: open });
+    const src = api.catalog.media.getImageUrl(mediaId);
 
     const handleClose = React.useCallback(() => {
         setIsZoomed(false);
@@ -38,10 +38,12 @@ export function MediaPreviewDialog({ open, onClose, mediaId, alt = '' }: MediaPr
                     bgcolor: 'background.default',
                 }}
             >
-                {open && blob ? (
-                    <BlobImage
-                        blob={blob}
+                {open ? (
+                    <Box
+                        component="img"
+                        src={src}
                         alt={alt}
+                        decoding="async"
                         onClick={() => setIsZoomed(z => !z)}
                         sx={{
                             display: 'block',

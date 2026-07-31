@@ -22,17 +22,17 @@ export class ArticleCatalog {
         this.public = new ArticlePublicCatalog(http);
     }
 
-    /** GET `cms/articles/:id` — JWT/ApiKey */
+    /** GET `cms/articles/:id` */
     public async getById(id: string, options: CatalogCallbacks<ArticleDto> = {}): Promise<Result<ArticleDto>> {
         return CatalogRunner.run<ArticleDto>(this.http, { path: DN_API_ARTICLE_BY_ID, slugs: { id } }, options);
     }
 
-    /** POST `cms/articles` — JWT/ApiKey. Returns the new article id. */
+    /** POST `cms/articles`. Returns the new article id. */
     public async create(payload: ArticlePayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { method: 'POST', path: DN_API_ARTICLE, body: payload }, options);
     }
 
-    /** GET `cms/articles/slug/availability?slug=...&excludeId=...` — JWT/ApiKey */
+    /** GET `cms/articles/slug/availability?slug=...&excludeId=...` */
     public async checkSlugAvailability(
         slug: string,
         excludeId?: string,
@@ -50,7 +50,7 @@ export class ArticleCatalog {
         );
     }
 
-    /** PATCH `cms/articles/:id` — body = JSON Patch (RFC 6902). — JWT/ApiKey */
+    /** PATCH `cms/articles/:id` — body = JSON Patch (RFC 6902). */
     public async update(id: string, ops: JsonPatchOp[], options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -65,7 +65,7 @@ export class ArticleCatalog {
         );
     }
 
-    /** DELETE `cms/articles/:id` — JWT/ApiKey */
+    /** DELETE `cms/articles/:id` */
     public async delete(id: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,

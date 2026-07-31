@@ -16,7 +16,7 @@ export class PagePublicCatalog {
         this.http = http;
     }
 
-    /** POST `cms/pages/public/build` — builds a published page for the declared templated path — Application/JWT/ApiKey */
+    /** POST `cms/pages/public/build` — builds a published page for the declared templated path  */
     public async build(
         payload: PageBuildPayload,
         options: CatalogCallbacks<PagePublicDto> = {}
@@ -29,7 +29,7 @@ export class PagePublicCatalog {
     }
 
     /**
-     * POST `cms/pages/public/build/sheet` — builds a published sheet resource — Application/JWT/ApiKey
+     * POST `cms/pages/public/build/sheet` — builds a published sheet resource
      *
      * On success the endpoint returns the RAW sheet content with its own Content-Type
      * (css/js/html), NOT a `Result<…>` envelope — so the body string is returned directly.
@@ -43,7 +43,7 @@ export class PagePublicCatalog {
         return res.data;
     }
 
-    /** GET `cms/pages/public/:id/sheets` — published sheet infos owned by the page (ordered) — Application/JWT/ApiKey */
+    /** GET `cms/pages/public/:id/sheets` — published sheet infos owned by the page (ordered)  */
     public async getSheets(
         id: string,
         options: CatalogCallbacks<PageSheetInfoDto[]> = {}

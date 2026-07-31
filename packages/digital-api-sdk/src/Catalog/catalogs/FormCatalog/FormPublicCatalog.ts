@@ -16,7 +16,7 @@ export class FormPublicCatalog {
         this.http = http;
     }
 
-    /** GET `cms/forms/public/:id/definition` — full definition of a published form — Application/JWT/ApiKey */
+    /** GET `cms/forms/public/:id/definition` — full definition of a published form  */
     public async getDefinition(
         id: string,
         options: CatalogCallbacks<FormPublicDto> = {}
@@ -28,7 +28,7 @@ export class FormPublicCatalog {
         );
     }
 
-    /** GET `cms/forms/public/by-path?path=…` — a single published form resolved by its public path — Application/JWT/ApiKey */
+    /** GET `cms/forms/public/by-path?path=…` — a single published form resolved by its public path  */
     public async getDefinitionByPath(
         path: string,
         options: CatalogCallbacks<FormPublicDto> = {}
@@ -40,7 +40,7 @@ export class FormPublicCatalog {
         );
     }
 
-    /** POST `cms/forms/public/:id/submit` — submit values for a published form (validated server-side) — Application/JWT/ApiKey */
+    /** POST `cms/forms/public/:id/submit` — submit values for a published form (validated server-side)  */
     public async submit(id: string, payload: FormSubmitPayload, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,

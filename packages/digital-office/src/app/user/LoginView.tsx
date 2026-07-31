@@ -5,6 +5,7 @@ import { css, styled } from '@mui/material/styles';
 import { DnInput, DnButton } from '../../ui';
 import { useDigitalNetApi } from '../../api';
 import { useLayout } from '../layout';
+import { useDigitalNetUser } from './useDigitalNetUser';
 
 const IS_LOCKED_KEY = 'dn_is_locked';
 const PING_KEY = 'dn_ping';
@@ -13,6 +14,7 @@ const PING_INTERVAL_MS = 30000;
 export function LoginView() {
     const { AppLogo } = useLayout();
     const api = useDigitalNetApi();
+    const { login } = useDigitalNetUser();
     const queryClient = useQueryClient();
 
     const [loginInput, setLoginInput] = React.useState('');
@@ -32,23 +34,15 @@ export function LoginView() {
         enabled: online === true,
     });
 
-    const invalidateLocked = React.useCallback(
-        async () => (async () => await queryClient.invalidateQueries({ queryKey: [IS_LOCKED_KEY] }))(),
-        [queryClient]
-    );
-
     const { mutate, isPending: isLoginLoading } = useMutation({
-        mutationFn: async () => {
-            await api.catalog.auth.login(
+        mutationFn: () =>
+            login(
                 { password: passwordInput, login: loginInput },
                 {
-                    onStatus: {
-                        401: () => setInvalidCredentials(true),
-                        429: () => invalidateLocked(),
-                    },
+                    onInvalid: () => setInvalidCredentials(true),
+                    onLocked: () => queryClient.invalidateQueries({ queryKey: [IS_LOCKED_KEY] }),
                 }
-            );
-        },
+            ),
     });
 
     const isLoading = React.useMemo(

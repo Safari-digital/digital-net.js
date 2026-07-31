@@ -18,29 +18,25 @@ export class ValidationCatalog {
 
     /** GET `validation/pattern/email` — email validation regex (public) */
     public async getEmailPattern(options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
-        return CatalogRunner.run<string>(
-            this.http,
-            { path: DN_API_VALIDATION_PATTERN_EMAIL, skipAuth: true, skipRefresh: true },
-            options
-        );
+        return CatalogRunner.run<string>(this.http, { path: DN_API_VALIDATION_PATTERN_EMAIL, skipAuth: true }, options);
     }
 
-    /** GET `validation/pattern/username` — username validation regex — JWT/ApiKey */
+    /** GET `validation/pattern/username` — username validation regex */
     public async getUsernamePattern(options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { path: DN_API_VALIDATION_PATTERN_USERNAME }, options);
     }
 
-    /** GET `validation/pattern/password` — password validation regex — JWT/ApiKey */
+    /** GET `validation/pattern/password` — password validation regex */
     public async getPasswordPattern(options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { path: DN_API_VALIDATION_PATTERN_PASSWORD }, options);
     }
 
-    /** GET `validation/pattern/api-key-name` — API key name validation regex — JWT/ApiKey */
+    /** GET `validation/pattern/api-key-name` — API key name validation regex */
     public async getApiKeyNamePattern(options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { path: DN_API_VALIDATION_PATTERN_API_KEY_NAME }, options);
     }
 
-    /** GET `validation/size/avatar` — maximum allowed avatar size in bytes — JWT/ApiKey */
+    /** GET `validation/size/avatar` — maximum allowed avatar size in bytes */
     public async getAvatarSizeLimit(options: CatalogCallbacks<number> = {}): Promise<Result<number>> {
         return CatalogRunner.run<number>(this.http, { path: DN_API_VALIDATION_SIZE_AVATAR }, options);
     }

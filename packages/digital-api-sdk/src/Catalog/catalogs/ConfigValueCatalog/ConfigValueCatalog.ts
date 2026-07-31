@@ -16,7 +16,7 @@ export class ConfigValueCatalog {
         this.http = http;
     }
 
-    /** GET `admin/config-value/:id` — JWT/ApiKey (admin) */
+    /** GET `admin/config-value/:id` (admin) */
     public async getById(id: string, options: CatalogCallbacks<ConfigValueDto> = {}): Promise<Result<ConfigValueDto>> {
         return CatalogRunner.run<ConfigValueDto>(
             this.http,
@@ -25,7 +25,7 @@ export class ConfigValueCatalog {
         );
     }
 
-    /** GET `admin/config-value` — paginated list (filter by `name`, …); `index` defaults to 1. — JWT/ApiKey (admin) */
+    /** GET `admin/config-value` — paginated list (filter by `name`, …); `index` defaults to 1. (admin) */
     public async list(
         query: { name?: string; index?: number; size?: number } = {},
         options: CatalogCallbacks<ConfigValueDto[]> = {}
@@ -35,7 +35,7 @@ export class ConfigValueCatalog {
         return CatalogRunner.run<ConfigValueDto[]>(this.http, { path: DN_API_CONFIG_VALUE, params }, options);
     }
 
-    /** POST `admin/config-value` — body accepts `{ name, value?, type? }`. Returns the new id. — JWT/ApiKey (admin) */
+    /** POST `admin/config-value` — body accepts `{ name, value?, type? }`. Returns the new id. (admin) */
     public async create(payload: ConfigValuePayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(
             this.http,
@@ -44,7 +44,7 @@ export class ConfigValueCatalog {
         );
     }
 
-    /** PATCH `admin/config-value/:id` — body = JSON Patch (RFC 6902) — JWT/ApiKey (admin) */
+    /** PATCH `admin/config-value/:id` — body = JSON Patch (RFC 6902) (admin) */
     public async update(id: string, ops: JsonPatchOp[], options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -59,7 +59,7 @@ export class ConfigValueCatalog {
         );
     }
 
-    /** DELETE `admin/config-value/:id` — JWT/ApiKey (admin) */
+    /** DELETE `admin/config-value/:id` (admin) */
     public async delete(id: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,

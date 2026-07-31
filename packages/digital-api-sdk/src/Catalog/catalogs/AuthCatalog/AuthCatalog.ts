@@ -8,7 +8,6 @@ export const DN_API_AUTH_USER_LOGIN = 'authentication/user/login' as const;
 export const DN_API_AUTH_USER_IS_LOCKED = 'authentication/user/is-locked' as const;
 export const DN_API_AUTH_USER_LOGOUT = 'authentication/user/logout' as const;
 export const DN_API_AUTH_USER_LOGOUT_ALL = 'authentication/user/logout-all' as const;
-export const DN_API_AUTH_USER_REFRESH = 'authentication/user/refresh' as const;
 
 export class AuthCatalog {
     private readonly http: HttpClient;
@@ -20,25 +19,18 @@ export class AuthCatalog {
     /**
      * POST `authentication/user/login` (public)
      *
-     * On success, persists the bearer token returned.
+     * On success the API sets the HttpOnly session cookie.
      */
-    public async login(payload: LoginPayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
-        return CatalogRunner.run<string>(
+    public async login(payload: LoginPayload, options: CatalogCallbacks<null> = {}): Promise<Result<null>> {
+        return CatalogRunner.run<null>(
             this.http,
             {
                 method: 'POST',
                 path: DN_API_AUTH_USER_LOGIN,
                 body: payload,
                 skipAuth: true,
-                skipRefresh: true,
             },
-            {
-                ...options,
-                onSuccess: async token => {
-                    if (token) this.http.setToken(token);
-                    await options.onSuccess?.(token);
-                },
-            }
+            options
         );
     }
 
@@ -55,74 +47,40 @@ export class AuthCatalog {
                 method: 'GET',
                 path: DN_API_AUTH_USER_IS_LOCKED,
                 skipAuth: true,
-                skipRefresh: true,
             },
             options
         );
     }
 
     /**
-     * POST `authentication/user/logout` (JWT required)
+     * POST `authentication/user/logout` (session required)
      *
-     * Always clears the local token, even on error.
+     * Revokes the session server-side and clears the cookie.
      */
     public async logout(options: CatalogCallbacks<null> = {}): Promise<Result<null>> {
-        const result = await CatalogRunner.run<null>(
+        return CatalogRunner.run<null>(
             this.http,
             {
                 method: 'POST',
                 path: DN_API_AUTH_USER_LOGOUT,
-                skipRefresh: true,
             },
             options
         );
-        this.http.clearToken();
-        return result;
     }
 
     /**
-     * POST `authentication/user/logout-all` (JWT or ApiKey)
+     * POST `authentication/user/logout-all` (session or ApiKey)
      *
-     * Clears local token regardless of outcome.
+     * Revokes every session of the account, on all devices.
      */
     public async logoutAll(options: CatalogCallbacks<null> = {}): Promise<Result<null>> {
-        const result = await CatalogRunner.run<null>(
+        return CatalogRunner.run<null>(
             this.http,
             {
                 method: 'POST',
                 path: DN_API_AUTH_USER_LOGOUT_ALL,
-                skipRefresh: true,
             },
             options
-        );
-        this.http.clearToken();
-        return result;
-    }
-
-    /**
-     * POST `authentication/user/refresh` (public — uses HttpOnly cookie)
-     *
-     * On success, persists the new bearer token via the underlying HttpClient.
-     *
-     * Note: most callers should let HttpClient.refreshToken() handle this
-     * implicitly on 401. This is exposed for explicit/manual refreshes.
-     */
-    public async refresh(options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
-        return CatalogRunner.run<string>(
-            this.http,
-            {
-                method: 'POST',
-                path: DN_API_AUTH_USER_REFRESH,
-                skipAuth: true,
-                skipRefresh: true,
-            },
-            {
-                ...options,
-                onSuccess: async token => {
-                    if (token) this.http.setToken(token);
-                    await options.onSuccess?.(token);
-                },
-            }
         );
     }
 }

@@ -59,7 +59,5 @@ export function DigitalOfficeRouter({ routes }: DigitalOfficeRouterProps) {
         ]);
     }, [routes]);
 
-    if (isLoading) return null;
-
-    return <RouterProvider router={router} />;
+    return isLoading ? <DnLoadingView /> : <RouterProvider router={router} />;
 }

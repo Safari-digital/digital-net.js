@@ -21,22 +21,22 @@ export class UserCatalog {
         this.http = http;
     }
 
-    /** GET `user/self/is-admin` — JWT/ApiKey */
+    /** GET `user/self/is-admin` */
     public async isSelfAdmin(options: CatalogCallbacks<boolean> = {}): Promise<Result<boolean>> {
         return CatalogRunner.run<boolean>(this.http, { path: DN_API_USER_SELF_IS_ADMIN }, options);
     }
 
-    /** GET `user/:id` — JWT/ApiKey */
+    /** GET `user/:id` */
     public async getById(id: string, options: CatalogCallbacks<UserDto> = {}): Promise<Result<UserDto>> {
         return CatalogRunner.run<UserDto>(this.http, { path: DN_API_USER_BY_ID, slugs: { id } }, options);
     }
 
-    /** GET `user/self` — JWT/ApiKey */
+    /** GET `user/self` */
     public async getSelf(options: CatalogCallbacks<UserDto> = {}): Promise<Result<UserDto>> {
         return CatalogRunner.run<UserDto>(this.http, { path: DN_API_USER_SELF }, options);
     }
 
-    /** PUT `user/self/password` — JWT/ApiKey */
+    /** PUT `user/self/password` */
     public async updatePassword(payload: UpdatePasswordPayload, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -45,7 +45,7 @@ export class UserCatalog {
         );
     }
 
-    /** PUT `user/self/avatar` — body = FormData with 'avatar' field — JWT/ApiKey */
+    /** PUT `user/self/avatar` — body = FormData with 'avatar' field */
     public async updateAvatar(file: Blob | File, options: CatalogCallbacks<null> = {}): Promise<Result> {
         const form = new FormData();
         form.append('avatar', file);
@@ -56,17 +56,17 @@ export class UserCatalog {
         );
     }
 
-    /** DELETE `user/self/avatar` — JWT/ApiKey */
+    /** DELETE `user/self/avatar` */
     public async removeAvatar(options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(this.http, { method: 'DELETE', path: DN_API_USER_SELF_AVATAR }, options);
     }
 
-    /** GET `user/:id/avatar` — binary response (image/*) — JWT/ApiKey */
+    /** GET `user/:id/avatar` — binary response (image/*) */
     public async getUserAvatar(id: string, options: CatalogCallbacks<Blob> = {}): Promise<Result<Blob>> {
         return CatalogRunner.run<Blob>(this.http, { path: DN_API_USER_AVATAR_BY_ID, slugs: { id } }, options);
     }
 
-    /** PUT `user/:id/role` — JWT/ApiKey */
+    /** PUT `user/:id/role` */
     public async updateUserRole(body: UpdateIsAdmin, id: string, options: CatalogCallbacks = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -80,7 +80,7 @@ export class UserCatalog {
         );
     }
 
-    /** PUT `user/:id/status` — JWT/ApiKey */
+    /** PUT `user/:id/status` */
     public async updateUserStatus(body: UpdateIsActive, id: string, options: CatalogCallbacks = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -94,7 +94,7 @@ export class UserCatalog {
         );
     }
 
-    /** DELETE `user/:id` — Requires admin's password — 401 if wrong, 403 if target is admin — JWT/ApiKey */
+    /** DELETE `user/:id` — Requires admin's password — 401 if wrong, 403 if target is admin */
     public async deleteById(id: string, password: string, options: CatalogCallbacks = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,

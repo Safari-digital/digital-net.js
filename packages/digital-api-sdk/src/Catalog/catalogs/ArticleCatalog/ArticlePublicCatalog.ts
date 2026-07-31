@@ -16,7 +16,7 @@ export class ArticlePublicCatalog {
     }
 
     /**
-     * GET `cms/articles/public` — paginated published articles — Application/JWT/ApiKey
+     * GET `cms/articles/public` — paginated published articles
      *
      * Returns the *flat* `QueryResult` directly (see `FormCatalog.getList`): `value` is the page
      * of items; `total`/`index`/`size` sit alongside it — it is NOT wrapped in a `Result<…>`.
@@ -29,7 +29,7 @@ export class ArticlePublicCatalog {
         return res.data;
     }
 
-    /** GET `cms/articles/public/slug/:slug` — a single published article by slug — Application/JWT/ApiKey */
+    /** GET `cms/articles/public/slug/:slug` — a single published article by slug  */
     public async getBySlug(
         slug: string,
         options: CatalogCallbacks<ArticlePublicDto> = {}

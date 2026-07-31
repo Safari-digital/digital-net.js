@@ -22,12 +22,12 @@ export class MediaCatalog {
         this.http = http;
     }
 
-    /** GET `cms/media/:id` — JWT/ApiKey */
+    /** GET `cms/media/:id` */
     public async getById(id: string, options: CatalogCallbacks<MediaDto> = {}): Promise<Result<MediaDto>> {
         return CatalogRunner.run<MediaDto>(this.http, { path: DN_API_MEDIA_BY_ID, slugs: { id } }, options);
     }
 
-    /** POST `cms/media` — multipart/form-data. Returns the new media id. — JWT/ApiKey */
+    /** POST `cms/media` — multipart/form-data. Returns the new media id. */
     public async upload(file: File, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         const form = new FormData();
         form.append('file', file);
@@ -35,7 +35,7 @@ export class MediaCatalog {
         return CatalogRunner.run<string>(this.http, { method: 'POST', path: DN_API_MEDIA, body: form }, options);
     }
 
-    /** PATCH `cms/media/:id` — body = JSON Patch (RFC 6902). — JWT/ApiKey */
+    /** PATCH `cms/media/:id` — body = JSON Patch (RFC 6902). */
     public async update(id: string, ops: JsonPatchOp[], options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -50,7 +50,7 @@ export class MediaCatalog {
         );
     }
 
-    /** DELETE `cms/media/:id` — removes the media, its original Document and all cached variants. — JWT/ApiKey */
+    /** DELETE `cms/media/:id` — removes the media, its original Document and all cached variants. */
     public async delete(id: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -59,14 +59,14 @@ export class MediaCatalog {
         );
     }
 
-    /** GET `cms/media/content-types` — list of MIME types accepted by the upload endpoint. — JWT/ApiKey */
+    /** GET `cms/media/content-types` — list of MIME types accepted by the upload endpoint. */
     public async getContentTypes(
         options: CatalogCallbacks<readonly string[]> = {}
     ): Promise<Result<readonly string[]>> {
         return CatalogRunner.run<readonly string[]>(this.http, { path: DN_API_MEDIA_CONTENT_TYPES }, options);
     }
 
-    /** GET `cms/media/max-size` — maximum file size (in bytes) accepted by the upload endpoint. — JWT/ApiKey */
+    /** GET `cms/media/max-size` — maximum file size (in bytes) accepted by the upload endpoint. */
     public async getMaxSize(options: CatalogCallbacks<number> = {}): Promise<Result<number>> {
         return CatalogRunner.run<number>(this.http, { path: DN_API_MEDIA_MAX_SIZE }, options);
     }
@@ -75,7 +75,7 @@ export class MediaCatalog {
      * GET `cms/media/labels?search=…` — distinct labels currently in use across all
      * ArticleMedia/PageMedia pivots, alphabetically sorted. `search` is an optional case-insensitive
      * substring filter.
-     * Pass `options.signal` to cancel an in-flight request (debounced autocomplete pattern). — JWT/ApiKey
+     * Pass `options.signal` to cancel an in-flight request (debounced autocomplete pattern).
      */
     public async getLabels(
         params: { search?: string } = {},
@@ -85,7 +85,7 @@ export class MediaCatalog {
         return CatalogRunner.run<string[]>(this.http, { path: DN_API_MEDIA_LABELS, params, signal }, cbs);
     }
 
-    /** DELETE `cms/media/variants/:variantId` — purges a single cached variant. — JWT/ApiKey */
+    /** DELETE `cms/media/variants/:variantId` — purges a single cached variant. */
     public async purgeVariant(variantId: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -94,7 +94,7 @@ export class MediaCatalog {
         );
     }
 
-    /** DELETE `cms/media/:id/variants` — purges every cached variant of one media. — JWT/ApiKey */
+    /** DELETE `cms/media/:id/variants` — purges every cached variant of one media. */
     public async purgeMediaVariants(mediaId: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -103,38 +103,16 @@ export class MediaCatalog {
         );
     }
 
-    /** DELETE `cms/media/variants` — purges every cached variant across the whole system. — JWT/ApiKey */
+    /** DELETE `cms/media/variants` — purges every cached variant across the whole system. */
     public async purgeAllVariants(options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(this.http, { method: 'DELETE', path: DN_API_MEDIA_VARIANTS_PURGE_ALL }, options);
     }
 
     /**
-     * GET `cms/media/image/:id.:ext` — fetches the binary asset through the authenticated `HttpClient`.
-     * Use this in the backoffice (where `<img src>` cannot carry the Bearer token).
-     * — JWT/ApiKey/Application
-     */
-    public async getImageBlob(
-        mediaId: string,
-        options: { width?: number; quality?: number; extension?: string } = {},
-        callbacks: CatalogCallbacks<Blob> = {}
-    ): Promise<Result<Blob>> {
-        const params: Record<string, unknown> = {};
-        if (options.width !== undefined) params.w = options.width;
-        if (options.quality !== undefined) params.q = options.quality;
-        return CatalogRunner.run<Blob>(
-            this.http,
-            {
-                path: DN_API_MEDIA_IMAGE,
-                slugs: { id: mediaId, ext: options.extension ?? 'webp' },
-                params,
-            },
-            callbacks
-        );
-    }
-
-    /**
      * Builds the absolute URL of a media image, optionally resized/recompressed by the backend.
-     * Pure helper — no HTTP call. SVGs are pass-through on the backend regardless of `width` / `quality`.
+     * Pure helper — no HTTP call. Usable straight in `<img src>`: the endpoint authenticates from the
+     * session cookie, which the browser attaches on its own (same-site). SVGs are pass-through on the
+     * backend regardless of `width` / `quality`.
      */
     public getImageUrl(
         mediaId: string,

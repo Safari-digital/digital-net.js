@@ -13,11 +13,12 @@ export interface HttpRequestConfig<B = any> {
     headers?: Record<string, string>;
     /** Request body. JSON-serialized unless it is a FormData / Blob / ArrayBuffer / URLSearchParams / string. */
     body?: B;
-    /** Skip the automatic `Authorization: Bearer ...` header. */
+    /** Skip the automatic API key / application key headers. The session cookie still travels. */
     skipAuth?: boolean;
-    /** Skip the automatic refresh-on-401 flow. */
-    skipRefresh?: boolean;
-    /** Override the default `'include'` credentials policy for this request. */
+    /**
+     * Override the default `'include'` credentials policy for this request. `'include'` is what carries
+     * the session cookie, so lowering it makes the request anonymous.
+     */
     credentials?: RequestCredentials;
     /** Abort signal forwarded to `fetch`. */
     signal?: AbortSignal;
@@ -26,23 +27,20 @@ export interface HttpRequestConfig<B = any> {
      * it (possibly mutated). Use the spread pattern to avoid accidental mutation:
      * `onRequest: cfg => ({ ...cfg, headers: { ...cfg.headers, 'X-Trace': 'abc' } })`.
      *
-     * Runs AGAIN on the retry after a 401→refresh→retry cycle. Does NOT run on the
-     * internal refresh-token request. Exceptions propagate to the caller.
+     * Exceptions propagate to the caller.
      */
     onRequest?: (_config: HttpRequestConfig<B>) => HttpRequestConfig<B> | Promise<HttpRequestConfig<B>>;
     /**
      * Hook invoked after `deserializeBody`, BEFORE error handling — meaning the hook
      * also fires on 4xx/5xx responses (inspect `response.ok`/`response.status`).
      *
-     * Runs AGAIN on the retry after a 401→refresh→retry cycle. Does NOT run on the
-     * internal refresh-token request. Exceptions propagate to the caller.
+     * Exceptions propagate to the caller.
      */
     onResponse?: (_response: HttpResponse<unknown>) => void | Promise<void>;
     /**
      * @internal
-     * When true, `onRequest` and `onResponse` are skipped for this request. Used
-     * internally by the SDK to prevent user hooks from seeing the refresh-token
-     * round-trip. Do NOT set this from application code.
+     * When true, `onRequest` and `onResponse` are skipped for this request.
+     * Do NOT set this from application code.
      */
     skipHooks?: boolean;
 }

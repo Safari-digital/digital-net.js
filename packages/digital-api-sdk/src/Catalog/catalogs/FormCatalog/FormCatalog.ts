@@ -27,13 +27,13 @@ export class FormCatalog {
         this.public = new FormPublicCatalog(http);
     }
 
-    /** GET `cms/forms/:id` — JWT/ApiKey */
+    /** GET `cms/forms/:id` */
     public async getById(id: string, options: CatalogCallbacks<FormDto> = {}): Promise<Result<FormDto>> {
         return CatalogRunner.run<FormDto>(this.http, { path: DN_API_FORM_BY_ID, slugs: { id } }, options);
     }
 
     /**
-     * GET `cms/forms` — paginated list — JWT/ApiKey
+     * GET `cms/forms` — paginated list
      *
      * The paginated endpoint returns a *flat* `QueryResult` (server-side it derives from
      * `Result`), so the body is read directly — it is NOT wrapped in an extra `Result<…>`
@@ -48,12 +48,12 @@ export class FormCatalog {
         return res.data;
     }
 
-    /** POST `cms/forms` — Returns the new form id. — JWT/ApiKey */
+    /** POST `cms/forms` — Returns the new form id. */
     public async create(payload: FormCreatePayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { method: 'POST', path: DN_API_FORM, body: payload }, options);
     }
 
-    /** PATCH `cms/forms/:id` — body = JSON Patch (RFC 6902) — JWT/ApiKey */
+    /** PATCH `cms/forms/:id` — body = JSON Patch (RFC 6902) */
     public async update(id: string, ops: JsonPatchOp[], options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -68,7 +68,7 @@ export class FormCatalog {
         );
     }
 
-    /** DELETE `cms/forms/:id` — JWT/ApiKey */
+    /** DELETE `cms/forms/:id` */
     public async delete(id: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -77,12 +77,12 @@ export class FormCatalog {
         );
     }
 
-    /** GET `cms/forms/fields/schema` — Returns the FormField schema. — JWT/ApiKey */
+    /** GET `cms/forms/fields/schema` — Returns the FormField schema. */
     public async getFieldSchema(options: CatalogCallbacks<SchemaProperty[]> = {}): Promise<Result<SchemaProperty[]>> {
         return CatalogRunner.run<SchemaProperty[]>(this.http, { path: DN_API_FORM_FIELDS_SCHEMA }, options);
     }
 
-    /** POST `cms/forms/:formId/fields` — Creates a field attached to the form. — JWT/ApiKey */
+    /** POST `cms/forms/:formId/fields` — Creates a field attached to the form. */
     public async createField(
         formId: string,
         payload: FormFieldPayload,
@@ -100,7 +100,7 @@ export class FormCatalog {
         );
     }
 
-    /** PATCH `cms/forms/:formId/fields/:fieldId` — body = JSON Patch — JWT/ApiKey */
+    /** PATCH `cms/forms/:formId/fields/:fieldId` — body = JSON Patch */
     public async updateField(
         formId: string,
         fieldId: string,
@@ -120,7 +120,7 @@ export class FormCatalog {
         );
     }
 
-    /** DELETE `cms/forms/:formId/fields/:fieldId` — JWT/ApiKey */
+    /** DELETE `cms/forms/:formId/fields/:fieldId` */
     public async deleteField(formId: string, fieldId: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -134,7 +134,7 @@ export class FormCatalog {
     }
 
     /**
-     * GET `cms/forms/submissions?formId=...` — JWT/ApiKey
+     * GET `cms/forms/submissions?formId=...`
      *
      * Returns the *flat* `QueryResult` directly (see `getList`): `value` is the page of
      * submissions, `total` the row count — there is no enclosing `Result<…>` level.
@@ -147,7 +147,7 @@ export class FormCatalog {
         return res.data;
     }
 
-    /** GET `cms/forms/submissions/:id` — JWT/ApiKey */
+    /** GET `cms/forms/submissions/:id` */
     public async getSubmissionById(
         id: string,
         options: CatalogCallbacks<FormSubmissionDto> = {}
@@ -159,7 +159,7 @@ export class FormCatalog {
         );
     }
 
-    /** DELETE `cms/forms/submissions/:id` — JWT/ApiKey */
+    /** DELETE `cms/forms/submissions/:id` */
     public async deleteSubmission(id: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,

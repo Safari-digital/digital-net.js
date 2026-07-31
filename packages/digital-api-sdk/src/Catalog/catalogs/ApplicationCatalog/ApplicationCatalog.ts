@@ -32,7 +32,6 @@ export class ApplicationCatalog {
                 method: 'GET',
                 path: DN_API_PING,
                 skipAuth: true,
-                skipRefresh: true,
             });
             if (data !== 'pong') {
                 await options.onError?.(new Error(`Unexpected ping response: ${String(data)}`));

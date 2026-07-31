@@ -16,17 +16,17 @@ export class TagCatalog {
         this.http = http;
     }
 
-    /** GET `cms/tags/:id` — JWT/ApiKey */
+    /** GET `cms/tags/:id` */
     public async getById(id: string, options: CatalogCallbacks<TagDto> = {}): Promise<Result<TagDto>> {
         return CatalogRunner.run<TagDto>(this.http, { path: DN_API_TAG_BY_ID, slugs: { id } }, options);
     }
 
-    /** POST `cms/tags` — body accepts `{ name, color? }`. Returns the new id. — JWT/ApiKey */
+    /** POST `cms/tags` — body accepts `{ name, color? }`. Returns the new id. */
     public async create(payload: TagPayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { method: 'POST', path: DN_API_TAG, body: payload }, options);
     }
 
-    /** PATCH `cms/tags/:id` — body = JSON Patch (RFC 6902) — JWT/ApiKey */
+    /** PATCH `cms/tags/:id` — body = JSON Patch (RFC 6902) */
     public async update(id: string, ops: JsonPatchOp[], options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(
             this.http,
@@ -41,7 +41,7 @@ export class TagCatalog {
         );
     }
 
-    /** DELETE `cms/tags/:id` — JWT/ApiKey */
+    /** DELETE `cms/tags/:id` */
     public async delete(id: string, options: CatalogCallbacks<null> = {}): Promise<Result> {
         return CatalogRunner.run<null>(this.http, { method: 'DELETE', path: DN_API_TAG_BY_ID, slugs: { id } }, options);
     }
