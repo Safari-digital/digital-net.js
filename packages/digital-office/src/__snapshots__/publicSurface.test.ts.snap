@@ -5,6 +5,7 @@ exports[`public surface > exports of "." are stable 1`] = `
   "DN_KEY_ENTITY_GET",
   "DN_KEY_ENTITY_LIST",
   "DigitalOfficeNavGroup",
+  "DigitalOfficeNavGroupDef",
   "DigitalOfficeProvider",
   "DigitalOfficeProviderProps",
   "DigitalOfficeRoute",

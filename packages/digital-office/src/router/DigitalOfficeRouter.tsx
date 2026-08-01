@@ -2,12 +2,16 @@ import * as React from 'react';
 import { Outlet, RouterProvider, createBrowserRouter } from 'react-router';
 import { Layout, useDigitalNetUser } from '../app';
 import { DnLoadingView } from '../ui';
+import { buildNavSections, mergeNavGroupDefs } from './buildNavSections';
 import { AuthGuard, Guards, GuestGuard } from './guards';
+import { NAV_GROUP_DEFS, type DigitalOfficeNavGroupDef } from './navGroups';
 import { ADMIN_ROUTES, APP_ROUTES, CMS_ROUTES } from './routes';
 import type { DigitalOfficeRoute } from './types';
 
 export interface DigitalOfficeRouterProps {
     routes?: DigitalOfficeRoute[];
+    /** Client nav groups; reusing a built-in id overrides its label/order. */
+    navGroups?: DigitalOfficeNavGroupDef[];
 }
 
 function guardFor(route: DigitalOfficeRoute): React.ReactNode {
@@ -16,20 +20,16 @@ function guardFor(route: DigitalOfficeRoute): React.ReactNode {
     return <AuthGuard>{route.element}</AuthGuard>;
 }
 
-function RouterLayout({ allRoutes }: { allRoutes: DigitalOfficeRoute[] }) {
+function RouterLayout({ allRoutes, navGroups }: { allRoutes: DigitalOfficeRoute[]; navGroups?: DigitalOfficeNavGroupDef[] }) {
     const { isAdmin } = useDigitalNetUser();
 
     const navigation = React.useMemo(
         () =>
-            allRoutes
-                .filter(r => r.navGroup && r.navLabel && (!r.isAdmin || isAdmin))
-                .reduce<Record<string, { path: string; label: string }[]>>((acc, curr) => {
-                    const item = { path: curr.path, label: curr.navLabel! };
-                    if (acc[curr.navGroup!]) acc[curr.navGroup!].push(item);
-                    else acc[curr.navGroup!] = [item];
-                    return acc;
-                }, {}),
-        [allRoutes, isAdmin]
+            buildNavSections(
+                allRoutes.filter(r => !r.isAdmin || isAdmin),
+                mergeNavGroupDefs(NAV_GROUP_DEFS, navGroups)
+            ),
+        [allRoutes, navGroups, isAdmin]
     );
 
     const routePatterns = React.useMemo(() => allRoutes.map(r => r.path).filter(p => !p.includes('*')), [allRoutes]);
@@ -43,21 +43,21 @@ function RouterLayout({ allRoutes }: { allRoutes: DigitalOfficeRoute[] }) {
     );
 }
 
-export function DigitalOfficeRouter({ routes }: DigitalOfficeRouterProps) {
+export function DigitalOfficeRouter({ routes, navGroups }: DigitalOfficeRouterProps) {
     const { isLoading } = useDigitalNetUser();
 
     const router = React.useMemo(() => {
         const allRoutes: DigitalOfficeRoute[] = [...APP_ROUTES, ...ADMIN_ROUTES, ...CMS_ROUTES, ...(routes ?? [])];
         return createBrowserRouter([
             {
-                element: <RouterLayout allRoutes={allRoutes} />,
+                element: <RouterLayout allRoutes={allRoutes} navGroups={navGroups} />,
                 children: allRoutes.map(r => ({
                     path: r.path,
                     element: guardFor(r),
                 })),
             },
         ]);
-    }, [routes]);
+    }, [routes, navGroups]);
 
     return isLoading ? <DnLoadingView /> : <RouterProvider router={router} />;
 }

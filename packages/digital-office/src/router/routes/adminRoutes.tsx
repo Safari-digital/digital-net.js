@@ -11,6 +11,7 @@ export const ADMIN_ROUTES: DigitalOfficeRoute[] = [
         path: '/admin/user',
         navGroup: DigitalOfficeNavGroup.Administration,
         navLabel: 'Utilisateurs',
+        navOrder: 10,
         element: <UserListView />,
         isAdmin: true,
     },

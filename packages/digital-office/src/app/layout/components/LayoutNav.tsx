@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { MenuItem as MuiMenuItem, MenuList as MuiMenuList, Stack, Typography, alpha } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { useLocation, useNavigate } from 'react-router';
+import { matchPath, useLocation, useNavigate } from 'react-router';
+import type { NavSection } from '../../../router/buildNavSections';
 import { CollapsibleBlock } from '../../../ui/components/CollapsibleBlock';
 
 export interface LayoutNavProps {
-    navigation: Record<string, Array<{ label: string; path: string }>>;
+    navigation: NavSection[];
     children?: React.ReactNode;
 }
 
@@ -13,22 +14,41 @@ export function LayoutNav({ navigation }: LayoutNavProps) {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const checkIsCurrent = React.useCallback((path: string) => location.pathname.includes(path), [location]);
+    // Segment-aware prefix match: an entry stays highlighted on its subpages
+    // without over-matching sibling paths sharing a raw prefix.
+    const isCurrent = React.useCallback(
+        (path: string) => matchPath({ path, end: path === '/' }, location.pathname) !== null,
+        [location.pathname]
+    );
+    const isExact = React.useCallback(
+        (path: string) => matchPath(path, location.pathname) !== null,
+        [location.pathname]
+    );
 
     return (
         <Container>
-            {Object.entries(navigation).map(([key, items]) => (
-                <CollapsibleBlock key={key} label={<MenuLabel>{key}</MenuLabel>} storageKey={`DN_NAV_GROUP_${key}`}>
+            {navigation.map(section => (
+                <CollapsibleBlock
+                    key={section.id}
+                    label={<MenuLabel>{section.label}</MenuLabel>}
+                    storageKey={`DN_NAV_GROUP_${section.id}`}
+                >
                     <MenuList>
-                        {items.map(({ label, path }) => {
-                            const current = checkIsCurrent(path);
+                        {section.items.map(({ label, path }) => {
+                            const current = isCurrent(path);
+                            const exact = isExact(path);
                             return (
                                 <MenuItem
                                     key={path}
                                     selected={current}
-                                    disableRipple={current}
-                                    disableTouchRipple={current}
-                                    onClick={() => (!current ? navigate(path) : void 0)}
+                                    disableRipple={exact}
+                                    disableTouchRipple={exact}
+                                    sx={
+                                        current && !exact
+                                            ? { '&.Mui-selected, &.Mui-selected:hover': { cursor: 'pointer' } }
+                                            : undefined
+                                    }
+                                    onClick={() => (!exact ? navigate(path) : void 0)}
                                 >
                                     {label}
                                 </MenuItem>

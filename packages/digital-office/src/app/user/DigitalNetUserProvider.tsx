@@ -43,7 +43,9 @@ export function DigitalNetUserProvider({ children }: React.PropsWithChildren) {
                 onStatus: { 401: () => options?.onInvalid?.(), 429: () => options?.onLocked?.() },
             });
             if (result.hasError) return;
-            await queryClient.refetchQueries({ queryKey: [...USER_QUERY_KEY] });
+            // Invalidate rather than refetch: is-admin is disabled until self resolves, so a refetch
+            // skips it and it would keep clearUser's `false` for the whole staleTime once enabled.
+            await queryClient.invalidateQueries({ queryKey: [...USER_QUERY_KEY] });
         },
         [api, queryClient]
     );

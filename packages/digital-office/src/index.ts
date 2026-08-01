@@ -3,6 +3,7 @@ export {
     DigitalOfficeNavGroup,
     DigitalOfficeRouter,
     dnLazyView,
+    type DigitalOfficeNavGroupDef,
     type DigitalOfficeRoute,
     type DigitalOfficeRouterProps,
 } from './router';

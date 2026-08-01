@@ -23,6 +23,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
         path: '/content-manager/pages',
         navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Pages',
+        navOrder: 10,
         element: <PageListView />,
     },
     {
@@ -37,6 +38,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
         path: '/content-manager/articles',
         navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Articles',
+        navOrder: 20,
         element: <ArticleListView />,
     },
     {
@@ -51,6 +53,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
         path: '/content-manager/forms',
         navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Formulaires',
+        navOrder: 30,
         element: <FormListView />,
     },
     {
@@ -69,6 +72,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
         path: '/content-manager/media',
         navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Médias',
+        navOrder: 40,
         element: <MediaListView />,
     },
     {
@@ -79,6 +83,7 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
         path: '/content-manager/tags',
         navGroup: DigitalOfficeNavGroup.ContentManager,
         navLabel: 'Tags',
+        navOrder: 50,
         element: <TagListView />,
     },
     {
