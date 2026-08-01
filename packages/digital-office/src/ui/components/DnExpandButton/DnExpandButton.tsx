@@ -1,6 +1,6 @@
+import * as React from 'react';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { DnIconButton } from '../DnIconButton';
-import * as React from 'react';
 
 export interface DnExpandButtonProps {
     onClick: () => void;

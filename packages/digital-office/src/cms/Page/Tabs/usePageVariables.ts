@@ -1,7 +1,7 @@
 import type { PageDto, PageEntityType } from '@digital-net-org/digital-api-sdk';
-import { type DnEntityVariableKey, useDnEntityFormContext, useEntityVariables } from '../../../entity';
+import { type EntityVariableKey, useDnEntityFormContext, useEntityVariables } from '../../../entity';
 
-const PAGE_ENTITY_KEY: Record<PageEntityType, DnEntityVariableKey> = {
+const PAGE_ENTITY_KEY: Record<PageEntityType, EntityVariableKey> = {
     Article: 'page:article',
 };
 

@@ -1,7 +1,7 @@
 import { HttpClientError } from '../HttpClient';
 import type { HttpClient, HttpRequestConfig } from '../HttpClient';
 import type { Result } from '../Result';
-import type { CatalogError, CatalogCallbacks } from './types';
+import type { CatalogCallbacks, CatalogError } from './types';
 
 export class CatalogRunner {
     /**

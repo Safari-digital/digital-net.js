@@ -10,7 +10,7 @@ export type DnColumnDefinition<T> =
           compute: (_row: T) => React.ReactNode;
       };
 
-export type ResolvedColumn<T = unknown> =
+export type DnResolvedColumn<T = unknown> =
     | { kind: 'schema'; header: string; accessor: string; schema: SchemaProperty }
     | {
           kind: 'computed';
@@ -19,8 +19,8 @@ export type ResolvedColumn<T = unknown> =
           compute: (_row: T) => React.ReactNode;
       };
 
-export function resolveColumns<T>(schema: SchemaProperty[], columns?: DnColumnDefinition<T>[]): ResolvedColumn<T>[] {
-    const base: ResolvedColumn<T>[] = schema
+export function resolveColumns<T>(schema: SchemaProperty[], columns?: DnColumnDefinition<T>[]): DnResolvedColumn<T>[] {
+    const base: DnResolvedColumn<T>[] = schema
         .filter(prop => !prop.isSecret && !prop.isIdentity)
         .map(prop => ({
             kind: 'schema' as const,
@@ -34,7 +34,7 @@ export function resolveColumns<T>(schema: SchemaProperty[], columns?: DnColumnDe
     const byAccessor = new Map(base.flatMap(c => (c.kind === 'schema' ? [[c.accessor, c] as const] : [])));
 
     return columns
-        .map<ResolvedColumn<T> | null>(def => {
+        .map<DnResolvedColumn<T> | null>(def => {
             if (def.kind === 'computed') {
                 return {
                     kind: 'computed',
@@ -47,5 +47,5 @@ export function resolveColumns<T>(schema: SchemaProperty[], columns?: DnColumnDe
             if (!col) return null;
             return { ...col, header: def.label ?? col.header };
         })
-        .filter((c): c is ResolvedColumn<T> => c !== null);
+        .filter((c): c is DnResolvedColumn<T> => c !== null);
 }

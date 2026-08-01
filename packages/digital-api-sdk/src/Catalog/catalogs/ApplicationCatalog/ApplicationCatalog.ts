@@ -1,8 +1,8 @@
-import type { HttpClient } from '../../../HttpClient';
-import { CatalogRunner } from '../../CatalogRunner';
-import type { Result } from '../../../Result';
-import type { CatalogCallbacks } from '../../types';
 import type { ApplicationVersionDto } from '../../../Dto';
+import type { HttpClient } from '../../../HttpClient';
+import type { Result } from '../../../Result';
+import { CatalogRunner } from '../../CatalogRunner';
+import type { CatalogCallbacks } from '../../types';
 
 export const DN_API_PING = 'ping' as const;
 export const DN_API_ROOT = '' as const;
@@ -54,10 +54,6 @@ export class ApplicationCatalog {
     public async version(
         options: CatalogCallbacks<ApplicationVersionDto> = {}
     ): Promise<Result<ApplicationVersionDto>> {
-        return CatalogRunner.run<ApplicationVersionDto>(
-            this.http,
-            { method: 'GET', path: DN_API_ROOT },
-            options
-        );
+        return CatalogRunner.run<ApplicationVersionDto>(this.http, { method: 'GET', path: DN_API_ROOT }, options);
     }
 }

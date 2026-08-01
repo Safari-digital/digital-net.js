@@ -1,5 +1,5 @@
 import type { Ace } from 'ace-builds';
-import { JSONLD_TYPES, JSONLD_TYPE_NAMES, getJsonLdDescription, type JsonLdPropertySpec } from './schemas';
+import { JSONLD_TYPES, JSONLD_TYPE_NAMES, type JsonLdPropertySpec, getJsonLdDescription } from './schemas';
 
 export interface AceCompletion {
     caption: string;

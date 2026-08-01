@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { arrayMove } from '@dnd-kit/sortable';
-import { useDebouncedCallback } from '../ui';
+import { useDebouncedCallback } from '../ui/hooks';
 
 export interface BaseRow {
     id: string;

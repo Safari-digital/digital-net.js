@@ -1,7 +1,7 @@
-import { CatalogRunner } from '../../CatalogRunner';
-import type { HttpClient } from '../../../HttpClient';
 import type { PagePublicDto, PageSheetInfoDto } from '../../../Dto';
+import type { HttpClient } from '../../../HttpClient';
 import type { Result } from '../../../Result';
+import { CatalogRunner } from '../../CatalogRunner';
 import type { CatalogCallbacks } from '../../types';
 import type { PageBuildPayload, PageSheetBuildPayload } from './types';
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { StringResolver } from '@digital-net-org/digital-core';
 import type { ArticleDto, PageListDto, QueryResult } from '@digital-net-org/digital-api-sdk';
-import { type DnEntityFormProps, useDnEntityFormContext, useEntitySchema } from '../../../entity';
-import { buildListKey, useDigitalNetApi } from '../../../api';
+import { StringResolver } from '@digital-net-org/digital-core';
+import { dnBuildListKey, useDigitalNetApi } from '../../../api';
+import { type DnEntityFormProps, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
 
 const SLUG_HELPER = 'Segment d\'URL public de l\'article (ex: "mon-article").';
 const SLUG_AVAILABILITY_ERROR = "Ce segment d'URL est déjà utilisé.";
@@ -32,7 +32,7 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
 
 export function useArticleForm(articleId: string | undefined) {
     const api = useDigitalNetApi();
-    const { schemas } = useEntitySchema('article');
+    const { schemas } = useDnEntitySchema('article');
     const { values, apiData, setField } = useDnEntityFormContext<ArticleDto>();
 
     const slugSchema = React.useMemo(() => schemas.find(s => s.name === 'Slug'), [schemas]);
@@ -70,7 +70,7 @@ export function useArticleForm(articleId: string | undefined) {
         isLoading: pagesLoading,
         isFetching: pagesFetching,
     } = useQuery<QueryResult<PageListDto>>({
-        queryKey: [...buildListKey('page'), { entityType: 'Article', size: pagesSize }],
+        queryKey: [...dnBuildListKey('page'), { entityType: 'Article', size: pagesSize }],
         queryFn: async () => {
             const result = await api.http.request<QueryResult<PageListDto>>({
                 path: 'cms/pages',

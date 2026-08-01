@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router';
-import { alpha, MenuItem as MuiMenuItem, MenuList as MuiMenuList, Stack, Typography } from '@mui/material';
+import { MenuItem as MuiMenuItem, MenuList as MuiMenuList, Stack, Typography, alpha } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { DnCollapsibleBlock } from '../../../ui';
+import { useLocation, useNavigate } from 'react-router';
+import { CollapsibleBlock } from '../../../ui/components/CollapsibleBlock';
 
 export interface LayoutNavProps {
     navigation: Record<string, Array<{ label: string; path: string }>>;
@@ -18,7 +18,7 @@ export function LayoutNav({ navigation }: LayoutNavProps) {
     return (
         <Container>
             {Object.entries(navigation).map(([key, items]) => (
-                <DnCollapsibleBlock key={key} label={<MenuLabel>{key}</MenuLabel>} storageKey={`DN_NAV_GROUP_${key}`}>
+                <CollapsibleBlock key={key} label={<MenuLabel>{key}</MenuLabel>} storageKey={`DN_NAV_GROUP_${key}`}>
                     <MenuList>
                         {items.map(({ label, path }) => {
                             const current = checkIsCurrent(path);
@@ -35,7 +35,7 @@ export function LayoutNav({ navigation }: LayoutNavProps) {
                             );
                         })}
                     </MenuList>
-                </DnCollapsibleBlock>
+                </CollapsibleBlock>
             ))}
         </Container>
     );

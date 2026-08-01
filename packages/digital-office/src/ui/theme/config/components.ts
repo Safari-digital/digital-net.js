@@ -1,5 +1,5 @@
-import type { ThemeOptions } from '@mui/material/styles';
 import { darkScrollbar } from '@mui/material';
+import type { ThemeOptions } from '@mui/material/styles';
 
 export const components: ThemeOptions['components'] = {
     MuiCssBaseline: {

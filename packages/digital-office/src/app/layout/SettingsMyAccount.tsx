@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Divider, Stack, Typography } from '@mui/material';
-import { formatDate } from '../../ui';
+import { formatDate } from '../../ui/format';
 import { useDigitalNetUser } from '../user';
 import { SettingsMyAccountPassword } from './SettingsMyAccountPassword';
 

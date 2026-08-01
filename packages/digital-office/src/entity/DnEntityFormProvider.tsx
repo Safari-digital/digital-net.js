@@ -1,5 +1,5 @@
 import React from 'react';
-import { DnEntityFormContext, type DnEntityFormBinding } from './useDnEntityFormContext';
+import { type DnEntityFormBinding, EntityFormContext } from './useDnEntityFormContext';
 
 export interface DnEntityFormProviderProps<T> {
     binding: DnEntityFormBinding<T>;
@@ -8,8 +8,8 @@ export interface DnEntityFormProviderProps<T> {
 
 export function DnEntityFormProvider<T>({ binding, children }: DnEntityFormProviderProps<T>) {
     return (
-        <DnEntityFormContext.Provider value={binding as DnEntityFormBinding<unknown>}>
+        <EntityFormContext.Provider value={binding as DnEntityFormBinding<unknown>}>
             {children}
-        </DnEntityFormContext.Provider>
+        </EntityFormContext.Provider>
     );
 }

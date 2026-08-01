@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Navigate } from 'react-router';
-import { ROUTER_HOME_PAGE, ROUTER_LOGIN_PAGE } from './routes';
 import { useDigitalNetUser } from '../app';
+import { ROUTER_HOME_PAGE, ROUTER_LOGIN_PAGE } from './routes';
 
 export function Guards({ children }: React.PropsWithChildren) {
     const { isLogged, isAdmin, isLoading } = useDigitalNetUser();

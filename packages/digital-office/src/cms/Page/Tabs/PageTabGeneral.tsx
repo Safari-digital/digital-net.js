@@ -1,17 +1,17 @@
 import * as React from 'react';
-import { useParams } from 'react-router';
 import { Stack } from '@mui/material';
-import { PathAnalyzer } from '@digital-net-org/digital-core';
+import { useParams } from 'react-router';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
+import { PathAnalyzer } from '@digital-net-org/digital-core';
+import { useDigitalNetApi } from '../../../api';
+import { useCustomNode } from '../../../app';
 import {
-    DnEntityForm,
     DnEntityAuditBlock,
+    DnEntityForm,
     type DnEntityFormProps,
     useDnEntityFormContext,
-    useEntitySchema,
+    useDnEntitySchema,
 } from '../../../entity';
-import { useCustomNode } from '../../../app';
-import { useDigitalNetApi } from '../../../api';
 import { DnInputDebounced } from '../../../ui';
 import { usePageVariables } from './usePageVariables';
 
@@ -57,7 +57,7 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
 export function PageTabGeneral() {
     const api = useDigitalNetApi();
     const { id } = useParams<{ id: string }>();
-    const { schemas } = useEntitySchema('page');
+    const { schemas } = useDnEntitySchema('page');
     const { values, apiData, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
     const variables = usePageVariables();
     const { renderCustomNode } = useCustomNode();

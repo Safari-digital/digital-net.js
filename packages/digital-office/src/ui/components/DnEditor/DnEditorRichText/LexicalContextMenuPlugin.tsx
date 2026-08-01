@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getNearestNodeFromDOMNode, $getNodeByKey, type LexicalEditor, type NodeKey } from 'lexical';
 import { $isLinkNode, type LinkNode } from '@lexical/link';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $findMatchingParent } from '@lexical/utils';
-import { DnContextMenu, useContextMenu, type DnContextMenuItem } from '../../DnContextMenu';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { $getNearestNodeFromDOMNode, $getNodeByKey, type LexicalEditor, type NodeKey } from 'lexical';
+import { ContextMenu, type ContextMenuItem, useContextMenu } from '../../ContextMenu';
 import { $isImageNode } from './LexicalImageNode';
 import { OPEN_IMAGE_DIALOG_COMMAND, OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 
@@ -47,9 +47,9 @@ export function LexicalContextMenuPlugin({ hasImageAction }: LexicalContextMenuP
         });
     }, [editor, openAt]);
 
-    const items = React.useMemo<DnContextMenuItem[]>(() => {
+    const items = React.useMemo<ContextMenuItem[]>(() => {
         if (!target) return [];
-        const result: DnContextMenuItem[] = [];
+        const result: ContextMenuItem[] = [];
         if (target.kind === 'link' || hasImageAction) {
             const command = target.kind === 'link' ? OPEN_LINK_DIALOG_COMMAND : OPEN_IMAGE_DIALOG_COMMAND;
             result.push({
@@ -66,7 +66,7 @@ export function LexicalContextMenuPlugin({ hasImageAction }: LexicalContextMenuP
         return result;
     }, [editor, target, hasImageAction]);
 
-    return <DnContextMenu position={position} items={items} onClose={close} />;
+    return <ContextMenu position={position} items={items} onClose={close} />;
 }
 
 function removeTarget(editor: LexicalEditor, target: ContextTarget) {

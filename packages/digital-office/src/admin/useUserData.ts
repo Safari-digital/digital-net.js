@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 import { type UserDto, unwrapResult } from '@digital-net-org/digital-api-sdk';
-import { buildKeyFromId, buildListKey, useDigitalNetApi } from '../api';
-import { NotFoundException, useDigitalToast } from '../app';
+import { dnBuildKeyFromId, dnBuildListKey, useDigitalNetApi } from '../api';
+import { NotFoundException, useDnToast } from '../app';
 
 type PendingAction = 'save' | 'delete';
 
@@ -11,10 +11,10 @@ export function useUserData(id: string | undefined) {
     const api = useDigitalNetApi();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { showToast } = useDigitalToast();
+    const { showToast } = useDnToast();
 
     const { data, isLoading, error } = useQuery<UserDto | undefined>({
-        queryKey: buildKeyFromId('user', id!),
+        queryKey: dnBuildKeyFromId('user', id!),
         queryFn: async () => {
             const response = await api.http.request<unknown>({
                 path: 'user/:id',
@@ -99,7 +99,7 @@ export function useUserData(id: string | undefined) {
             if (deactivateForbidden) showToast('Un administrateur ne peut pas être désactivé.', 'error');
             if (otherError) showToast('Une erreur est survenue lors de la sauvegarde des modifications.', 'error');
 
-            await queryClient.invalidateQueries({ queryKey: buildKeyFromId('user', id) });
+            await queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('user', id) });
             setPasswordDialogOpen(false);
             setIsSaving(false);
             return true;
@@ -141,7 +141,7 @@ export function useUserData(id: string | undefined) {
                 return true;
             }
 
-            await queryClient.invalidateQueries({ queryKey: buildListKey('user') });
+            await queryClient.invalidateQueries({ queryKey: dnBuildListKey('user') });
             showToast('Utilisateur supprimé.', 'info');
             navigate('/admin/user');
             return true;

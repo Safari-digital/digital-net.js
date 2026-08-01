@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router';
 import { LinearProgress } from '@mui/material';
+import { useNavigate } from 'react-router';
 import { ErrorView } from './ErrorView';
 
 const REDIRECT_DELAY_MS = 5000;

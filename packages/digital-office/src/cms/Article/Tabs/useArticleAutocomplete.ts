@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDebouncedCallback } from '../../../ui';
+import { useDebouncedCallback } from '../../../ui/hooks';
 
 const DEFAULT_DEBOUNCE_MS = 500;
 

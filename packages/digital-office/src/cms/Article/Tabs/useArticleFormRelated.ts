@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { ArticleDto, ArticleListDto, ArticleRefDto, QueryResult } from '@digital-net-org/digital-api-sdk';
+import { dnBuildListKey, useDigitalNetApi } from '../../../api';
 import { useDnEntityFormContext } from '../../../entity';
-import { buildListKey, useDigitalNetApi } from '../../../api';
 import { useArticleAutocomplete } from './useArticleAutocomplete';
 
 const RELATED_PAGE_SIZE = 20;
@@ -13,7 +13,7 @@ export function useArticleFormRelated(articleId: string | undefined) {
     const { inputValue, search, onInputChange } = useArticleAutocomplete();
 
     const { data: result, isFetching } = useQuery<QueryResult<ArticleListDto>>({
-        queryKey: [...buildListKey('article'), { name: search, size: RELATED_PAGE_SIZE }],
+        queryKey: [...dnBuildListKey('article'), { name: search, size: RELATED_PAGE_SIZE }],
         queryFn: async () => {
             const params: Record<string, unknown> = { size: RELATED_PAGE_SIZE, index: 1 };
             if (search) params.name = search;

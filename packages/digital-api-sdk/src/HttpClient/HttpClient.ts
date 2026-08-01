@@ -1,4 +1,6 @@
 import { DigitalEvent, URLResolver } from '@digital-net-org/digital-core';
+import { HttpClientError } from './HttpClientError';
+import { HttpSerializer } from './HttpSerializer';
 import {
     DN_API_KEY_HEADER,
     DN_APPLICATION_KEY_HEADER,
@@ -7,8 +9,6 @@ import {
     DN_REQUESTED_WITH_HEADER,
     DN_REQUESTED_WITH_VALUE,
 } from './constants';
-import { HttpClientError } from './HttpClientError';
-import { HttpSerializer } from './HttpSerializer';
 import type { HttpClientConfig, HttpRequestConfig, HttpResponse } from './types';
 
 export class HttpClient {

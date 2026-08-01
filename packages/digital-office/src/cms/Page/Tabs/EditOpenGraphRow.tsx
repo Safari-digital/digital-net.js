@@ -1,8 +1,8 @@
 import { Stack } from '@mui/material';
 import type { OpenGraphPropertySchema } from '@digital-net-org/digital-api-sdk';
-import { DnDraggableRow, DnInput, type DnInputProps, DnInputAutocomplete, DnInputInterpolated } from '../../../ui';
-import { usePageVariables } from './usePageVariables';
+import { DnDraggableRow, DnInput, DnInputAutocomplete, DnInputInterpolated, type DnInputProps } from '../../../ui';
 import { type OgRow } from './useOgState';
+import { usePageVariables } from './usePageVariables';
 
 export interface EditOpenGraphRowProps {
     row: OgRow;

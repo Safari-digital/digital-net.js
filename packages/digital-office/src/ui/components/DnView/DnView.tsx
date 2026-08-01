@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Divider, Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { DnTabs, type DnTab } from '../DnTabs';
+import { type DnTab, DnTabs } from '../DnTabs';
 
 export type DnViewTab = DnTab;
 

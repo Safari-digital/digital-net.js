@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { $createLinkNode, $isLinkNode, type LinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $createTextNode, $getNodeByKey, $getSelection, $isRangeSelection, COMMAND_PRIORITY_LOW } from 'lexical';
-import { $createLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND, type LinkNode } from '@lexical/link';
 import { $findMatchingParent } from '@lexical/utils';
+import { $createTextNode, $getNodeByKey, $getSelection, $isRangeSelection, COMMAND_PRIORITY_LOW } from 'lexical';
 import { LexicalLinkDialog, type LexicalLinkValue } from './LexicalLinkDialog';
 import { OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 

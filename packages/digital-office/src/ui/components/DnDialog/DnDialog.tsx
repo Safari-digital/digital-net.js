@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Dialog as MuiDialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { styled, css } from '@mui/material/styles';
+import { DialogActions, DialogContent, DialogContentText, DialogTitle, Dialog as MuiDialog } from '@mui/material';
+import { css, styled } from '@mui/material/styles';
 import { DnButton } from '../DnButton';
 
 export interface DnDialogProps {

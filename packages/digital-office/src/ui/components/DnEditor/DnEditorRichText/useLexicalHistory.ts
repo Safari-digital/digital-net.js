@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { type LexicalEditor, CAN_REDO_COMMAND, CAN_UNDO_COMMAND, REDO_COMMAND, UNDO_COMMAND } from 'lexical';
 import { mergeRegister } from '@lexical/utils';
+import { CAN_REDO_COMMAND, CAN_UNDO_COMMAND, type LexicalEditor, REDO_COMMAND, UNDO_COMMAND } from 'lexical';
 
 export function useLexicalHistory(editor: LexicalEditor) {
     const [canUndo, setCanUndo] = React.useState(false);

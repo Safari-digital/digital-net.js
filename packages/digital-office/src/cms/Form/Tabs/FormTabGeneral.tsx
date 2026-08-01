@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Stack } from '@mui/material';
 import type { FormDto } from '@digital-net-org/digital-api-sdk';
+import { useCustomNode } from '../../../app';
 import {
-    DnEntityForm,
     DnEntityAuditBlock,
+    DnEntityForm,
     type DnEntityFormProps,
     useDnEntityFormContext,
-    useEntitySchema,
+    useDnEntitySchema,
 } from '../../../entity';
-import { useCustomNode } from '../../../app';
 
 const fieldProps: DnEntityFormProps['fieldProps'] = {
     Name: {
@@ -35,7 +35,7 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
 };
 
 export function FormTabGeneral() {
-    const { schemas } = useEntitySchema('form');
+    const { schemas } = useDnEntitySchema('form');
     const { values, setField, errors, disabled } = useDnEntityFormContext<FormDto>();
     const { renderCustomNode } = useCustomNode();
 

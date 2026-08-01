@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { OpenGraphPropertySchema } from '@digital-net-org/digital-api-sdk';
-import { useDnOgSchema } from '../../../entity';
+import { useOgSchemaContext } from '../../../entity';
 
 export interface UseOgSchemaResult {
     schema: OpenGraphPropertySchema[];
@@ -10,7 +10,7 @@ export interface UseOgSchemaResult {
 }
 
 export function useOgSchema(): UseOgSchemaResult {
-    const { schema, error, loading, loadSchema, reload } = useDnOgSchema();
+    const { schema, error, loading, loadSchema, reload } = useOgSchemaContext();
     React.useEffect(() => loadSchema(), [loadSchema]);
 
     return {

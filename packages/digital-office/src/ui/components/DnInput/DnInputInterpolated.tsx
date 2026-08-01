@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { DnInput, type DnInputProps } from './DnInput';
 import { DnInputInterpolatedPopover } from './DnInputInterpolatedPopover';
-import { validateInterpolatedString, buildTemplateContext } from './utils/interpolated';
+import { buildTemplateContext, validateInterpolatedString } from './utils/interpolated';
 
 export interface DnInputInterpolatedProps extends DnInputProps {
     variables: TemplateVariable[];

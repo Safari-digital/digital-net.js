@@ -1,6 +1,6 @@
+import type { Entity } from '../Entity';
 import type { ArticleMedia } from './ArticleMedia';
 import type { ArticleRefDto } from './ArticleRefDto';
-import type { Entity } from '../Entity';
 import type { TagDto } from './TagDto';
 
 export interface ArticleDto extends Entity {

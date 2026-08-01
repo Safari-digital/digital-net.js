@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { lazyView } from '../lazyView';
+import { dnLazyView } from '../dnLazyView';
 import { DigitalOfficeNavGroup } from '../navGroups';
 import type { DigitalOfficeRoute } from '../types';
 
-const UserListView = lazyView(() => import('../../admin/UserListView'), 'UserListView');
-const UserEditView = lazyView(() => import('../../admin/UserEditView'), 'UserEditView');
+const UserListView = dnLazyView(() => import('../../admin/UserListView'), 'UserListView');
+const UserEditView = dnLazyView(() => import('../../admin/UserEditView'), 'UserEditView');
 
 export const ADMIN_ROUTES: DigitalOfficeRoute[] = [
     {

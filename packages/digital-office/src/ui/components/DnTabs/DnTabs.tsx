@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Divider, Stack, Tab, Tabs } from '@mui/material';
 import { css, keyframes, styled } from '@mui/material/styles';
-import { UrlParamBuilder, useUrlQueryState } from '../../../navigation';
+import { DnUrlParamBuilder, useDnUrlQueryState } from '../../../navigation';
 
 export interface DnTab {
     key: string;
@@ -34,8 +34,8 @@ function LocalTabs({ items, ...rest }: StateTabsProps) {
 }
 
 function UrlTabs({ items, urlKey, ...rest }: StateTabsProps & { urlKey: string }) {
-    const [{ tab }, setState] = useUrlQueryState({
-        tab: UrlParamBuilder.buildString(items[0]?.key ?? '', urlKey),
+    const [{ tab }, setState] = useDnUrlQueryState({
+        tab: DnUrlParamBuilder.buildString(items[0]?.key ?? '', urlKey),
     });
     const activeTab = items.find(t => t.key === tab) ?? items[0];
     const [, startTransition] = React.useTransition();

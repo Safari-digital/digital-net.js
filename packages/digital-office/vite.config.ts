@@ -5,9 +5,11 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
     build: {
         lib: {
-            entry: resolve(__dirname, 'src/index.ts'),
+            entry: {
+                index: resolve(__dirname, 'src/index.ts'),
+                ui: resolve(__dirname, 'src/ui/index.ts'),
+            },
             name: 'digital-office',
-            fileName: 'index',
             formats: ['es'],
         },
         rollupOptions: {

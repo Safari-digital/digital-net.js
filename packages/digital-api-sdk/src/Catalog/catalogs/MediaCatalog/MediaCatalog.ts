@@ -1,8 +1,8 @@
-import { CatalogRunner } from '../../CatalogRunner';
-import type { HttpClient } from '../../../HttpClient';
 import type { MediaDto } from '../../../Dto';
+import type { HttpClient } from '../../../HttpClient';
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { Result } from '../../../Result';
+import { CatalogRunner } from '../../CatalogRunner';
 import type { CatalogCallbacks } from '../../types';
 
 export const DN_API_MEDIA = 'cms/media' as const;

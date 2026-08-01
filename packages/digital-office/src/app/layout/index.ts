@@ -1,4 +1,4 @@
 export * from './Layout';
 export { LayoutProvider } from './LayoutProvider';
-export { useLayout } from './useLayout';
+export { useDnLayout, type DnLayoutContextValue } from './useDnLayout';
 export { NotFoundView, ErrorView } from './components';

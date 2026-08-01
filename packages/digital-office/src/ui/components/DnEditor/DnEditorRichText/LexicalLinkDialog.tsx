@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Stack, css, styled } from '@mui/material';
-import { DnInput } from '../../DnInput';
 import { DnDialog } from '../../DnDialog';
+import { DnInput } from '../../DnInput';
 
 export interface LexicalLinkValue {
     url: string;

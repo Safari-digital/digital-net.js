@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
+import { useCustomNode } from '../../../app';
 import {
-    DnEntityForm,
     DnEntityAuditBlock,
+    DnEntityForm,
     type DnEntityFormProps,
     useDnEntityFormContext,
-    useEntitySchema,
+    useDnEntitySchema,
 } from '../../../entity';
-import { useCustomNode } from '../../../app';
-import { formatDate, formatDimensions, formatFileSize } from '../../../ui';
+import { formatDate, formatDimensions, formatFileSize } from '../../../ui/format';
 import { MediaPreview } from '../MediaPreview';
 
 const fieldProps: DnEntityFormProps['fieldProps'] = {
@@ -29,7 +29,7 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
 };
 
 export function MediaTabGeneral() {
-    const { schemas } = useEntitySchema('media');
+    const { schemas } = useDnEntitySchema('media');
     const { values, setField, errors, disabled } = useDnEntityFormContext<MediaDto>();
     const { renderCustomNode } = useCustomNode();
 

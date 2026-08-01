@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { SxProps, Theme } from '@mui/material';
-import { DnEditorFrame } from '../DnEditorFrame';
+import { EditorFrame } from '../EditorFrame';
 
 interface LexicalRootProps {
     children: React.ReactNode;
@@ -11,7 +11,7 @@ interface LexicalRootProps {
 
 export function LexicalRoot({ children, disabled, error, sx }: LexicalRootProps) {
     return (
-        <DnEditorFrame
+        <EditorFrame
             data-disabled={disabled || undefined}
             aria-disabled={disabled || undefined}
             data-error={error || undefined}
@@ -46,6 +46,6 @@ export function LexicalRoot({ children, disabled, error, sx }: LexicalRootProps)
             ]}
         >
             {children}
-        </DnEditorFrame>
+        </EditorFrame>
     );
 }

@@ -1,20 +1,14 @@
 import * as React from 'react';
 import type { Entity, EntityName } from '@digital-net-org/digital-api-sdk';
-import {
-    type DnColumnDefinition,
-    type DnFilterDefinition,
-    type DnRenderCell,
-    DnDialogConfirmPassword,
-    DnEntityTable,
-    DnView,
-    formatDate,
-} from '../../ui';
-import { DnEntityDialogFailure } from './DnEntityDialogFailure';
-import { type EntityIdentifier } from '../types';
-import { useEntityList } from '../useEntityList';
-import { useEntitySchema } from '../useEntitySchema';
-import { useEntityDelete } from '../useEntityDelete';
-import { useEntityDraftIndex } from '../useEntityDraftIndex';
+import { type DnColumnDefinition, DnEntityTable, type DnFilterDefinition, type DnRenderCell, DnView } from '../../ui';
+import { DialogConfirmPassword } from '../../ui/components/DialogConfirmPassword';
+import { formatDate } from '../../ui/format';
+import { type DnEntityIdentifier } from '../types';
+import { useDnEntityDelete } from '../useDnEntityDelete';
+import { useDnEntityDraftIndex } from '../useDnEntityDraftIndex';
+import { useDnEntityList } from '../useDnEntityList';
+import { useDnEntitySchema } from '../useDnEntitySchema';
+import { EntityDialogFailure } from './EntityDialogFailure';
 
 function defaultRenderCell<T extends Entity>(...args: Parameters<DnRenderCell<T>>): React.ReactNode {
     const [col, value] = args;
@@ -29,7 +23,7 @@ function defaultRenderCell<T extends Entity>(...args: Parameters<DnRenderCell<T>
 export interface DnEntityListViewProps<T extends Entity> {
     title: string;
     description: string;
-    identifier: EntityIdentifier;
+    identifier: DnEntityIdentifier;
     identifierAccessor: keyof T;
     entityName: EntityName;
     draftStoreName?: string;
@@ -53,7 +47,7 @@ export function DnEntityListView<T extends Entity>({
     onRowClick,
     onCreate,
 }: DnEntityListViewProps<T>) {
-    const { schemas, loading: isSchemaLoading } = useEntitySchema(entityName);
+    const { schemas, loading: isSchemaLoading } = useDnEntitySchema(entityName);
 
     const {
         entitiesResult,
@@ -66,9 +60,9 @@ export function DnEntityListView<T extends Entity>({
         setFilterValues,
         resetFilters,
         activeFilterCount,
-    } = useEntityList<T>(entityName, filters);
+    } = useDnEntityList<T>(entityName, filters);
 
-    const { handleDelete, passwordDialog, failureDialog } = useEntityDelete<T>({
+    const { handleDelete, passwordDialog, failureDialog } = useDnEntityDelete<T>({
         entityName,
         entitiesResult,
         identifier,
@@ -76,7 +70,7 @@ export function DnEntityListView<T extends Entity>({
         protectedDelete,
     });
 
-    const { drafts } = useEntityDraftIndex(draftStoreName ?? '');
+    const { drafts } = useDnEntityDraftIndex(draftStoreName ?? '');
 
     const getRowDraftInfo = React.useCallback(
         (row: T) => {
@@ -111,8 +105,8 @@ export function DnEntityListView<T extends Entity>({
                 activeFilterCount={activeFilterCount}
                 getRowDraftInfo={draftStoreName ? getRowDraftInfo : undefined}
             />
-            {protectedDelete ? <DnDialogConfirmPassword {...passwordDialog} /> : null}
-            <DnEntityDialogFailure
+            {protectedDelete ? <DialogConfirmPassword {...passwordDialog} /> : null}
+            <EntityDialogFailure
                 open={Boolean(failureDialog.content)}
                 content={failureDialog.content}
                 identifier={identifier}

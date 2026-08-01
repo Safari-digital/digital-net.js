@@ -1,5 +1,5 @@
-import { parseEntityName, type MutationSignal } from '@digital-net-org/digital-api-sdk';
 import type { Query } from '@tanstack/react-query';
+import { type MutationSignal, parseEntityName } from '@digital-net-org/digital-api-sdk';
 
 export interface InvalidationFilter {
     queryKey?: readonly unknown[];

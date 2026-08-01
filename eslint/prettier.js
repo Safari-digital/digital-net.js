@@ -3,14 +3,14 @@
  * @example
  * import rules from '/path-to-package/prettier.js';
  * export default rules;
- * @type {Record<string, boolean | string | number>}
+ * @type {import('prettier').Config}
  * */
 const config = {
     embeddedLanguageFormatting: 'auto',
     arrowParens: 'avoid',
     bracketSpacing: true,
     endOfLine: 'auto',
-    jsxBracketSameLine: false,
+    bracketSameLine: false,
     printWidth: 120,
     proseWrap: 'preserve',
     semi: true,
@@ -19,6 +19,10 @@ const config = {
     trailingComma: 'es5',
     useTabs: false,
     requirePragma: false,
+    plugins: ['@trivago/prettier-plugin-sort-imports'],
+    importOrder: ['^react(-dom)?(/|$)', '<THIRD_PARTY_MODULES>', '^@digital-net-org/', '^[~@]/', '^[./]'],
+    importOrderSideEffects: false,
+    importOrderSortSpecifiers: true,
 };
 
 export default config;

@@ -1,9 +1,9 @@
-import { CatalogRunner } from '../../CatalogRunner';
+import { type CrudEntityName, type Entity, type EntityName, resolveEntityPath } from '../../../Entity';
 import type { HttpClient } from '../../../HttpClient';
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { Result } from '../../../Result';
 import type { SchemaProperty } from '../../../Schema';
-import { resolveEntityPath, type CrudEntityName, type Entity, type EntityName } from '../../../Entity';
+import { CatalogRunner } from '../../CatalogRunner';
 import type { CatalogCallbacks } from '../../types';
 
 /**

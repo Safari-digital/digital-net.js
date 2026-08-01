@@ -10,10 +10,10 @@ export interface DnEntityFormBinding<T> {
     resetSignal?: number;
 }
 
-export const DnEntityFormContext = React.createContext<DnEntityFormBinding<unknown> | null>(null);
+export const EntityFormContext = React.createContext<DnEntityFormBinding<unknown> | null>(null);
 
 export function useDnEntityFormContext<T>(): DnEntityFormBinding<T> {
-    const context = React.useContext(DnEntityFormContext);
+    const context = React.useContext(EntityFormContext);
     if (!context) {
         throw new Error('useDnEntityFormContext must be used within a DnEntityFormProvider.');
     }

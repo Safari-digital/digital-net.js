@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { useParams } from 'react-router';
-import { ObjectMapper } from '@digital-net-org/digital-core';
 import {
     type FormDto,
     type FormFieldDto,
     type FormFieldPayload,
+    JsonPatch,
     type JsonPatchOp,
     type Result,
     type SchemaProperty,
     defaultResult,
-    JsonPatch,
     schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
-import { DnEntityEditView, isCollectionValid, useEntitySchema } from '../../entity';
+import { ObjectMapper } from '@digital-net-org/digital-core';
 import { useDigitalNetApi } from '../../api';
+import { DnEntityEditView, isCollectionValid, useDnEntitySchema } from '../../entity';
 import { FormTabFields, FormTabGeneral, FormTabSubmissions } from './Tabs';
 
 const FIELD_PAYLOAD_KEYS = [
@@ -33,7 +33,7 @@ export function FormEditView() {
     const { id } = useParams<{ id: string }>();
     const initialFieldsRef = React.useRef<FormFieldDto[]>([]);
 
-    const { schemas: fieldSchemas, loading: fieldSchemaLoading } = useEntitySchema('formField');
+    const { schemas: fieldSchemas, loading: fieldSchemaLoading } = useDnEntitySchema('formField');
     const validate = React.useCallback(
         (values: Partial<FormDto>, formSchemas: SchemaProperty[]) => {
             const missing = schemaValidation(values, formSchemas);

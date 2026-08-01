@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $wrapNodeInElement, mergeRegister } from '@lexical/utils';
 import {
     $createParagraphNode,
     $getNodeByKey,
@@ -8,7 +9,6 @@ import {
     COMMAND_PRIORITY_EDITOR,
     COMMAND_PRIORITY_LOW,
 } from 'lexical';
-import { $wrapNodeInElement, mergeRegister } from '@lexical/utils';
 import { $createImageNode, $isImageNode, ImageNode } from './LexicalImageNode';
 import { INSERT_IMAGE_COMMAND, OPEN_IMAGE_DIALOG_COMMAND } from './lexicalCommands';
 import type { DnEditorRichTextImageAttrs, DnEditorRichTextImageDialogProps } from './types';
@@ -31,7 +31,8 @@ export function LexicalImagePlugin({ imageDialog }: LexicalImagePluginProps) {
     const hasImageAction = !!imageDialog;
 
     React.useEffect(() => {
-        if (!editor.hasNodes([ImageNode])) throw new Error('LexicalImagePlugin requires the ImageNode to be registered');
+        if (!editor.hasNodes([ImageNode]))
+            throw new Error('LexicalImagePlugin requires the ImageNode to be registered');
         return mergeRegister(
             editor.registerCommand<DnEditorRichTextImageAttrs>(
                 INSERT_IMAGE_COMMAND,

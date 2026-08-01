@@ -1,16 +1,13 @@
-import prettier from 'prettier/standalone';
 import pluginBabel from 'prettier/plugins/babel';
 import pluginEstree from 'prettier/plugins/estree';
 import pluginHtml from 'prettier/plugins/html';
 import pluginCss from 'prettier/plugins/postcss';
+import prettier from 'prettier/standalone';
+import type { DnEditorLanguage } from '../types';
 import { resolveParserName } from './resolveParserName';
 import type { CodeAnnotation } from './types';
-import type { DnEditorLanguage } from '../types';
 
-export async function validateCode(
-    source: string,
-    language: DnEditorLanguage
-): Promise<CodeAnnotation | null> {
+export async function validateCode(source: string, language: DnEditorLanguage): Promise<CodeAnnotation | null> {
     if (!source.trim()) {
         return null;
     }

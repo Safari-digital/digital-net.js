@@ -13,11 +13,19 @@
             "source": "./src/index.ts",
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js"
+        },
+        "./ui": {
+            "source": "./src/ui/index.ts",
+            "types": "./dist/ui/index.d.ts",
+            "import": "./dist/ui.js"
         }
     },
     "scripts": {
-        "build": "vite build",
+        "build": "vitest run && vite build",
         "test": "vitest"
+    },
+    "devDependencies": {
+        "typescript": "6.0.3"
     },
     "dependencies": {
         "@digital-net-org/digital-api-sdk": "workspace:*",

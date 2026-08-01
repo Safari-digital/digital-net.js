@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Box, Collapse, FormControlLabel, MenuItem, Stack, TextField } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import type { SheetType } from '@digital-net-org/digital-api-sdk';
-import type { SheetRow } from './useSheetsState';
-import { LazyDnEditorCode, DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
+import { DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
+import { LazyDnEditorCode } from '../../../ui/components/DnEditor';
 import { usePageVariables } from './usePageVariables';
+import type { SheetRow } from './useSheetsState';
 
 const LANGUAGE_TYPES = { css: 'css', js: 'javascript', html: 'html' } as const;
 const LANGUAGE_TYPES_MAP = Object.keys(LANGUAGE_TYPES) as (keyof typeof LANGUAGE_TYPES)[];

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import ace from 'ace-builds/src-noconflict/ace';
 import type { Ace } from 'ace-builds';
+import ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/mode-css';
@@ -14,11 +14,11 @@ import 'ace-builds/src-noconflict/snippets/json';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/theme-github_light_default';
 import 'ace-builds/src-noconflict/ext-language_tools';
-import { DnEditorFrame } from '../DnEditorFrame';
+import { EditorFrame } from '../EditorFrame';
+import { formatCode, validateCode } from '../format';
 import type { DnEditorBaseProps, DnEditorLanguage, DnEditorTemplateVariable } from '../types';
 import { aceOptions, resolveEditorLanguage, resolveEditorTheme } from './ace';
-import { jsonldPlugin, templatePlugin, type EditorPlugin } from './plugins';
-import { formatCode, validateCode } from '../format';
+import { type EditorPlugin, jsonldPlugin, templatePlugin } from './plugins';
 import { useEditorAutocompleteTriggers } from './useEditorAutocompleteTriggers';
 import { useEditorCompleters } from './useEditorCompleters';
 import { useEditorMarkers } from './useEditorMarkers';
@@ -160,7 +160,7 @@ export function DnEditorCode({
     );
 }
 
-const CodeFrame = styled(DnEditorFrame)(
+const CodeFrame = styled(EditorFrame)(
     ({ theme }) => css`
         & .ace_editor {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;

@@ -1,30 +1,30 @@
 import * as React from 'react';
-import { Stack, styled, css } from '@mui/material';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
     FormatAlignCenter as AlignCenterIcon,
     FormatAlignJustify as AlignJustifyIcon,
     FormatAlignLeft as AlignLeftIcon,
     FormatAlignRight as AlignRightIcon,
     FormatBold as BoldIcon,
+    Image as ImageIcon,
     FormatItalic as ItalicIcon,
-    FormatListBulleted as UlIcon,
+    InsertLink as LinkIcon,
     FormatListNumbered as OlIcon,
     FormatQuote as QuoteIcon,
-    FormatUnderlined as UnderlineIcon,
-    Image as ImageIcon,
-    InsertLink as LinkIcon,
     Redo as RedoIcon,
     StrikethroughS as StrikeIcon,
     Title as TitleIcon,
+    FormatListBulleted as UlIcon,
+    FormatUnderlined as UnderlineIcon,
     Undo as UndoIcon,
 } from '@mui/icons-material';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { Stack, css, styled } from '@mui/material';
 import { DnIconButton } from '../../DnIconButton';
+import { LexicalToolbarDivider } from './LexicalToolbarDivider';
+import { OPEN_IMAGE_DIALOG_COMMAND, OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 import { LEXICAL_HEADING_LEVELS } from './lexicalConfig';
 import { useLexicalFormatters } from './useLexicalFormatters';
 import { useLexicalHistory } from './useLexicalHistory';
-import { LexicalToolbarDivider } from './LexicalToolbarDivider';
-import { OPEN_IMAGE_DIALOG_COMMAND, OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 
 interface LexicalToolbarProps {
     disabled?: boolean;

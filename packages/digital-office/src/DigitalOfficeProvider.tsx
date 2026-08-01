@@ -1,18 +1,19 @@
 import * as React from 'react';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
-import { DnLogo, DnThemeProvider } from './ui';
-import { DigitalNetApiProvider, DnMutationStreamProvider } from './api';
-import { IdbProvider } from './storage';
-import { DnEntitySchemaProvider, DnEntityVariablesProvider, DnOgSchemaProvider } from './entity';
+import { DigitalNetApiProvider, MutationStreamProvider } from './api';
 import {
-    DigitalNetUserProvider,
-    LayoutProvider,
-    ToastProvider,
     CustomRenderProvider,
-    VersionProvider,
+    DigitalNetUserProvider,
     type DnCustomViewDict,
     type DnVersion,
+    LayoutProvider,
+    ToastProvider,
+    VersionProvider,
 } from './app';
+import { EntitySchemaProvider, EntityVariablesProvider, OgSchemaProvider } from './entity';
+import { IdbProvider } from './storage';
+import { Logo } from './ui/components/Logo';
+import { ThemeProvider } from './ui/theme';
 
 export interface DigitalOfficeProviderProps {
     api: DigitalApi;
@@ -25,29 +26,29 @@ export interface DigitalOfficeProviderProps {
 export function DigitalOfficeProvider({ api, appLogo, customRender, version, children }: DigitalOfficeProviderProps) {
     return (
         <DigitalNetApiProvider api={api}>
-            <DnThemeProvider>
+            <ThemeProvider>
                 <ToastProvider>
                     <DigitalNetUserProvider>
-                        <DnMutationStreamProvider>
+                        <MutationStreamProvider>
                             <IdbProvider>
-                                <DnEntitySchemaProvider>
-                                    <DnOgSchemaProvider>
-                                        <DnEntityVariablesProvider>
-                                            <LayoutProvider appLogo={appLogo ?? <DnLogo />}>
+                                <EntitySchemaProvider>
+                                    <OgSchemaProvider>
+                                        <EntityVariablesProvider>
+                                            <LayoutProvider appLogo={appLogo ?? <Logo />}>
                                                 <VersionProvider version={version}>
                                                     <CustomRenderProvider customRender={customRender}>
                                                         {children}
                                                     </CustomRenderProvider>
                                                 </VersionProvider>
                                             </LayoutProvider>
-                                        </DnEntityVariablesProvider>
-                                    </DnOgSchemaProvider>
-                                </DnEntitySchemaProvider>
+                                        </EntityVariablesProvider>
+                                    </OgSchemaProvider>
+                                </EntitySchemaProvider>
                             </IdbProvider>
-                        </DnMutationStreamProvider>
+                        </MutationStreamProvider>
                     </DigitalNetUserProvider>
                 </ToastProvider>
-            </DnThemeProvider>
+            </ThemeProvider>
         </DigitalNetApiProvider>
     );
 }

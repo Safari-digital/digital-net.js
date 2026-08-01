@@ -6,4 +6,4 @@ export * from './version';
 export * from './custom-render';
 
 export { ToastProvider } from './ToastProvider';
-export { useDigitalToast, type ToastContextValue } from './useDigitalToast';
+export { useDnToast, type DnToastContextValue, type DnToastVariant } from './useDnToast';

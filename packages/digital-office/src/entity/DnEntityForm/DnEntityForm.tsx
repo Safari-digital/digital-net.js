@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Stack } from '@mui/material';
 import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
-import { DnEntityInput } from '../DnEntityInput';
+import { EntityInput } from '../EntityInput';
 
-export interface EntityInputFieldProps {
+export interface DnEntityFieldProps {
     label: string;
     helperText?: React.ReactNode;
     disabled?: boolean;
@@ -13,7 +13,7 @@ export interface EntityInputFieldProps {
 
 export interface DnEntityFormProps {
     schemas: SchemaProperty[];
-    fieldProps: Record<string, EntityInputFieldProps>;
+    fieldProps: Record<string, DnEntityFieldProps>;
     values: Record<string, unknown>;
     onFieldChange: (_path: string, _value: unknown) => void;
     errors?: ReadonlySet<string>;
@@ -40,7 +40,7 @@ export function DnEntityForm({
 }: DnEntityFormProps) {
     const resolvedSchemas = React.useMemo(
         () =>
-            Object.entries(fieldProps).reduce<(EntityInputFieldProps & { schema: SchemaProperty })[]>(
+            Object.entries(fieldProps).reduce<(DnEntityFieldProps & { schema: SchemaProperty })[]>(
                 (acc, [key, value]) => {
                     const schema = schemas.find(({ name }) => name === key);
                     if (schema) {
@@ -62,7 +62,7 @@ export function DnEntityForm({
                 const accessor = schemaNameToAccessor(s.schema.name);
                 const path = schemaNameToPath(s.schema.name);
                 return (
-                    <DnEntityInput
+                    <EntityInput
                         key={s.schema.name}
                         schema={s.schema}
                         label={s.label}

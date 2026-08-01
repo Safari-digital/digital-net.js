@@ -32,19 +32,16 @@ export function useDebouncedCallback<A extends unknown[]>(
         argsRef.current = null;
     }, []);
 
-    const run = React.useCallback(
-        (...args: A) => {
-            argsRef.current = args;
-            if (timerRef.current !== null) window.clearTimeout(timerRef.current);
-            timerRef.current = window.setTimeout(() => {
-                timerRef.current = null;
-                const pending = argsRef.current;
-                argsRef.current = null;
-                if (pending) callbackRef.current(...pending);
-            }, delayRef.current);
-        },
-        []
-    );
+    const run = React.useCallback((...args: A) => {
+        argsRef.current = args;
+        if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+        timerRef.current = window.setTimeout(() => {
+            timerRef.current = null;
+            const pending = argsRef.current;
+            argsRef.current = null;
+            if (pending) callbackRef.current(...pending);
+        }, delayRef.current);
+    }, []);
 
     React.useEffect(() => cancel, [cancel]);
 

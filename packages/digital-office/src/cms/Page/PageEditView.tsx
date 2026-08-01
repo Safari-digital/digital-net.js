@@ -1,21 +1,21 @@
 import * as React from 'react';
 import {
     JsonPatch,
-    schemaValidation,
     type OpenGraphEntry,
     type PageDto,
     type PageSheet,
     type SchemaProperty,
+    schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
-import { DnEntityEditView, isCollectionValid, useEntitySchema } from '../../entity';
 import { useDigitalNetApi } from '../../api';
+import { DnEntityEditView, isCollectionValid, useDnEntitySchema } from '../../entity';
 import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from './Tabs';
 
 export function PageEditView() {
     const api = useDigitalNetApi();
 
-    const { schemas: sheetSchemas, loading: sheetSchemaLoading } = useEntitySchema('pageSheet');
-    const { schemas: ogSchemas, loading: ogSchemaLoading } = useEntitySchema('openGraphEntry');
+    const { schemas: sheetSchemas, loading: sheetSchemaLoading } = useDnEntitySchema('pageSheet');
+    const { schemas: ogSchemas, loading: ogSchemaLoading } = useDnEntitySchema('openGraphEntry');
     const validate = React.useCallback(
         (values: Partial<PageDto>, pageSchemas: SchemaProperty[]) => {
             const missing = schemaValidation(values, pageSchemas);

@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
-import { dnQueryClient } from './queryClient';
+import { queryClient } from './queryClient';
 import { DigitalNetApiContext } from './useDigitalNetApi';
 
 export function DigitalNetApiProvider({ api, children }: { api: DigitalApi; children: React.ReactNode }) {
     return (
         <DigitalNetApiContext.Provider value={api}>
-            <QueryClientProvider client={dnQueryClient}>{children}</QueryClientProvider>
+            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
         </DigitalNetApiContext.Provider>
     );
 }

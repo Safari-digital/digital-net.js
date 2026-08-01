@@ -1,6 +1,6 @@
+import { validateInterpolatedString } from '../../../DnInput/utils/interpolated';
 import type { DnEditorTemplateVariable } from '../../types';
 import { createTemplateCompleter } from '../aceTemplateCompleter';
-import { validateInterpolatedString } from '../../../DnInput/utils/interpolated';
 import type { EditorPlugin } from './types';
 
 export function templatePlugin(variables: DnEditorTemplateVariable[]): EditorPlugin {

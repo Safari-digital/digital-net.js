@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { matchPath, useLocation, useNavigate } from 'react-router';
 import { css, styled } from '@mui/material/styles';
-import { ErrorBoundary, LayoutNav, type LayoutNavProps } from './components';
-import { useLayout } from './useLayout';
-import { DnAppBar, DnAppDrawer } from '../../ui';
+import { matchPath, useLocation, useNavigate } from 'react-router';
+import { AppBar } from '../../ui/components/AppBar';
+import { AppDrawer } from '../../ui/components/AppDrawer';
 import { useDigitalNetUser } from '../user';
 import { Settings } from './Settings';
+import { ErrorBoundary, LayoutNav, type LayoutNavProps } from './components';
+import { useDnLayout } from './useDnLayout';
 
 interface Props {
     navigation: LayoutNavProps['navigation'];
@@ -17,7 +18,7 @@ export function Layout({ navigation, routePatterns, children }: Props) {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { isDrawerOpen, toggleDrawer, setIsUserSettingsOpen } = useLayout();
+    const { isDrawerOpen, toggleDrawer, setIsUserSettingsOpen } = useDnLayout();
     const { user, isLogged, isLoading, isAdmin, logout } = useDigitalNetUser();
 
     const isPathClickable = React.useCallback(
@@ -32,13 +33,13 @@ export function Layout({ navigation, routePatterns, children }: Props) {
             {isLogged ? (
                 <React.Fragment>
                     <Settings />
-                    <DnAppDrawer open={isDrawerOpen}>
+                    <AppDrawer open={isDrawerOpen}>
                         <LayoutNav navigation={navigation} />
-                    </DnAppDrawer>
+                    </AppDrawer>
                 </React.Fragment>
             ) : null}
             <AppViewWrapper>
-                <DnAppBar
+                <AppBar
                     slots={{
                         menu: {
                             open: isDrawerOpen,

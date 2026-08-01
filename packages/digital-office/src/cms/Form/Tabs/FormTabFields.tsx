@@ -4,8 +4,8 @@ import type { FormDto, FormFieldDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityTabHelper, useDnEntityFormContext } from '../../../entity';
 import { DnDraggableList, DnLoadingView } from '../../../ui';
 import { FormFieldRow } from './FormFieldRow';
-import { useFieldsState } from './useFieldsState';
 import { useFieldSchema } from './useFieldSchema';
+import { useFieldsState } from './useFieldsState';
 
 export function FormTabFields() {
     const { schemas, loading: schemasLoading } = useFieldSchema();

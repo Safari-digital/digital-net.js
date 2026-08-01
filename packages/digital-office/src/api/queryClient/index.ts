@@ -1,2 +1,2 @@
-export * from './dnQueryClient';
+export * from './queryClient';
 export * from './builders';

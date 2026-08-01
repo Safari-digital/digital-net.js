@@ -1,9 +1,9 @@
 import { URLResolver } from '@digital-net-org/digital-core';
 import type { HttpClient } from '../HttpClient';
-import type { MutationSignal, MutationStreamConnectOptions, MutationStreamState } from './types';
 import { SseParser } from './SseParser';
 import { StreamRequestError } from './StreamRequestError';
 import { computeBackoffDelay, isConnectionStable } from './backoff';
+import type { MutationSignal, MutationStreamConnectOptions, MutationStreamState } from './types';
 
 const DN_API_EVENTS_MUTATION_STREAM = 'events/mutation/stream' as const;
 const MUTATION_EVENT_TYPE = 'mutation';

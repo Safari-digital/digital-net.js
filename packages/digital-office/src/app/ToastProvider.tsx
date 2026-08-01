@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { Alert, Snackbar } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { ToastContext, type ToastVariant } from './useDigitalToast';
+import { type DnToastVariant, ToastContext } from './useDnToast';
 
 interface ActiveToast {
     key: number;
     message: string;
-    variant: ToastVariant;
+    variant: DnToastVariant;
 }
 
 const DEFAULT_DURATION = 7000;
@@ -16,7 +16,7 @@ export function ToastProvider({ children }: React.PropsWithChildren) {
 
     const hide = React.useCallback(() => setToast(null), []);
 
-    const showToast = React.useCallback((message: string, variant?: ToastVariant) => {
+    const showToast = React.useCallback((message: string, variant?: DnToastVariant) => {
         setToast({
             key: Date.now(),
             message,

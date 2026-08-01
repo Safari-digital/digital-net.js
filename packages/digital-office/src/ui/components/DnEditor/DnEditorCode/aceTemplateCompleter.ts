@@ -1,5 +1,5 @@
-import ace from 'ace-builds/src-noconflict/ace';
 import type { Ace } from 'ace-builds';
+import ace from 'ace-builds/src-noconflict/ace';
 import type { DnEditorTemplateVariable } from '../types';
 
 interface AceRangeCtor {

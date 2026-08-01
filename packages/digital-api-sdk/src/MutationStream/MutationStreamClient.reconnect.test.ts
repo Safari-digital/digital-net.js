@@ -1,4 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { HttpClient } from '../HttpClient';
+import { MutationStreamClient } from './MutationStreamClient';
 import type * as BackoffModule from './backoff';
 
 // Record the attempt index the run loop computes on each reconnection, and collapse the real delay
@@ -15,9 +17,6 @@ vi.mock('./backoff', async importOriginal => {
         },
     };
 });
-
-import { HttpClient } from '../HttpClient';
-import { MutationStreamClient } from './MutationStreamClient';
 
 const BASE_URL = 'http://api.test';
 

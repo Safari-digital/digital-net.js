@@ -1,15 +1,15 @@
 import * as React from 'react';
 import {
     Autocomplete,
-    Paper as MuiPaper,
     type AutocompleteProps,
+    Paper as MuiPaper,
     type PaperProps,
     type SxProps,
     type Theme,
 } from '@mui/material';
-import { DnBaseInput } from './DnBaseInput';
-import { DnBaseInputWrapper } from './DnBaseInputWrapper';
 import { css, styled } from '@mui/material/styles';
+import { BaseInput } from './BaseInput';
+import { BaseInputWrapper } from './BaseInputWrapper';
 
 type MuiAutocompleteOmitted =
     | 'renderInput'
@@ -66,7 +66,7 @@ export function DnInputAutocomplete<T = string>({
     );
 
     return (
-        <DnBaseInputWrapper>
+        <BaseInputWrapper>
             <Autocomplete<T>
                 {...autocompleteProps}
                 options={options}
@@ -80,7 +80,7 @@ export function DnInputAutocomplete<T = string>({
                 slots={{ paper: DnAutocompletePaper }}
                 slotProps={{ paper: { renderListAction } as DnAutocompletePaperProps }}
                 renderInput={params => (
-                    <DnBaseInput
+                    <BaseInput
                         {...params}
                         label={label}
                         placeholder={placeholder}
@@ -91,7 +91,7 @@ export function DnInputAutocomplete<T = string>({
                     />
                 )}
             />
-        </DnBaseInputWrapper>
+        </BaseInputWrapper>
     );
 }
 

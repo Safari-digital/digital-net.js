@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { type TagDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityEditView } from '../../entity';
 import { useDigitalNetApi } from '../../api';
+import { DnEntityEditView } from '../../entity';
 import { TagFormGeneral } from './TagFormGeneral';
 
 export function TagEditView() {

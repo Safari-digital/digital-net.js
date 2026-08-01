@@ -1,10 +1,10 @@
-import { Dialog, Divider, Stack, useTheme } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
+import { Dialog, Divider, Stack, useTheme } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { useLayout } from './useLayout';
-import { DnIconButton, DnTabs, type DnTab } from '../../ui';
-import { SettingsMyAccount } from './SettingsMyAccount';
+import { DnIconButton, type DnTab, DnTabs } from '../../ui';
 import { SettingsApplication } from './SettingsApplication';
+import { SettingsMyAccount } from './SettingsMyAccount';
+import { useDnLayout } from './useDnLayout';
 
 const SETTINGS_TABS: DnTab[] = [
     { key: 'myaccount', label: 'Mon compte', content: <SettingsMyAccount /> },
@@ -13,7 +13,7 @@ const SETTINGS_TABS: DnTab[] = [
 
 export function Settings() {
     const theme = useTheme();
-    const { isUserSettingsOpen, setIsUserSettingsOpen } = useLayout();
+    const { isUserSettingsOpen, setIsUserSettingsOpen } = useDnLayout();
     const handleClose = () => setIsUserSettingsOpen(false);
 
     return (

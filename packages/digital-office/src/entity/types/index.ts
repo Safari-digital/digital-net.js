@@ -1,2 +1,2 @@
 export * from './EntityDraftRecord';
-export * from './EntityIdentifier';
+export * from './DnEntityIdentifier';

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LayoutContext } from './useLayout';
+import { LayoutContext } from './useDnLayout';
 
 const DRAWER_STORAGE_KEY = 'DN_DRAWER_OPEN';
 

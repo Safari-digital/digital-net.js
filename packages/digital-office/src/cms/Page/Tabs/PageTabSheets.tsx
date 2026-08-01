@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { PageDto, PageSheet } from '@digital-net-org/digital-api-sdk';
-import { useDnEntityFormContext, useEntitySchema, DnEntityTabHelper } from '../../../entity';
-import { buildKeyFromId, useDigitalNetApi } from '../../../api';
+import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
+import { DnEntityTabHelper, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
 import { DnDraggableList, DnLoadingView } from '../../../ui';
 import { EditSheetRow } from './EditSheetRow';
 import { useSheetsState } from './useSheetsState';
@@ -13,9 +13,9 @@ export function PageTabSheets() {
     const api = useDigitalNetApi();
     const pageId = values.id;
 
-    const { schemas: sheetSchemas } = useEntitySchema('pageSheet');
+    const { schemas: sheetSchemas } = useDnEntitySchema('pageSheet');
     const { data: initialSheets, isLoading: isLoadingSheets } = useQuery<PageSheet[] | undefined>({
-        queryKey: [...buildKeyFromId('page', pageId!), 'sheets'],
+        queryKey: [...dnBuildKeyFromId('page', pageId!), 'sheets'],
         queryFn: async () => {
             const result = await api.catalog.page.getSheetsForEdit(pageId!);
             if (result.hasError) {

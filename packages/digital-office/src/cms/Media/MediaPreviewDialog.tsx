@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { CircularProgress, Dialog, DialogContent, Box, IconButton } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
+import { Box, CircularProgress, Dialog, DialogContent, IconButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useDigitalNetApi } from '../../api';
 

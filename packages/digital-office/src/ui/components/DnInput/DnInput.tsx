@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { type TextFieldProps, type SlotProps, type TextFieldOwnerState, Box, CircularProgress } from '@mui/material';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
+import { Box, CircularProgress, type SlotProps, type TextFieldOwnerState, type TextFieldProps } from '@mui/material';
 import type { InputBaseProps } from '@mui/material/InputBase';
-import { DnBaseInput } from './DnBaseInput';
-import { DnBaseInputWrapper } from './DnBaseInputWrapper';
-import { DnBaseInputCount } from './DnBaseInputCount';
 import { DnIconButton } from '../DnIconButton';
+import { BaseInput } from './BaseInput';
+import { BaseInputCount } from './BaseInputCount';
+import { BaseInputWrapper } from './BaseInputWrapper';
 
 export interface DnInputProps extends Pick<
     TextFieldProps,
@@ -86,9 +86,9 @@ export function DnInput({
     };
 
     return (
-        <DnBaseInputWrapper>
-            <DnBaseInputCount value={valueLength} max={max} />
-            <DnBaseInput
+        <BaseInputWrapper>
+            <BaseInputCount value={valueLength} max={max} />
+            <BaseInput
                 {...muiProps}
                 type={resolvedType}
                 value={value ?? ''}
@@ -143,6 +143,6 @@ export function DnInput({
                     },
                 }}
             />
-        </DnBaseInputWrapper>
+        </BaseInputWrapper>
     );
 }

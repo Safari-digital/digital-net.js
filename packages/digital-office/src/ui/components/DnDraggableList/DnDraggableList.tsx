@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Stack, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
+import { Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { DnDraggableContext } from '../DnDraggableContext';
 import { DnButton } from '../DnButton';
+import { DraggableContext } from '../DraggableContext';
 
 export interface DnDraggableListProps<T extends { id: string }> {
     rows: T[];
@@ -21,7 +21,7 @@ export function DnDraggableList<T extends { id: string }>({
     disabled,
 }: DnDraggableListProps<T>) {
     return (
-        <DnDraggableContext rows={rows} onSort={onSort}>
+        <DraggableContext rows={rows} onSort={onSort}>
             <List>
                 {rows.length === 0 && !onCreate ? (
                     <Typography variant="body2" sx={{ color: 'text.secondary', py: 4, textAlign: 'center' }}>
@@ -36,7 +36,7 @@ export function DnDraggableList<T extends { id: string }>({
                     </DnButton>
                 ) : null}
             </List>
-        </DnDraggableContext>
+        </DraggableContext>
     );
 }
 

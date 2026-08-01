@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { ListItemIcon, ListItemText, MenuItem, MenuList, Paper, css, styled } from '@mui/material';
-import { Image as ImageIcon, InsertLink as LinkIcon } from '@mui/icons-material';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
     LexicalTypeaheadMenuPlugin,
     MenuOption,
     useBasicTypeaheadTriggerMatch,
 } from '@lexical/react/LexicalTypeaheadMenuPlugin';
+import { Image as ImageIcon, InsertLink as LinkIcon } from '@mui/icons-material';
+import { ListItemIcon, ListItemText, MenuItem, MenuList, Paper, css, styled } from '@mui/material';
 import type { TextNode } from 'lexical';
 import { OPEN_IMAGE_DIALOG_COMMAND, OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 
@@ -21,7 +21,10 @@ class SlashMenuOption extends MenuOption {
     public readonly keywords: string[];
     public readonly run: () => void;
 
-    public constructor(key: string, config: { label: string; icon: React.JSX.Element; keywords: string[]; run: () => void }) {
+    public constructor(
+        key: string,
+        config: { label: string; icon: React.JSX.Element; keywords: string[]; run: () => void }
+    ) {
         super(key);
         this.label = config.label;
         this.menuIcon = config.icon;
@@ -74,7 +77,10 @@ export function LexicalSlashMenuPlugin({ hasImageAction }: LexicalSlashMenuPlugi
             triggerFn={triggerFn}
             onQueryChange={setQuery}
             onSelectOption={onSelectOption}
-            menuRenderFn={(anchorRef, { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex, options: opts }) => {
+            menuRenderFn={(
+                anchorRef,
+                { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex, options: opts }
+            ) => {
                 const anchor = anchorRef.current;
                 if (!anchor || opts.length === 0) return null;
                 return createPortal(

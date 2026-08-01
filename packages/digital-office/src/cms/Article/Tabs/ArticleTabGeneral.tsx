@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { useParams } from 'react-router';
-import { Stack } from '@mui/material';
 import { AutoAwesome as AutoAwesomeIcon } from '@mui/icons-material';
+import { Stack } from '@mui/material';
+import { useParams } from 'react-router';
 import type { ArticleDto, ArticleRefDto } from '@digital-net-org/digital-api-sdk';
-import { DnEntityForm, DnEntityAuditBlock, useDnEntityFormContext, useEntitySchema } from '../../../entity';
 import { useCustomNode } from '../../../app';
+import { DnEntityAuditBlock, DnEntityForm, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
 import {
     DnButton,
     DnIconButton,
@@ -14,12 +14,12 @@ import {
     DnInputDebounced,
 } from '../../../ui';
 import { useArticleForm } from './useArticleForm';
-import { useArticleFormTags, type TagOption } from './useArticleFormTags';
 import { useArticleFormRelated } from './useArticleFormRelated';
+import { type TagOption, useArticleFormTags } from './useArticleFormTags';
 
 export function ArticleTabGeneral() {
     const { id } = useParams<{ id: string }>();
-    const { schemas } = useEntitySchema('article');
+    const { schemas } = useDnEntitySchema('article');
     const { values, errors, disabled } = useDnEntityFormContext<ArticleDto>();
     const { renderCustomNode } = useCustomNode();
 

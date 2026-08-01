@@ -1,5 +1,5 @@
-import { useEntitySchema } from '../../../entity';
+import { useDnEntitySchema } from '../../../entity';
 
 export function useFieldSchema() {
-    return useEntitySchema('formField');
+    return useDnEntitySchema('formField');
 }

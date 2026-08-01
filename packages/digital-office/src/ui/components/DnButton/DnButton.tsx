@@ -1,14 +1,14 @@
 import * as React from 'react';
+import { Button, type ButtonProps } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { type ButtonProps, Button } from '@mui/material';
-import type { Severity } from '../../theme';
+import type { DnSeverity } from '../../theme';
 
 export interface DnButtonProps extends Pick<
     ButtonProps,
     'children' | 'id' | 'className' | 'disabled' | 'loading' | 'variant' | 'sx' | 'onClick' | 'type'
 > {
     icon?: React.ReactNode;
-    severity?: Severity;
+    severity?: DnSeverity;
     size?: 'small' | 'medium';
 }
 

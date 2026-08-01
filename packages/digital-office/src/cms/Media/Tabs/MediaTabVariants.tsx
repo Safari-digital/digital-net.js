@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import {
     IconButton,
     Stack,
@@ -10,20 +11,20 @@ import {
     TableRow,
     Typography,
 } from '@mui/material';
-import { Delete as DeleteIcon } from '@mui/icons-material';
 import { useQueryClient } from '@tanstack/react-query';
 import type { MediaDto, MediaVariantDto } from '@digital-net-org/digital-api-sdk';
-import { buildKeyFromId, useDigitalNetApi } from '../../../api';
-import { useDigitalToast } from '../../../app';
+import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
+import { useDnToast } from '../../../app';
 import { useDnEntityFormContext } from '../../../entity';
-import { DnButton, DnDialog, formatDate, formatDimensions, formatFileSize } from '../../../ui';
+import { DnButton, DnDialog } from '../../../ui';
+import { formatDate, formatDimensions, formatFileSize } from '../../../ui/format';
 
 type ConfirmTarget = { kind: 'all' } | { kind: 'one'; variantId: string } | null;
 
 export function MediaTabVariants() {
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
-    const { showToast } = useDigitalToast();
+    const { showToast } = useDnToast();
     const { values } = useDnEntityFormContext<MediaDto>();
 
     const [confirmTarget, setConfirmTarget] = React.useState<ConfirmTarget>(null);
@@ -34,7 +35,7 @@ export function MediaTabVariants() {
 
     const refresh = React.useCallback(() => {
         if (!mediaId) return;
-        return queryClient.invalidateQueries({ queryKey: buildKeyFromId('media', mediaId) });
+        return queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('media', mediaId) });
     }, [queryClient, mediaId]);
 
     const handleConfirm = async () => {

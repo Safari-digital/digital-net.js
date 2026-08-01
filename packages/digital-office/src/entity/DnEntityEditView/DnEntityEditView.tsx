@@ -1,25 +1,26 @@
 import * as React from 'react';
-import { useNavigate, useParams } from 'react-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router';
 import {
-    type Entity,
     type CrudEntityName,
+    type Entity,
     type JsonPatchOp,
     type Result,
     type SchemaProperty,
     schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
-import { DnEntityView, type DnEntityViewTab } from '../DnEntityView';
-import { DnEntityFormProvider } from '../DnEntityFormProvider';
-import type { DnEntityFormBinding } from '../useDnEntityFormContext';
-import { useEntityDraft } from '../useEntityDraft';
-import { useEntityFormState } from '../useEntityFormState';
-import { useEntitySchema } from '../useEntitySchema';
-import { useRouterBlocker } from '../../navigation';
+import { dnBuildKeyFromId, dnBuildListKey, useDigitalNetApi } from '../../api';
+import { NotFoundView, useDnToast } from '../../app';
+import { useDnRouterBlocker } from '../../navigation';
 import type { DRAFT_STORES } from '../../storage';
-import { DnDialog, DnLoadingView } from '../../ui';
-import { NotFoundView, useDigitalToast } from '../../app';
-import { type EntityIdentifier } from '../types';
+import { DnDialog, DnLoadingView, type DnViewTab } from '../../ui';
+import { DnEntityFormProvider } from '../DnEntityFormProvider';
+import { EntityView } from '../EntityView';
+import { type DnEntityIdentifier } from '../types';
+import { useDnEntityDraft } from '../useDnEntityDraft';
+import type { DnEntityFormBinding } from '../useDnEntityFormContext';
+import { useDnEntitySchema } from '../useDnEntitySchema';
+import { useEntityFormState } from '../useEntityFormState';
 import {
     buildCreateErrorToast,
     buildCreateTitle,
@@ -27,14 +28,13 @@ import {
     buildDeleteTitle,
     buildDeletedToast,
 } from './identifier';
-import { buildKeyFromId, buildListKey, useDigitalNetApi } from '../../api';
 
 export interface DnEntityEditViewProps<T extends Entity> {
     entityName: CrudEntityName;
-    identifier: EntityIdentifier;
+    identifier: DnEntityIdentifier;
     identifierAccessor: keyof T;
     draftStoreName: (typeof DRAFT_STORES)[number];
-    tabs: DnEntityViewTab[];
+    tabs: DnViewTab[];
     description?: string;
     onGet?: (_id: string) => Promise<Result<T>>;
     onCreate?: (_values: Partial<T>) => Promise<Result<string>>;
@@ -65,7 +65,7 @@ export function DnEntityEditView<T extends Entity>({
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
 
-    const { showToast } = useDigitalToast();
+    const { showToast } = useDnToast();
 
     const {
         data: entity,
@@ -73,7 +73,7 @@ export function DnEntityEditView<T extends Entity>({
         isFetching,
         isError,
     } = useQuery<T | undefined>({
-        queryKey: buildKeyFromId(entityName, id!),
+        queryKey: dnBuildKeyFromId(entityName, id!),
         queryFn: async () => {
             const result = onGet ? await onGet(id!) : await api.catalog.crud.getById<T>(entityName, id!);
             if (result.hasError) {
@@ -85,9 +85,9 @@ export function DnEntityEditView<T extends Entity>({
         retry: false,
     });
 
-    const edit = useEntityDraft<T>(draftStoreName, id, entity, { enabled: !isNew });
+    const edit = useDnEntityDraft<T>(draftStoreName, id, entity, { enabled: !isNew });
     const create = useEntityFormState<T>();
-    const { schemas } = useEntitySchema(entityName);
+    const { schemas } = useDnEntitySchema(entityName);
 
     const [isSaving, setIsSaving] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
@@ -95,7 +95,7 @@ export function DnEntityEditView<T extends Entity>({
     const [errors, setErrors] = React.useState<ReadonlySet<string>>(new Set());
     const [resetSignal, setResetSignal] = React.useState(0);
 
-    const blocker = useRouterBlocker({ when: isNew && create.isDirty && !isSaving });
+    const blocker = useDnRouterBlocker({ when: isNew && create.isDirty && !isSaving });
     const inputsDisabled = isSaving || isDeleting || (!isNew && isFetching);
 
     const rawSetField = isNew ? create.setField : edit.setField;
@@ -133,12 +133,12 @@ export function DnEntityEditView<T extends Entity>({
           };
 
     const invalidateList = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: buildListKey(entityName) }),
+        () => queryClient.invalidateQueries({ queryKey: dnBuildListKey(entityName) }),
         [entityName, queryClient]
     );
 
     const invalidateGet = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: buildKeyFromId(entityName, id!) }),
+        () => queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId(entityName, id!) }),
         [queryClient, entityName, id]
     );
 
@@ -241,7 +241,7 @@ export function DnEntityEditView<T extends Entity>({
 
     return (
         <DnEntityFormProvider binding={binding}>
-            <DnEntityView
+            <EntityView
                 title={title}
                 description={description}
                 tabs={tabs}

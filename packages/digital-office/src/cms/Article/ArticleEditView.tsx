@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { ObjectMapper } from '@digital-net-org/digital-core';
 import {
-    JsonPatch,
-    schemaValidation,
     type ArticleDto,
+    JsonPatch,
     type JsonPatchOp,
     type SchemaProperty,
+    schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
-import { buildListKey, useDigitalNetApi } from '../../api';
+import { ObjectMapper } from '@digital-net-org/digital-core';
+import { dnBuildListKey, useDigitalNetApi } from '../../api';
 import { DnEntityEditView } from '../../entity';
 import { ArticleTabContent, ArticleTabGeneral } from './Tabs';
 
@@ -25,7 +25,7 @@ export function ArticleEditView() {
             );
             const result = await api.catalog.article.update(id, patched);
             if (!result.hasError && patched.some(op => op.path.startsWith('/tags')))
-                await queryClient.invalidateQueries({ queryKey: buildListKey('tag') });
+                await queryClient.invalidateQueries({ queryKey: dnBuildListKey('tag') });
             return result;
         },
         [api.catalog.article, queryClient]
@@ -53,7 +53,7 @@ export function ArticleEditView() {
             const extraOps = JsonPatch.fromValues(ObjectMapper.pick(values, ['tags', 'related']));
             if (extraOps.length > 0) await api.catalog.article.update(created.value, extraOps);
             if (extraOps.some(op => op.path.startsWith('/tags')))
-                await queryClient.invalidateQueries({ queryKey: buildListKey('tag') });
+                await queryClient.invalidateQueries({ queryKey: dnBuildListKey('tag') });
             return created;
         },
         [api.catalog.article, queryClient]

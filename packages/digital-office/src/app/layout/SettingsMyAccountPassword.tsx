@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Skeleton, Stack, Typography } from '@mui/material';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { DnButton, DnInput, formatRegex, useDebouncedCallback } from '../../ui';
 import { useDigitalNetApi } from '../../api';
-import { useDigitalToast } from '../useDigitalToast';
+import { DnButton, DnInput } from '../../ui';
+import { formatRegex } from '../../ui/format';
+import { useDebouncedCallback } from '../../ui/hooks';
+import { useDnToast } from '../useDnToast';
 
 interface PasswordForm {
     newPassword: string;
@@ -16,7 +18,7 @@ const VALIDATION_DEBOUNCE_MS = 500;
 
 export function SettingsMyAccountPassword() {
     const api = useDigitalNetApi();
-    const { showToast } = useDigitalToast();
+    const { showToast } = useDnToast();
 
     const [form, setForm] = React.useState<PasswordForm>(EMPTY_FORM);
     const [regexError, setRegexError] = React.useState(false);

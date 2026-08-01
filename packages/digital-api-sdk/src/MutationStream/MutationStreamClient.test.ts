@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { HttpClient, DN_APPLICATION_KEY_HEADER } from '../HttpClient';
+import { DN_APPLICATION_KEY_HEADER, HttpClient } from '../HttpClient';
 import { MutationStreamClient } from './MutationStreamClient';
 import type { MutationSignal } from './types';
 

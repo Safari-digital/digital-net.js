@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Autocomplete, CircularProgress, type AutocompleteProps, type SxProps, type Theme } from '@mui/material';
-import { DnBaseInput } from './DnBaseInput';
-import { DnBaseInputWrapper } from './DnBaseInputWrapper';
+import { Autocomplete, type AutocompleteProps, CircularProgress, type SxProps, type Theme } from '@mui/material';
+import { BaseInput } from './BaseInput';
+import { BaseInputWrapper } from './BaseInputWrapper';
 import { DnAutocompletePaper, type DnAutocompletePaperProps } from './DnInputAutocomplete';
 import { renderAutocompleteChip } from './DnInputAutocompleteMultiple';
 
@@ -90,7 +90,7 @@ export function DnInputAutocompleteMultipleFreesolo<T>({
     );
 
     return (
-        <DnBaseInputWrapper>
+        <BaseInputWrapper>
             <Autocomplete<T, true, false, true>
                 noOptionsText="Aucune option"
                 {...restAutocompleteProps}
@@ -110,7 +110,7 @@ export function DnInputAutocompleteMultipleFreesolo<T>({
                     chip: { sx: renderAutocompleteChip },
                 }}
                 renderInput={params => (
-                    <DnBaseInput
+                    <BaseInput
                         {...params}
                         slotProps={{
                             ...params.slotProps,
@@ -133,6 +133,6 @@ export function DnInputAutocompleteMultipleFreesolo<T>({
                     />
                 )}
             />
-        </DnBaseInputWrapper>
+        </BaseInputWrapper>
     );
 }

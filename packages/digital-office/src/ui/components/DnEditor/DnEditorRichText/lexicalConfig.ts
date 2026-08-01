@@ -1,9 +1,9 @@
-import { type HeadingTagType, HeadingNode, QuoteNode } from '@lexical/rich-text';
-import { ListItemNode, ListNode } from '@lexical/list';
 import { LinkNode } from '@lexical/link';
-import { type HTMLConfig, type Klass, type LexicalNode, isHTMLElement, TextNode } from 'lexical';
-import { stripWhiteSpaceStyle } from './lexicalWhiteSpace';
+import { ListItemNode, ListNode } from '@lexical/list';
+import { HeadingNode, type HeadingTagType, QuoteNode } from '@lexical/rich-text';
+import { type HTMLConfig, type Klass, type LexicalNode, TextNode, isHTMLElement } from 'lexical';
 import { ImageNode } from './LexicalImageNode';
+import { stripWhiteSpaceStyle } from './lexicalWhiteSpace';
 
 export const LEXICAL_NODES: Array<Klass<LexicalNode>> = [
     HeadingNode,

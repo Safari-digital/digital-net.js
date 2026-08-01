@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { CatalogRunner } from './CatalogRunner';
 import { HttpClient } from '../HttpClient';
 import type { Result } from '../Result';
+import { CatalogRunner } from './CatalogRunner';
 
 const BASE_URL = 'https://api.example.test';
 

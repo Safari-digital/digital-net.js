@@ -1,5 +1,3 @@
-import { CatalogRunner } from '../../CatalogRunner';
-import type { HttpClient } from '../../../HttpClient';
 import type {
     OpenGraphEntry,
     OpenGraphPropertySchema,
@@ -8,8 +6,10 @@ import type {
     PageSheet,
     TemplateVariable,
 } from '../../../Dto';
+import type { HttpClient } from '../../../HttpClient';
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { Result } from '../../../Result';
+import { CatalogRunner } from '../../CatalogRunner';
 import type { CatalogCallbacks } from '../../types';
 import { PagePublicCatalog } from './PagePublicCatalog';
 import type { PagePayload } from './types';

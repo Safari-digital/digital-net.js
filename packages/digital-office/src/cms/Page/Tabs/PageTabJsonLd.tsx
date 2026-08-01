@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Stack } from '@mui/material';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { LazyDnEditorCode, DnExternalButton } from '../../../ui';
 import { DnEntityTabHelper, useDnEntityFormContext } from '../../../entity';
+import { DnExternalButton } from '../../../ui';
+import { LazyDnEditorCode } from '../../../ui/components/DnEditor';
 import { usePageVariables } from './usePageVariables';
 
 const JSON_LD_DOC_URL = 'https://developers.google.com/search/docs/appearance/structured-data/search-gallery';

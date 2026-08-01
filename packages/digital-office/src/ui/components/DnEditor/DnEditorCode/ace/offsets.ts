@@ -1,5 +1,5 @@
-import ace from 'ace-builds/src-noconflict/ace';
 import type { Ace } from 'ace-builds';
+import ace from 'ace-builds/src-noconflict/ace';
 
 interface AceRangeCtor {
     new (_startRow: number, _startCol: number, _endRow: number, _endCol: number): Ace.Range;

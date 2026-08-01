@@ -1,8 +1,8 @@
-import { createTheme, type ThemeOptions } from '@mui/material/styles';
-import { shape } from './shape';
-import { typography } from './typography';
+import { type ThemeOptions, createTheme } from '@mui/material/styles';
 import { components } from './components';
 import { darkPalette, lightPalette } from './palette';
+import { shape } from './shape';
+import { typography } from './typography';
 
 function buildThemeOptions(mode: 'light' | 'dark'): ThemeOptions {
     if (mode !== 'light' && mode !== 'dark') {

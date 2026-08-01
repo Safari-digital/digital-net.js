@@ -1,16 +1,16 @@
 import * as React from 'react';
-import { css, styled } from '@mui/material/styles';
 import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { css, styled } from '@mui/material/styles';
 import type { ArticleDto } from '@digital-net-org/digital-api-sdk';
 import { useDnEntityFormContext } from '../../../entity';
-import { LazyDnEditorCode, LazyDnEditorRichText, useEditorScrollMemory } from '../../../ui';
-import type { DnEditorRichTextImageAttrs, DnEditorRichTextImageDialogProps } from '../../../ui';
-import { MediaContentImage, MediaInsertDialog } from '../../Media';
+import { LazyDnEditorCode, LazyDnEditorRichText, useEditorScrollMemory } from '../../../ui/components/DnEditor';
+import type { DnEditorRichTextImageAttrs, DnEditorRichTextImageDialogProps } from '../../../ui/components/DnEditor';
+import { DnMediaContentImage, DnMediaInsertDialog } from '../../Media';
 
 type EditorMode = 'wysiwyg' | 'html';
 
-const renderImageDialog = (props: DnEditorRichTextImageDialogProps) => <MediaInsertDialog {...props} />;
-const renderContentImage = (attrs: DnEditorRichTextImageAttrs) => <MediaContentImage {...attrs} />;
+const renderImageDialog = (props: DnEditorRichTextImageDialogProps) => <DnMediaInsertDialog {...props} />;
+const renderContentImage = (attrs: DnEditorRichTextImageAttrs) => <DnMediaContentImage {...attrs} />;
 
 export function ArticleTabContent() {
     const { values, setField, disabled } = useDnEntityFormContext<ArticleDto>();

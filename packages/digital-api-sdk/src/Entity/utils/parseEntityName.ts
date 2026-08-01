@@ -1,4 +1,4 @@
-import { type EntityName, ENTITY_NAMES } from '../EntityName';
+import { ENTITY_NAMES, type EntityName } from '../EntityName';
 
 /** Resolves a backend CLR entity type (PascalCase, e.g. mutation signals' `entity`) to its EntityName. */
 export function parseEntityName(value: string): EntityName | undefined {

@@ -1,3 +1,3 @@
-export { DnThemeProvider } from './DnThemeProvider';
-export { DnTheme } from './DnTheme';
+export { ThemeProvider } from './ThemeProvider';
+export { ThemePreference } from './ThemePreference';
 export * from './types';

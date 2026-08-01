@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { ArticleDto, QueryResult, TagDto } from '@digital-net-org/digital-api-sdk';
+import { dnBuildListKey, useDigitalNetApi } from '../../../api';
 import { useDnEntityFormContext } from '../../../entity';
-import { buildListKey, useDigitalNetApi } from '../../../api';
 import { useArticleAutocomplete } from './useArticleAutocomplete';
 
 export type TagOption = Omit<TagDto, 'id' | 'createdAt' | 'updatedAt'> & {
@@ -31,7 +31,7 @@ export function useArticleFormTags(): UseArticleFormTagsResult {
     const { inputValue, search, onInputChange } = useArticleAutocomplete();
 
     const { data: result, isFetching } = useQuery<QueryResult<TagDto>>({
-        queryKey: [...buildListKey('tag'), { name: search, size: TAGS_PAGE_SIZE }],
+        queryKey: [...dnBuildListKey('tag'), { name: search, size: TAGS_PAGE_SIZE }],
         queryFn: async () => {
             const params: Record<string, unknown> = { size: TAGS_PAGE_SIZE, index: 1 };
             if (search) params.name = search;

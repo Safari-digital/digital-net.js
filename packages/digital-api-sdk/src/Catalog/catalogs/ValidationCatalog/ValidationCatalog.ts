@@ -1,6 +1,6 @@
-import { CatalogRunner } from '../../CatalogRunner';
 import type { HttpClient } from '../../../HttpClient';
 import type { Result } from '../../../Result';
+import { CatalogRunner } from '../../CatalogRunner';
 import type { CatalogCallbacks } from '../../types';
 
 export const DN_API_VALIDATION_PATTERN_EMAIL = 'validation/pattern/email' as const;

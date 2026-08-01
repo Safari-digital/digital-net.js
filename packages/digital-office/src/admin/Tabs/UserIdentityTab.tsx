@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { FormControlLabel, Stack, Typography } from '@mui/material';
-import { type useUserData } from '../useUserData';
+import { useCustomNode } from '../../app';
 import { DnEntityAuditBlock } from '../../entity';
 import { DnSwitch } from '../../ui';
-import { useCustomNode } from '../../app';
+import { type useUserData } from '../useUserData';
 
 type ReadOnlyData = ReturnType<typeof useUserData>['readOnlyData'];
 

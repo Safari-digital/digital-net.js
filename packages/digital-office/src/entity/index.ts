@@ -1,29 +1,29 @@
 export * from './types';
 export * from './DnEntityAuditBlock';
 export * from './DnEntityTabHelper';
-export * from './DnEntityInput';
+export * from './EntityInput';
 export * from './DnEntityForm';
 export * from './DnEntityEditView';
 export * from './DnEntityListView';
 export * from './DnEntityFormProvider';
 export { useDnEntityFormContext, type DnEntityFormBinding } from './useDnEntityFormContext';
-export * from './DnEntitySchemaProvider';
-export { useDnEntitySchemaContext, type DnEntitySchemaContextValue } from './useDnEntitySchemaContext';
-export * from './DnEntityVariablesProvider';
+export * from './EntitySchemaProvider';
+export { useEntitySchemaContext, type EntitySchemaContextValue } from './useEntitySchemaContext';
+export * from './EntityVariablesProvider';
 export {
-    useDnEntityVariablesContext,
-    type DnEntityVariablesContextValue,
-    type DnEntityVariableKey,
-} from './useDnEntityVariablesContext';
-export * from './DnOgSchemaProvider';
-export { useDnOgSchema, type DnOgSchemaContextValue } from './useDnOgSchema';
-export * from './DnEntityView';
-export * from './useEntityDelete';
-export * from './useEntityDraft';
-export * from './useEntityDraftIndex';
+    useEntityVariablesContext,
+    type EntityVariablesContextValue,
+    type EntityVariableKey,
+} from './useEntityVariablesContext';
+export * from './OgSchemaProvider';
+export { useOgSchemaContext, type OgSchemaContextValue } from './useOgSchemaContext';
+export * from './EntityView';
+export * from './useDnEntityDelete';
+export * from './useDnEntityDraft';
+export * from './useDnEntityDraftIndex';
 export * from './useEntityFormState';
-export * from './useEntityList';
-export * from './useEntitySchema';
+export * from './useDnEntityList';
+export * from './useDnEntitySchema';
 export * from './useEntityVariables';
 export * from './useEntityRowsState';
 export * from './computeRowErrors';

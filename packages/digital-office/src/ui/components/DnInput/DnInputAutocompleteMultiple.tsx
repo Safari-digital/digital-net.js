@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Autocomplete, CircularProgress, type AutocompleteProps, type SxProps, type Theme } from '@mui/material';
-import { DnBaseInput } from './DnBaseInput';
-import { DnBaseInputWrapper } from './DnBaseInputWrapper';
+import { Autocomplete, type AutocompleteProps, CircularProgress, type SxProps, type Theme } from '@mui/material';
+import { BaseInput } from './BaseInput';
+import { BaseInputWrapper } from './BaseInputWrapper';
 import { DnAutocompletePaper, type DnAutocompletePaperProps } from './DnInputAutocomplete';
 
 type MuiAutocompleteOmitted =
@@ -60,7 +60,7 @@ export function DnInputAutocompleteMultiple<T>({
     );
 
     return (
-        <DnBaseInputWrapper>
+        <BaseInputWrapper>
             <Autocomplete<T, true, false, false>
                 noOptionsText="Aucune option"
                 {...autocompleteProps}
@@ -81,7 +81,7 @@ export function DnInputAutocompleteMultiple<T>({
                     chip: { sx: renderAutocompleteChip },
                 }}
                 renderInput={params => (
-                    <DnBaseInput
+                    <BaseInput
                         {...params}
                         slotProps={{
                             ...params.slotProps,
@@ -104,7 +104,7 @@ export function DnInputAutocompleteMultiple<T>({
                     />
                 )}
             />
-        </DnBaseInputWrapper>
+        </BaseInputWrapper>
     );
 }
 

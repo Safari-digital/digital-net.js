@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router';
 import { useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
+import { dnBuildListKey } from '../../api';
 import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
-import { buildListKey } from '../../api';
-import { type DnColumnDefinition, formatFileSize, formatDimensions } from '../../ui';
-import { MediaImportDialog } from './MediaImportDialog';
+import { type DnColumnDefinition } from '../../ui';
+import { formatDimensions, formatFileSize } from '../../ui/format';
+import { DnMediaImportDialog } from './DnMediaImportDialog';
 import { MediaPreview } from './MediaPreview';
 
 const staticProps: DnEntityListViewProps<MediaDto> = {
@@ -60,10 +61,10 @@ export function MediaListView() {
                 onRowClick={row => navigate(`/content-manager/media/${row.id}`)}
                 onCreate={() => setImportOpen(true)}
             />
-            <MediaImportDialog
+            <DnMediaImportDialog
                 open={importOpen}
                 onClose={() => setImportOpen(false)}
-                onUploaded={() => queryClient.invalidateQueries({ queryKey: buildListKey('media') })}
+                onUploaded={() => queryClient.invalidateQueries({ queryKey: dnBuildListKey('media') })}
             />
         </React.Fragment>
     );

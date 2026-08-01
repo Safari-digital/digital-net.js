@@ -1,4 +1,7 @@
 import * as React from 'react';
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from '@lexical/list';
+import { $createHeadingNode, $createQuoteNode, type HeadingTagType } from '@lexical/rich-text';
+import { $setBlocksType } from '@lexical/selection';
 import {
     $getSelection,
     $isRangeSelection,
@@ -6,9 +9,6 @@ import {
     FORMAT_TEXT_COMMAND,
     type LexicalEditor,
 } from 'lexical';
-import { $createHeadingNode, $createQuoteNode, type HeadingTagType } from '@lexical/rich-text';
-import { $setBlocksType } from '@lexical/selection';
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND } from '@lexical/list';
 
 export function useLexicalFormatters(editor: LexicalEditor) {
     const formatHeading = React.useCallback(

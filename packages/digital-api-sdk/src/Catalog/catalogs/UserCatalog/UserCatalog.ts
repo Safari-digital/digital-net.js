@@ -1,9 +1,9 @@
-import { CatalogRunner } from '../../CatalogRunner';
-import type { HttpClient } from '../../../HttpClient';
 import type { UserDto } from '../../../Dto';
+import type { HttpClient } from '../../../HttpClient';
 import type { Result } from '../../../Result';
+import { CatalogRunner } from '../../CatalogRunner';
 import type { CatalogCallbacks } from '../../types';
-import type { UpdatePasswordPayload, UpdateIsActive, UpdateIsAdmin } from './types';
+import type { UpdateIsActive, UpdateIsAdmin, UpdatePasswordPayload } from './types';
 
 export const DN_API_USER_BY_ID = 'user/:id' as const;
 export const DN_API_USER_SELF = 'user/self' as const;

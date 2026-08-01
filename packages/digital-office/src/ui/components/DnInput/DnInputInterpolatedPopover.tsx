@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Popper, Paper, MenuList, MenuItem, Typography, ClickAwayListener } from '@mui/material';
+import { ClickAwayListener, MenuItem, MenuList, Paper, Popper, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
-import { buildAvailableVariables } from './utils/interpolated';
 import { getVirtualAnchor } from './utils';
+import { buildAvailableVariables } from './utils/interpolated';
 
 export interface DnInputInterpolatedPopoverProps {
     anchorPosition: { top: number; left: number } | null;

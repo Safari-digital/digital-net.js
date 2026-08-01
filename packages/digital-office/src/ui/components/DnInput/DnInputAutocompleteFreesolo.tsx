@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Autocomplete, type AutocompleteProps, type SxProps, type Theme } from '@mui/material';
-import { DnBaseInput } from './DnBaseInput';
-import { DnBaseInputWrapper } from './DnBaseInputWrapper';
-import { DnBaseInputCount } from './DnBaseInputCount';
+import { BaseInput } from './BaseInput';
+import { BaseInputCount } from './BaseInputCount';
+import { BaseInputWrapper } from './BaseInputWrapper';
 import type { DnAutocompletePaperProps } from './DnInputAutocomplete';
 import { DnAutocompletePaper } from './DnInputAutocomplete';
 
@@ -81,8 +81,8 @@ export function DnInputAutocompleteFreesolo({
     };
 
     return (
-        <DnBaseInputWrapper>
-            <DnBaseInputCount value={inputValue.length} max={max} />
+        <BaseInputWrapper>
+            <BaseInputCount value={inputValue.length} max={max} />
             <Autocomplete<string, false, false, true>
                 {...autocompleteProps}
                 freeSolo
@@ -97,7 +97,7 @@ export function DnInputAutocompleteFreesolo({
                 slots={{ paper: DnAutocompletePaper }}
                 slotProps={{ paper: { renderListAction } as DnAutocompletePaperProps }}
                 renderInput={params => (
-                    <DnBaseInput
+                    <BaseInput
                         {...params}
                         label={label}
                         placeholder={placeholder}
@@ -108,6 +108,6 @@ export function DnInputAutocompleteFreesolo({
                     />
                 )}
             />
-        </DnBaseInputWrapper>
+        </BaseInputWrapper>
     );
 }

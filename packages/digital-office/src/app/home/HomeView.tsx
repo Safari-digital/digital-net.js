@@ -1,8 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
 import { Stack, Typography } from '@mui/material';
+import { useQuery } from '@tanstack/react-query';
 import type { ApplicationVersionDto } from '@digital-net-org/digital-api-sdk';
-import { DnView } from '../../ui';
 import { useDigitalNetApi } from '../../api';
+import { DnView } from '../../ui';
 import { useCustomNode } from '../custom-render';
 import { useVersion } from '../version';
 

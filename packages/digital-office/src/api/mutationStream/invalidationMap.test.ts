@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { resolveInvalidations } from './invalidationMap';
-import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
 import type { Query } from '@tanstack/react-query';
+import { describe, expect, it } from 'vitest';
+import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
+import { resolveInvalidations } from './invalidationMap';
 
 function signal(entity: string, entityId = 'id-1'): MutationSignal {
     return { type: 'Updated', entity, entityId };

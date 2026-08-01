@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Alert as MuiAlert, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { OpenGraphEntry, PageDto } from '@digital-net-org/digital-api-sdk';
-import { buildKeyFromId, useDigitalNetApi } from '../../../api';
-import { useDnEntityFormContext, useEntitySchema, DnEntityTabHelper } from '../../../entity';
+import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
+import { DnEntityTabHelper, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
 import { DnButton, DnDraggableList, DnExternalButton, DnLoadingView } from '../../../ui';
-import { useOgState } from './useOgState';
-import { useOgSchema } from './useOgSchema';
 import { EditOpenGraphRow } from './EditOpenGraphRow';
+import { useOgSchema } from './useOgSchema';
+import { useOgState } from './useOgState';
 
 const OG_DOC_URL = 'https://ogp.me/';
 
@@ -16,9 +16,9 @@ export function PageTabOpenGraph() {
     const api = useDigitalNetApi();
     const pageId = values.id;
 
-    const { schemas: ogEntrySchemas } = useEntitySchema('openGraphEntry');
+    const { schemas: ogEntrySchemas } = useDnEntitySchema('openGraphEntry');
     const { data: initialEntries, isLoading: isLoadingEntries } = useQuery<OpenGraphEntry[] | undefined>({
-        queryKey: [...buildKeyFromId('page', pageId!), 'openGraph'],
+        queryKey: [...dnBuildKeyFromId('page', pageId!), 'openGraph'],
         queryFn: async () => {
             const result = await api.catalog.page.getOpenGraphForEdit(pageId!);
             if (result.hasError) {

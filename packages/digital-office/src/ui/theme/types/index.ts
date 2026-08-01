@@ -1,1 +1,1 @@
-export * from './Severity';
+export * from './DnSeverity';

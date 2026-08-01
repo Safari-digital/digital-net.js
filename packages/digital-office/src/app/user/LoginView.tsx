@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import { DnInput, DnButton } from '../../ui';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDigitalNetApi } from '../../api';
-import { useLayout } from '../layout';
+import { DnButton, DnInput } from '../../ui';
+import { useDnLayout } from '../layout';
 import { useDigitalNetUser } from './useDigitalNetUser';
 
 const IS_LOCKED_KEY = 'dn_is_locked';
@@ -12,7 +12,7 @@ const PING_KEY = 'dn_ping';
 const PING_INTERVAL_MS = 30000;
 
 export function LoginView() {
-    const { AppLogo } = useLayout();
+    const { AppLogo } = useDnLayout();
     const api = useDigitalNetApi();
     const { login } = useDigitalNetUser();
     const queryClient = useQueryClient();

@@ -1,18 +1,13 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Stack } from '@mui/material';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router';
 import type { FormDto, FormSubmissionDto } from '@digital-net-org/digital-api-sdk';
-import { buildKeyFromId, useDigitalNetApi } from '../../../api';
-import { useDigitalToast } from '../../../app';
+import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
+import { useDnToast } from '../../../app';
 import { useDnEntityFormContext } from '../../../entity';
-import {
-    type DnColumnDefinition,
-    type DnPaginationState,
-    DnEntityTable,
-    formatDate,
-    formatEllipsis,
-} from '../../../ui';
+import { type DnColumnDefinition, DnEntityTable, type DnPaginationState } from '../../../ui';
+import { formatDate, formatEllipsis } from '../../../ui/format';
 
 const columns: DnColumnDefinition<FormSubmissionDto>[] = [
     { kind: 'computed', key: 'createdAt', label: 'Reçue le', compute: row => formatDate(row.createdAt) },
@@ -26,7 +21,7 @@ export function FormTabSubmissions() {
     const formId = values.id;
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
-    const { showToast } = useDigitalToast();
+    const { showToast } = useDnToast();
 
     const [pagination, setPagination] = React.useState<DnPaginationState>({
         page: 0,
@@ -35,7 +30,7 @@ export function FormTabSubmissions() {
     });
 
     const { data, isLoading } = useQuery({
-        queryKey: [...buildKeyFromId('form', formId!), 'submissions', pagination.page, pagination.rowsPerPage],
+        queryKey: [...dnBuildKeyFromId('form', formId!), 'submissions', pagination.page, pagination.rowsPerPage],
         queryFn: async () => {
             const result = await api.catalog.form.getSubmissions({
                 formId,
@@ -58,7 +53,7 @@ export function FormTabSubmissions() {
                 return false;
             }
             showToast(`${ids.size} soumission${ids.size > 1 ? 's' : ''} supprimée${ids.size > 1 ? 's' : ''}`, 'info');
-            await queryClient.invalidateQueries({ queryKey: [...buildKeyFromId('form', formId!), 'submissions'] });
+            await queryClient.invalidateQueries({ queryKey: [...dnBuildKeyFromId('form', formId!), 'submissions'] });
             return true;
         },
         [api.catalog.form, formId, queryClient, showToast]

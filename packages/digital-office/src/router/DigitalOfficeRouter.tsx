@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router';
+import { Outlet, RouterProvider, createBrowserRouter } from 'react-router';
 import { Layout, useDigitalNetUser } from '../app';
 import { DnLoadingView } from '../ui';
-import { Guards, AuthGuard, GuestGuard } from './guards';
-import { APP_ROUTES, ADMIN_ROUTES, CMS_ROUTES } from './routes';
+import { AuthGuard, Guards, GuestGuard } from './guards';
+import { ADMIN_ROUTES, APP_ROUTES, CMS_ROUTES } from './routes';
 import type { DigitalOfficeRoute } from './types';
 
 export interface DigitalOfficeRouterProps {

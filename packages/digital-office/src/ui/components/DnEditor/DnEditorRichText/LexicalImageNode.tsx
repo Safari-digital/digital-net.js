@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {
     $applyNodeReplacement,
-    DecoratorNode,
     type DOMConversionMap,
     type DOMExportOutput,
+    DecoratorNode,
     type EditorConfig,
     type LexicalNode,
     type NodeKey,
@@ -38,7 +38,12 @@ export class ImageNode extends DecoratorNode<React.JSX.Element> {
             img: () => ({
                 conversion: element => {
                     const img = element as HTMLImageElement;
-                    return { node: $createImageNode({ src: img.getAttribute('src') ?? '', alt: img.getAttribute('alt') ?? '' }) };
+                    return {
+                        node: $createImageNode({
+                            src: img.getAttribute('src') ?? '',
+                            alt: img.getAttribute('alt') ?? '',
+                        }),
+                    };
                 },
                 priority: 0,
             }),

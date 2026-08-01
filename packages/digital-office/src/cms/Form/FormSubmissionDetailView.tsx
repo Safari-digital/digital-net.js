@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { useNavigate, useParams } from 'react-router';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Box, Breadcrumbs, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, DeleteOutlined as DeleteIcon } from '@mui/icons-material';
+import { Box, Breadcrumbs, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router';
 import type { FormDto, FormFieldDto } from '@digital-net-org/digital-api-sdk';
-import { buildKeyFromId, useDigitalNetApi } from '../../api';
-import { DnLoadingView, DnView, formatDate } from '../../ui';
-import { NotFoundView, useDigitalToast } from '../../app';
+import { dnBuildKeyFromId, useDigitalNetApi } from '../../api';
+import { NotFoundView, useDnToast } from '../../app';
+import { DnLoadingView, DnView } from '../../ui';
+import { formatDate } from '../../ui/format';
 
 function parseValues(json: string): Record<string, string | null> {
     try {
@@ -41,10 +42,10 @@ export function FormSubmissionDetailView() {
     const navigate = useNavigate();
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
-    const { showToast } = useDigitalToast();
+    const { showToast } = useDnToast();
 
     const submissionQuery = useQuery({
-        queryKey: buildKeyFromId('formSubmission', id!),
+        queryKey: dnBuildKeyFromId('formSubmission', id!),
         queryFn: async () => {
             const result = await api.catalog.form.getSubmissionById(id!);
             if (result.hasError) throw new Error(result.errors?.[0]?.message ?? 'Failed to fetch submission');
@@ -55,7 +56,7 @@ export function FormSubmissionDetailView() {
     });
 
     const formQuery = useQuery({
-        queryKey: buildKeyFromId('form', formId!),
+        queryKey: dnBuildKeyFromId('form', formId!),
         queryFn: async () => {
             const result = await api.catalog.crud.getById<FormDto>('form', formId!);
             if (result.hasError) throw new Error(result.errors?.[0]?.message ?? 'Failed to fetch form');
@@ -73,7 +74,7 @@ export function FormSubmissionDetailView() {
             return;
         }
         showToast('Soumission supprimée', 'info');
-        await queryClient.invalidateQueries({ queryKey: buildKeyFromId('formSubmission', id) });
+        await queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('formSubmission', id) });
         navigate(`/content-manager/forms/${formId}`);
     }, [api.catalog, formId, id, navigate, queryClient, showToast]);
 

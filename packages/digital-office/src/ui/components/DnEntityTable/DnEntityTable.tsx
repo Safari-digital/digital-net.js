@@ -1,32 +1,32 @@
 import * as React from 'react';
-import { css, styled } from '@mui/material/styles';
 import {
-    alpha,
     Checkbox,
-    Paper,
-    Stack,
     Table as MuiTable,
     TableBody as MuiTableBody,
     TableCell as MuiTableCell,
-    TableContainer,
     TableHead as MuiTableHead,
     TablePagination as MuiTablePagination,
     TableRow as MuiTableRow,
+    Paper,
+    Stack,
+    TableContainer,
     TableSortLabel,
     Typography,
+    alpha,
 } from '@mui/material';
+import { css, styled } from '@mui/material/styles';
 import type { Entity, JsonPatchOp, SchemaProperty } from '@digital-net-org/digital-api-sdk';
-import { DnEntityTableToolbar } from './DnEntityTableToolbar';
-import { type DnColumnDefinition, type ResolvedColumn, resolveColumns } from './resolveColumns';
 import { DnDialog } from '../DnDialog';
+import { EntityTableToolbar } from './EntityTableToolbar';
+import { type DnColumnDefinition, type DnResolvedColumn, resolveColumns } from './resolveColumns';
 
 export interface DnRowDraftInfo {
     ops: JsonPatchOp[];
 }
 
-export type { DnColumnDefinition, ResolvedColumn };
+export type { DnColumnDefinition, DnResolvedColumn };
 
-export type DnRenderCell<T> = (_col: ResolvedColumn<T>, _value: unknown, _row: T) => React.ReactNode;
+export type DnRenderCell<T> = (_col: DnResolvedColumn<T>, _value: unknown, _row: T) => React.ReactNode;
 
 export interface DnPaginationState {
     /** 0-based page index (MUI TablePagination convention). API `QueryResult.index` is 1-based. */
@@ -165,7 +165,7 @@ export function DnEntityTable<T extends Entity>({
                     onPageChange={handlePageChange}
                     onRowsPerPageChange={handleRowsPerPageChange}
                 />
-                <DnEntityTableToolbar
+                <EntityTableToolbar
                     selectedCount={selectedIds.size}
                     onDelete={() => setConfirmOpen(true)}
                     onCreate={onCreate}

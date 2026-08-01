@@ -1,8 +1,8 @@
-import { CatalogRunner } from '../../CatalogRunner';
-import type { HttpClient } from '../../../HttpClient';
 import type { ConfigValueDto } from '../../../Dto';
+import type { HttpClient } from '../../../HttpClient';
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { Result } from '../../../Result';
+import { CatalogRunner } from '../../CatalogRunner';
 import type { CatalogCallbacks } from '../../types';
 import type { ConfigValuePayload } from './types';
 

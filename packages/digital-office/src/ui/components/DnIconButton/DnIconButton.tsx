@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Badge, IconButton, Tooltip, type IconButtonProps, type TooltipProps } from '@mui/material';
+import { Badge, IconButton, type IconButtonProps, Tooltip, type TooltipProps } from '@mui/material';
 
 export interface DnIconButtonProps extends Pick<
     IconButtonProps,

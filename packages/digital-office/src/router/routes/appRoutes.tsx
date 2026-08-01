@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { ROUTER_HOME_PAGE, ROUTER_LOGIN_PAGE } from './routes';
-import type { DigitalOfficeRoute } from '../types';
 import { HomeView, LoginView, NotFoundView } from '../../app';
+import type { DigitalOfficeRoute } from '../types';
+import { ROUTER_HOME_PAGE, ROUTER_LOGIN_PAGE } from './routes';
 
 export const APP_ROUTES: DigitalOfficeRoute[] = [
     {

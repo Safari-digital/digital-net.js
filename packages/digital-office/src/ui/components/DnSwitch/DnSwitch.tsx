@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { type SwitchProps, styled, Switch } from '@mui/material';
+import { Switch, type SwitchProps, styled } from '@mui/material';
 
 export interface DnSwitchProps extends Pick<
     SwitchProps,
