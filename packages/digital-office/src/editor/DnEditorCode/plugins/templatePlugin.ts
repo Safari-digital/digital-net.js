@@ -1,4 +1,4 @@
-import { validateInterpolatedString } from '../../../DnInput/utils/interpolated';
+import { validateInterpolatedString } from '../../../ui/components/DnInput/utils/interpolated';
 import type { DnEditorTemplateVariable } from '../../types';
 import { createTemplateCompleter } from '../aceTemplateCompleter';
 import type { EditorPlugin } from './types';

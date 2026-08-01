@@ -4,7 +4,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { $findMatchingParent } from '@lexical/utils';
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import { $getNearestNodeFromDOMNode, $getNodeByKey, type LexicalEditor, type NodeKey } from 'lexical';
-import { ContextMenu, type ContextMenuItem, useContextMenu } from '../../ContextMenu';
+import { ContextMenu, type ContextMenuItem, useContextMenu } from '../../ui/components/ContextMenu';
 import { $isImageNode } from './LexicalImageNode';
 import { OPEN_IMAGE_DIALOG_COMMAND, OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 

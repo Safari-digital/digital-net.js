@@ -3,7 +3,7 @@ import { Box, Collapse, FormControlLabel, MenuItem, Stack, TextField } from '@mu
 import { css, styled } from '@mui/material/styles';
 import type { SheetType } from '@digital-net-org/digital-api-sdk';
 import { DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
-import { LazyDnEditorCode } from '../../../ui/components/DnEditor';
+import { LazyDnEditorCode } from '../../../editor';
 import { usePageVariables } from './usePageVariables';
 import type { SheetRow } from './useSheetsState';
 

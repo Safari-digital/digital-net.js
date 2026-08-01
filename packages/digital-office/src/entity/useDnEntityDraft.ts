@@ -1,6 +1,7 @@
 import React from 'react';
 import { type Entity, JsonPatch, type JsonPatchOp } from '@digital-net-org/digital-api-sdk';
 import { IDbStore, IdbContext } from '../storage';
+import { pathToAccessor } from './pathToAccessor';
 import type { EntityDraftRecord } from './types';
 
 const PERSIST_DEBOUNCE_MS = 500;
@@ -19,11 +20,6 @@ export interface UseDnEntityDraftResult<T extends Entity> {
     setField: (_path: string, _value: unknown) => void;
     discard: () => Promise<void>;
     commit: () => Promise<void>;
-}
-
-function pathToAccessor(path: string): string {
-    if (!path.startsWith('/')) return path;
-    return path.slice(1).split('/')[0];
 }
 
 export function useDnEntityDraft<T extends Entity>(

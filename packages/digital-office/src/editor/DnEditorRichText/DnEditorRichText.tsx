@@ -11,7 +11,7 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { Box } from '@mui/material';
 import { $getRoot, $insertNodes, $setSelection, BLUR_COMMAND, COMMAND_PRIORITY_LOW } from 'lexical';
-import { useDebouncedCallback } from '../../../hooks';
+import { useDebouncedCallback } from '../../ui/hooks';
 import type { DnEditorBaseProps } from '../types';
 import { LexicalContextMenuPlugin } from './LexicalContextMenuPlugin';
 import { LexicalImageContext } from './LexicalImageContext';

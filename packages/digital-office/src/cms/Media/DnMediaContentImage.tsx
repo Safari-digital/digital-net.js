@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { useDigitalNetApi } from '../../api';
-import type { DnEditorRichTextImageAttrs } from '../../ui/components/DnEditor';
+import type { DnEditorRichTextImageAttrs } from '../../editor';
 import { dnParseMediaImageUrl } from './dnParseMediaImageUrl';
 
 export type DnMediaContentImageProps = DnEditorRichTextImageAttrs;

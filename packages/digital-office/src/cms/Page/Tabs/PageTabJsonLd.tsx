@@ -3,7 +3,7 @@ import { Stack } from '@mui/material';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityTabHelper, useDnEntityFormContext } from '../../../entity';
 import { DnExternalButton } from '../../../ui';
-import { LazyDnEditorCode } from '../../../ui/components/DnEditor';
+import { LazyDnEditorCode } from '../../../editor';
 import { usePageVariables } from './usePageVariables';
 
 const JSON_LD_DOC_URL = 'https://developers.google.com/search/docs/appearance/structured-data/search-gallery';

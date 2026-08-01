@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, dnBuildListKey, useDigitalNetApi } from '../../api';
 import { DnButton, DnDialog, DnInput } from '../../ui';
-import type { DnEditorRichTextImageDialogProps } from '../../ui/components/DnEditor';
+import type { DnEditorRichTextImageDialogProps } from '../../editor';
 import { DnMediaImportDialog } from './DnMediaImportDialog';
 import { DnMediaPicker } from './DnMediaPicker';
 import { dnParseMediaImageUrl } from './dnParseMediaImageUrl';

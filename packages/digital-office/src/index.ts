@@ -80,8 +80,11 @@ export {
 } from './cms/Media';
 
 export {
+    DnContentEditor,
     LazyDnEditorCode,
     LazyDnEditorRichText,
+    type DnContentEditorMode,
+    type DnContentEditorProps,
     type DnEditorBaseProps,
     type DnEditorCodeProps,
     type DnEditorLanguage,
@@ -89,4 +92,4 @@ export {
     type DnEditorRichTextImageDialogProps,
     type DnEditorRichTextProps,
     type DnEditorTemplateVariable,
-} from './ui/components/DnEditor';
+} from './editor';

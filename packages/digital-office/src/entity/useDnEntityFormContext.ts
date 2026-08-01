@@ -12,7 +12,7 @@ export interface DnEntityFormBinding<T> {
 
 export const EntityFormContext = React.createContext<DnEntityFormBinding<unknown> | null>(null);
 
-export function useDnEntityFormContext<T>(): DnEntityFormBinding<T> {
+export function useDnEntityFormContext<T = Record<string, unknown>>(): DnEntityFormBinding<T> {
     const context = React.useContext(EntityFormContext);
     if (!context) {
         throw new Error('useDnEntityFormContext must be used within a DnEntityFormProvider.');

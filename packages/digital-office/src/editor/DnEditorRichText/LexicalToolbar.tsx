@@ -19,7 +19,7 @@ import {
     Undo as UndoIcon,
 } from '@mui/icons-material';
 import { Stack, css, styled } from '@mui/material';
-import { DnIconButton } from '../../DnIconButton';
+import { DnIconButton } from '../../ui/components/DnIconButton';
 import { LexicalToolbarDivider } from './LexicalToolbarDivider';
 import { OPEN_IMAGE_DIALOG_COMMAND, OPEN_LINK_DIALOG_COMMAND } from './lexicalCommands';
 import { LEXICAL_HEADING_LEVELS } from './lexicalConfig';
