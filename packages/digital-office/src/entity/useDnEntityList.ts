@@ -48,7 +48,14 @@ export function useDnEntityList<T extends Entity>(
     }, [filterValues]);
 
     const { data: entitiesResult, isLoading } = useQuery<QueryResult<T>>({
-        queryKey: [...dnBuildListKey(entityName), urlPage, query.row, query.orderBy, query.order, activeFilters],
+        queryKey: [
+            ...dnBuildListKey(entityName, apiPath),
+            urlPage,
+            query.row,
+            query.orderBy,
+            query.order,
+            activeFilters,
+        ],
         queryFn: async () => {
             if (!resolvedPath) {
                 throw new Error(`useDnEntityList: no API path for entity "${entityName}" — pass apiPath.`);

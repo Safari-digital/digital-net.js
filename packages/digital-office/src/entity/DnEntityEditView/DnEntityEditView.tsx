@@ -76,7 +76,7 @@ export function DnEntityEditView<T extends Entity>({
         isFetching,
         isError,
     } = useQuery<T | undefined>({
-        queryKey: dnBuildKeyFromId(entityName, id!),
+        queryKey: dnBuildKeyFromId(entityName, id!, apiPath),
         queryFn: async () => {
             const get =
                 onGet ??
@@ -142,13 +142,13 @@ export function DnEntityEditView<T extends Entity>({
           };
 
     const invalidateList = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: dnBuildListKey(entityName) }),
-        [entityName, queryClient]
+        () => queryClient.invalidateQueries({ queryKey: dnBuildListKey(entityName, apiPath) }),
+        [apiPath, entityName, queryClient]
     );
 
     const invalidateGet = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId(entityName, id!) }),
-        [queryClient, entityName, id]
+        () => queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId(entityName, id!, apiPath) }),
+        [apiPath, queryClient, entityName, id]
     );
 
     const handleReload = React.useCallback(async () => {

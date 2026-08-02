@@ -145,7 +145,7 @@ export function useDnEntityDelete<T extends Entity>({
                 for (const r of results) if (!r.success) failures.push(r.target);
             }
 
-            await queryClient.invalidateQueries({ queryKey: dnBuildListKey(entityName) });
+            await queryClient.invalidateQueries({ queryKey: dnBuildListKey(entityName, apiPath) });
             setPasswordDialogOpen(false);
             setIsDeleting(false);
             showFeedback(failures, targets.length);
