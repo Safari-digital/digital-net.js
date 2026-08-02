@@ -24,7 +24,8 @@ interface DeleteTarget {
 type DeleteResult = { success: true; target: DeleteTarget } | { success: false; target: DeleteTarget; error: unknown };
 
 export interface UseDnEntityDeleteOptions<T extends Entity> {
-    entityName: EntityName;
+    entityName: string;
+    apiPath?: string;
     entitiesResult: QueryResult<T> | undefined;
     identifier: DnEntityIdentifier;
     identifierAccessor: keyof T;
@@ -49,14 +50,12 @@ export interface UseDnEntityDeleteResult {
 export function useDnEntityDelete<T extends Entity>({
     entitiesResult,
     entityName,
+    apiPath,
     identifier,
     identifierAccessor,
     protectedDelete,
 }: UseDnEntityDeleteOptions<T>): UseDnEntityDeleteResult {
-    const apiPath = resolveEntityPath(entityName);
-    if (!apiPath) {
-        throw new Error('useDnEntityList: could not resolve entity list API path.');
-    }
+    const resolvedPath = apiPath ?? resolveEntityPath(entityName as EntityName);
 
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
@@ -87,9 +86,12 @@ export function useDnEntityDelete<T extends Entity>({
     const deleteOne = React.useCallback(
         async (target: DeleteTarget, password?: string): Promise<DeleteResult> => {
             try {
+                if (!resolvedPath) {
+                    throw new Error(`useDnEntityDelete: no API path for entity "${entityName}" — pass apiPath.`);
+                }
                 await api.http.request({
                     method: 'DELETE',
-                    path: URLResolver.resolve(apiPath, ':id'),
+                    path: URLResolver.resolve(resolvedPath, ':id'),
                     slugs: { id: target.id },
                     ...(password ? { body: { password } } : {}),
                 });
@@ -98,7 +100,7 @@ export function useDnEntityDelete<T extends Entity>({
                 return { success: false, target, error };
             }
         },
-        [api.http, apiPath]
+        [api.http, entityName, resolvedPath]
     );
 
     const showFeedback = React.useCallback(

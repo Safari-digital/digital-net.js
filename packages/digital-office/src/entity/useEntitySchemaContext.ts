@@ -1,11 +1,11 @@
 import * as React from 'react';
-import type { EntityName, SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
 
 export interface EntitySchemaContextValue {
-    schemas: Partial<Record<EntityName, SchemaProperty[]>>;
-    errors: Partial<Record<EntityName, Error>>;
-    loadingEntities: ReadonlySet<EntityName>;
-    loadSchema: (_entityName: EntityName) => void;
+    schemas: Partial<Record<string, SchemaProperty[]>>;
+    errors: Partial<Record<string, Error>>;
+    loadingEntities: ReadonlySet<string>;
+    loadSchema: (_entityName: string, _apiPath: string) => void;
 }
 
 export const EntitySchemaContext = React.createContext<EntitySchemaContextValue | null>(null);

@@ -65,4 +65,26 @@ describe('resolveInvalidations', () => {
         expect(resolveInvalidations(signal('page', 'p1'))).toEqual([{ queryKey: ['page'] }]);
         expect(resolveInvalidations(signal('FORMFIELD'))).toEqual([{ queryKey: ['form'] }]);
     });
+
+    it('maps a client CLR entity through its injected rule', () => {
+        expect(resolveInvalidations(signal('Ticket'), undefined, { Ticket: [['ticket']] })).toEqual([
+            { queryKey: ['ticket'] },
+        ]);
+    });
+
+    it('prepends injected rules to the registry resolution of a known entity', () => {
+        expect(resolveInvalidations(signal('Page'), undefined, { Page: [['landing'], ['sitemap']] })).toEqual([
+            { queryKey: ['landing'] },
+            { queryKey: ['sitemap'] },
+            { queryKey: ['page'] },
+        ]);
+    });
+
+    it('matches rule keys on the exact CLR casing only', () => {
+        expect(resolveInvalidations(signal('ticket'), undefined, { Ticket: [['ticket']] })).toEqual([]);
+    });
+
+    it('still ignores unknown entities without a rule', () => {
+        expect(resolveInvalidations(signal('Ticket'), undefined, {})).toEqual([]);
+    });
 });

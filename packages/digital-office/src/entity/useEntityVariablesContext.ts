@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
 
-export type EntityVariableKey = 'page:article';
+export type EntityVariableKey = string;
 
 export interface EntityVariablesContextValue {
     variables: Partial<Record<EntityVariableKey, TemplateVariable[]>>;

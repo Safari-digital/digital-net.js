@@ -11,15 +11,10 @@ export interface IdbContextValue extends IDbConfig {
 }
 
 export const DRAFT_STORES = ['pages', 'tags', 'media', 'articles', 'forms'] as const;
-const DRAFTS_DB_CONFIG: IDbConfig = {
-    name: 'office-drafts',
-    version: 5,
-    stores: DRAFT_STORES.map(name => `patch:${name}`),
-};
+const DRAFTS_DB_NAME = 'office-drafts';
 
 export const IdbContext = React.createContext<IdbContextValue>({
     name: '',
-    version: 0,
     stores: [],
     database: null,
     isLoading: false,
@@ -28,17 +23,30 @@ export const IdbContext = React.createContext<IdbContextValue>({
     notifyDraftChange: () => undefined,
 });
 
-export function IdbProvider({ children }: React.PropsWithChildren) {
+export interface IdbProviderProps {
+    children: React.ReactNode;
+    draftStores?: ReadonlyArray<string>;
+}
+
+export function IdbProvider({ draftStores, children }: IdbProviderProps) {
     const [database, setDatabase] = React.useState<IDBDatabase | null>(null);
     const [isLoading, setIsLoading] = React.useState(true);
     const [hasError, setHasError] = React.useState(false);
     const [draftBump, setDraftBump] = React.useState(0);
 
+    const stores = React.useMemo(
+        () => [...new Set([...DRAFT_STORES, ...(draftStores ?? [])])].map(name => `patch:${name}`),
+        [draftStores]
+    );
+
     React.useEffect(() => {
         let cancelled = false;
+        let db: IDBDatabase | null = null;
+        setIsLoading(true);
+        setHasError(false);
         (async () => {
             try {
-                const db = await IDbAccessor.initDatabase(DRAFTS_DB_CONFIG);
+                db = await IDbAccessor.initDatabase({ name: DRAFTS_DB_NAME, stores });
                 if (cancelled) {
                     db.close();
                     return;
@@ -53,14 +61,15 @@ export function IdbProvider({ children }: React.PropsWithChildren) {
         })();
         return () => {
             cancelled = true;
+            db?.close();
         };
-    }, []);
+    }, [stores]);
 
     const notifyDraftChange = React.useCallback(() => setDraftBump(n => n + 1), []);
 
     const value = React.useMemo<IdbContextValue>(
-        () => ({ ...DRAFTS_DB_CONFIG, database, isLoading, hasError, draftBump, notifyDraftChange }),
-        [database, isLoading, hasError, draftBump, notifyDraftChange]
+        () => ({ name: DRAFTS_DB_NAME, stores, database, isLoading, hasError, draftBump, notifyDraftChange }),
+        [stores, database, isLoading, hasError, draftBump, notifyDraftChange]
     );
 
     return <IdbContext.Provider value={value}>{children}</IdbContext.Provider>;

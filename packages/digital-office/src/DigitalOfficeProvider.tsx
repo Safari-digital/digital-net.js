@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
-import { DigitalNetApiProvider, MutationStreamProvider } from './api';
+import { DigitalNetApiProvider, type DnInvalidationRules, MutationStreamProvider } from './api';
 import {
     CustomRenderProvider,
     DigitalNetUserProvider,
@@ -20,17 +20,27 @@ export interface DigitalOfficeProviderProps {
     children: React.ReactNode;
     appLogo?: React.ReactNode;
     customRender?: DnCustomViewDict;
+    draftStores?: ReadonlyArray<string>;
+    invalidationRules?: DnInvalidationRules;
     version?: DnVersion;
 }
 
-export function DigitalOfficeProvider({ api, appLogo, customRender, version, children }: DigitalOfficeProviderProps) {
+export function DigitalOfficeProvider({
+    api,
+    appLogo,
+    customRender,
+    draftStores,
+    invalidationRules,
+    version,
+    children,
+}: DigitalOfficeProviderProps) {
     return (
         <DigitalNetApiProvider api={api}>
             <ThemeProvider>
                 <ToastProvider>
                     <DigitalNetUserProvider>
-                        <MutationStreamProvider>
-                            <IdbProvider>
+                        <MutationStreamProvider invalidationRules={invalidationRules}>
+                            <IdbProvider draftStores={draftStores}>
                                 <EntitySchemaProvider>
                                     <OgSchemaProvider>
                                         <EntityVariablesProvider>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { Entity, EntityName } from '@digital-net-org/digital-api-sdk';
+import type { Entity } from '@digital-net-org/digital-api-sdk';
 import { type DnColumnDefinition, DnEntityTable, type DnFilterDefinition, type DnRenderCell, DnView } from '../../ui';
 import { DialogConfirmPassword } from '../../ui/components/DialogConfirmPassword';
 import { formatDate } from '../../ui/format';
@@ -25,7 +25,8 @@ export interface DnEntityListViewProps<T extends Entity> {
     description: string;
     identifier: DnEntityIdentifier;
     identifierAccessor: keyof T;
-    entityName: EntityName;
+    entityName: string;
+    apiPath?: string;
     draftStoreName?: string;
     columns?: DnColumnDefinition<T>[];
     filters?: DnFilterDefinition[];
@@ -40,6 +41,7 @@ export function DnEntityListView<T extends Entity>({
     identifier,
     identifierAccessor,
     entityName,
+    apiPath,
     draftStoreName,
     columns,
     filters,
@@ -47,7 +49,7 @@ export function DnEntityListView<T extends Entity>({
     onRowClick,
     onCreate,
 }: DnEntityListViewProps<T>) {
-    const { schemas, loading: isSchemaLoading } = useDnEntitySchema(entityName);
+    const { schemas, loading: isSchemaLoading } = useDnEntitySchema(entityName, apiPath);
 
     const {
         entitiesResult,
@@ -60,10 +62,11 @@ export function DnEntityListView<T extends Entity>({
         setFilterValues,
         resetFilters,
         activeFilterCount,
-    } = useDnEntityList<T>(entityName, filters);
+    } = useDnEntityList<T>(entityName, filters, apiPath);
 
     const { handleDelete, passwordDialog, failureDialog } = useDnEntityDelete<T>({
         entityName,
+        apiPath,
         entitiesResult,
         identifier,
         identifierAccessor,

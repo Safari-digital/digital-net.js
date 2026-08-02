@@ -8,7 +8,14 @@ export {
     type DigitalOfficeRouterProps,
 } from './router';
 
-export { DN_KEY_ENTITY_GET, DN_KEY_ENTITY_LIST, dnBuildKeyFromId, dnBuildListKey, useDigitalNetApi } from './api';
+export {
+    DN_KEY_ENTITY_GET,
+    DN_KEY_ENTITY_LIST,
+    dnBuildKeyFromId,
+    dnBuildListKey,
+    useDigitalNetApi,
+    type DnInvalidationRules,
+} from './api';
 
 export {
     useDigitalNetUser,

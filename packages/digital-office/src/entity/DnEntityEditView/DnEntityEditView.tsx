@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
 import {
-    type CrudEntityName,
+    CRUD_ENTITY_NAMES,
     type Entity,
     type JsonPatchOp,
     type Result,
@@ -12,7 +12,6 @@ import {
 import { dnBuildKeyFromId, dnBuildListKey, useDigitalNetApi } from '../../api';
 import { NotFoundView, useDnToast } from '../../app';
 import { useDnRouterBlocker } from '../../navigation';
-import type { DRAFT_STORES } from '../../storage';
 import { DnDialog, DnLoadingView, type DnViewTab } from '../../ui';
 import { DnEntityFormProvider } from '../DnEntityFormProvider';
 import { EntityView } from '../EntityView';
@@ -30,10 +29,11 @@ import {
 } from './identifier';
 
 export interface DnEntityEditViewProps<T extends Entity> {
-    entityName: CrudEntityName;
+    entityName: string;
+    apiPath?: string;
     identifier: DnEntityIdentifier;
     identifierAccessor: keyof T;
-    draftStoreName: (typeof DRAFT_STORES)[number];
+    draftStoreName: string;
     tabs: DnViewTab[];
     description?: string;
     onGet?: (_id: string) => Promise<Result<T>>;
@@ -46,6 +46,7 @@ export interface DnEntityEditViewProps<T extends Entity> {
 
 export function DnEntityEditView<T extends Entity>({
     entityName,
+    apiPath,
     identifier,
     identifierAccessor,
     draftStoreName,
@@ -67,6 +68,8 @@ export function DnEntityEditView<T extends Entity>({
 
     const { showToast } = useDnToast();
 
+    const crudEntityName = CRUD_ENTITY_NAMES.find(name => name === entityName);
+
     const {
         data: entity,
         isLoading,
@@ -75,7 +78,13 @@ export function DnEntityEditView<T extends Entity>({
     } = useQuery<T | undefined>({
         queryKey: dnBuildKeyFromId(entityName, id!),
         queryFn: async () => {
-            const result = onGet ? await onGet(id!) : await api.catalog.crud.getById<T>(entityName, id!);
+            const get =
+                onGet ??
+                (crudEntityName && ((entityId: string) => api.catalog.crud.getById<T>(crudEntityName, entityId)));
+            if (!get) {
+                throw new Error(`DnEntityEditView: entity "${entityName}" has no SDK CRUD endpoint — pass onGet.`);
+            }
+            const result = await get(id!);
             if (result.hasError) {
                 throw new Error(result.errors?.[0]?.message ?? `Failed to fetch ${entityName}`);
             }
@@ -87,7 +96,7 @@ export function DnEntityEditView<T extends Entity>({
 
     const edit = useDnEntityDraft<T>(draftStoreName, id, entity, { enabled: !isNew });
     const create = useEntityFormState<T>();
-    const { schemas } = useDnEntitySchema(entityName);
+    const { schemas } = useDnEntitySchema(entityName, apiPath);
 
     const [isSaving, setIsSaving] = React.useState(false);
     const [isDeleting, setIsDeleting] = React.useState(false);
@@ -179,9 +188,16 @@ export function DnEntityEditView<T extends Entity>({
                 navigate(`${redirectPath}/${created.value}`);
                 return;
             }
-            const updated = onUpdate
-                ? await onUpdate(id, edit.ops)
-                : await api.catalog.crud.patchById(entityName, id, edit.ops);
+            const update =
+                onUpdate ??
+                (crudEntityName &&
+                    ((entityId: string, ops: JsonPatchOp[]) =>
+                        api.catalog.crud.patchById(crudEntityName, entityId, ops)));
+            if (!update) {
+                showToast('Cet élément ne peut pas être modifié sur cette page.', 'error');
+                return;
+            }
+            const updated = await update(id, edit.ops);
             if (updated.hasError) {
                 showToast('Erreur lors de la sauvegarde', 'error');
                 return;
@@ -196,8 +212,8 @@ export function DnEntityEditView<T extends Entity>({
     }, [
         api.catalog,
         create.values,
+        crudEntityName,
         edit,
-        entityName,
         id,
         identifier,
         invalidateGet,
@@ -218,7 +234,14 @@ export function DnEntityEditView<T extends Entity>({
         if (!id) return;
         setIsDeleting(true);
         try {
-            const result = onDelete ? await onDelete(id) : await api.catalog.crud.deleteById(entityName, id);
+            const del =
+                onDelete ??
+                (crudEntityName && ((entityId: string) => api.catalog.crud.deleteById(crudEntityName, entityId)));
+            if (!del) {
+                showToast('Cet élément ne peut pas être supprimé sur cette page.', 'error');
+                return;
+            }
+            const result = await del(id);
             if (result.hasError) {
                 showToast('Erreur lors de la suppression', 'error');
                 return;
@@ -230,7 +253,18 @@ export function DnEntityEditView<T extends Entity>({
         } finally {
             setIsDeleting(false);
         }
-    }, [api.catalog, edit, entityName, id, identifier, invalidateList, navigate, onDelete, redirectPath, showToast]);
+    }, [
+        api.catalog,
+        crudEntityName,
+        edit,
+        id,
+        identifier,
+        invalidateList,
+        navigate,
+        onDelete,
+        redirectPath,
+        showToast,
+    ]);
 
     if (!isNew && isLoading) return <DnLoadingView />;
     if (!isNew && isError) return <NotFoundView />;

@@ -39,6 +39,7 @@ exports[`public surface > exports of "." are stable 1`] = `
   "DnEntityListViewProps",
   "DnEntityTabHelper",
   "DnEntityTabHelperProps",
+  "DnInvalidationRules",
   "DnLayoutContextValue",
   "DnMediaContentImage",
   "DnMediaContentImageProps",

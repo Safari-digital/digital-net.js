@@ -4,7 +4,7 @@ import { MutationStreamClient } from '@digital-net-org/digital-api-sdk';
 import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
 import { useDigitalNetUser } from '../../app';
 import { useDigitalNetApi } from '../useDigitalNetApi';
-import { type InvalidationFilter, resolveInvalidations } from './invalidationMap';
+import { type DnInvalidationRules, type InvalidationFilter, resolveInvalidations } from './invalidationMap';
 
 const FLUSH_DELAY_MS = 250;
 const SIGNAL_CHANNEL = 'dn-mutation-signals';
@@ -13,16 +13,23 @@ const LEADER_LOCK = 'dn-mutation-sse-leader';
 // One stream per browser: the tab holding this exclusive Web Lock is the "leader" and owns
 // the single SSE connection. It rebroadcasts every signal on this channel so follower tabs invalidate too.
 
-export function MutationStreamProvider({ children }: { children: React.ReactNode }) {
+export interface MutationStreamProviderProps {
+    children: React.ReactNode;
+    invalidationRules?: DnInvalidationRules;
+}
+
+export function MutationStreamProvider({ invalidationRules, children }: MutationStreamProviderProps) {
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
     const { user } = useDigitalNetUser();
     const userId = user?.id;
     const clientId = api.http.getClientId();
 
-    // Latest user id, kept available to the stable signal handler (never read/written during render).
+    // Latest user id and rules, kept available to the stable signal handler (never read/written during render).
     const userIdRef = React.useRef<string | undefined>(undefined);
     React.useEffect(() => void (userIdRef.current = userId));
+    const rulesRef = React.useRef<DnInvalidationRules | undefined>(undefined);
+    React.useEffect(() => void (rulesRef.current = invalidationRules));
 
     const pendingRef = React.useRef(new Map<string, InvalidationFilter>());
     const flushTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -41,7 +48,7 @@ export function MutationStreamProvider({ children }: { children: React.ReactNode
             // Drop only this tab's own echo. The server stamps each live signal with the originating tab's
             // client id.
             if (signal.originClientId && signal.originClientId === clientId) return;
-            for (const filter of resolveInvalidations(signal, userIdRef.current)) {
+            for (const filter of resolveInvalidations(signal, userIdRef.current, rulesRef.current)) {
                 const key = filter.queryKey ? JSON.stringify(filter.queryKey) : `predicate:${signal.entity}`;
                 pendingRef.current.set(key, filter);
             }

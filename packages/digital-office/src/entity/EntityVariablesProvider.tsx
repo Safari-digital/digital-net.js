@@ -21,7 +21,7 @@ export function EntityVariablesProvider({ children }: DnEntityVariablesProviderP
     const inFlightRef = React.useRef<Set<EntityVariableKey>>(new Set());
     const loadedRef = React.useRef<Set<EntityVariableKey>>(new Set());
 
-    const registry = React.useMemo<Record<EntityVariableKey, Fetcher>>(
+    const registry = React.useMemo<Partial<Record<EntityVariableKey, Fetcher>>>(
         () => ({
             'page:article': () => api.catalog.page.getTemplateVariables('Article'),
         }),
@@ -31,6 +31,12 @@ export function EntityVariablesProvider({ children }: DnEntityVariablesProviderP
     const loadVariables = React.useCallback(
         (key: EntityVariableKey) => {
             if (loadedRef.current.has(key) || inFlightRef.current.has(key)) return;
+            const fetcher = registry[key];
+            if (!fetcher) {
+                loadedRef.current.add(key);
+                setVariables(prev => ({ ...prev, [key]: [] }));
+                return;
+            }
             inFlightRef.current.add(key);
             setLoadingKeys(prev => {
                 const next = new Set(prev);
@@ -38,7 +44,7 @@ export function EntityVariablesProvider({ children }: DnEntityVariablesProviderP
                 return next;
             });
             (async () => {
-                const result = await registry[key]();
+                const result = await fetcher();
                 loadedRef.current.add(key);
                 inFlightRef.current.delete(key);
                 if (result.hasError) {

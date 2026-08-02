@@ -19,13 +19,11 @@ export interface UseDnEntityListResult<T extends Entity> {
 }
 
 export function useDnEntityList<T extends Entity>(
-    entityName: EntityName,
-    filters?: DnFilterDefinition[]
+    entityName: string,
+    filters?: DnFilterDefinition[],
+    apiPath?: string
 ): UseDnEntityListResult<T> {
-    const apiPath = resolveEntityPath(entityName);
-    if (!apiPath) {
-        throw new Error('useDnEntityList: could not resolve entity list API path.');
-    }
+    const resolvedPath = apiPath ?? resolveEntityPath(entityName as EntityName);
 
     const api = useDigitalNetApi();
     const [query, setQuery] = useDnUrlQueryState({
@@ -52,8 +50,11 @@ export function useDnEntityList<T extends Entity>(
     const { data: entitiesResult, isLoading } = useQuery<QueryResult<T>>({
         queryKey: [...dnBuildListKey(entityName), urlPage, query.row, query.orderBy, query.order, activeFilters],
         queryFn: async () => {
+            if (!resolvedPath) {
+                throw new Error(`useDnEntityList: no API path for entity "${entityName}" — pass apiPath.`);
+            }
             const result = await api.http.request<QueryResult<T>>({
-                path: apiPath,
+                path: resolvedPath,
                 params: {
                     index: urlPage + 1,
                     size: query.row,

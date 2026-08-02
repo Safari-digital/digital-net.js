@@ -6,7 +6,19 @@ export interface InvalidationFilter {
     predicate?: (_query: Query) => boolean;
 }
 
-export function resolveInvalidations(signal: MutationSignal, currentUserId?: string): InvalidationFilter[] {
+/** Additional invalidation rules: backend CLR entity type (exact match, e.g. `Ticket`) → query key prefixes. */
+export type DnInvalidationRules = Readonly<Record<string, ReadonlyArray<readonly unknown[]>>>;
+
+export function resolveInvalidations(
+    signal: MutationSignal,
+    currentUserId?: string,
+    rules?: DnInvalidationRules
+): InvalidationFilter[] {
+    const custom: InvalidationFilter[] = (rules?.[signal.entity] ?? []).map(queryKey => ({ queryKey }));
+    return [...custom, ...resolveRegistryInvalidations(signal, currentUserId)];
+}
+
+function resolveRegistryInvalidations(signal: MutationSignal, currentUserId?: string): InvalidationFilter[] {
     const entityName = parseEntityName(signal.entity);
     if (!entityName) return [];
 
