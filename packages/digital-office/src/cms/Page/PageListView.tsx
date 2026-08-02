@@ -13,8 +13,7 @@ const staticProps: DnEntityListViewProps<PageListDto> = {
         { key: 'indexed', label: 'Indexée' },
         { key: 'published', label: 'Publiée' },
     ],
-    entityName: 'page',
-    draftStoreName: 'pages',
+    entityName: 'Page',
     filters: [
         { type: 'like', key: 'path', label: 'Chemin', placeholder: '/blog/...' },
         { type: 'boolean', key: 'published', label: 'Publiées uniquement' },

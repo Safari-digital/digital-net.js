@@ -21,13 +21,13 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
 };
 
 export function TagFormGeneral() {
-    const { schemas } = useDnEntitySchema('tag');
+    const { schemas } = useDnEntitySchema('Tag');
     const { values, setField, errors, disabled } = useDnEntityFormContext<TagDto>();
     const { renderCustomNode } = useCustomNode();
 
     return (
         <React.Fragment>
-            {renderCustomNode({ entity: 'tag', view: 'edit:tab:general:before' })}
+            {renderCustomNode({ entity: 'Tag', view: 'edit:tab:general:before' })}
             <DnEntityForm
                 schemas={schemas}
                 fieldProps={fieldProps}
@@ -36,7 +36,7 @@ export function TagFormGeneral() {
                 errors={errors}
                 disabled={disabled}
             />
-            {renderCustomNode({ entity: 'tag', view: 'edit:tab:general:after' })}
+            {renderCustomNode({ entity: 'Tag', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={values} />
         </React.Fragment>
     );

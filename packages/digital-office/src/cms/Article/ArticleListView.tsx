@@ -9,8 +9,7 @@ const staticProps: DnEntityListViewProps<ArticleListDto> = {
     description: 'Gérez les articles publiés via les pages de type Article.',
     identifier: { singular: 'article', plural: 'articles', gender: 'm' },
     identifierAccessor: 'title',
-    entityName: 'article',
-    draftStoreName: 'articles',
+    entityName: 'Article',
     filters: [
         { type: 'like', key: 'name', label: 'Titre', placeholder: 'rechercher…' },
         { type: 'boolean', key: 'published', label: 'Publiés uniquement' },

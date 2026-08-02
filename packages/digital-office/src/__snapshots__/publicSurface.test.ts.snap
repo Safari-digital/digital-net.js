@@ -26,6 +26,8 @@ exports[`public surface > exports of "." are stable 1`] = `
   "DnEditorTemplateVariable",
   "DnEntityAuditBlock",
   "DnEntityAuditBlockProps",
+  "DnEntityDefinition",
+  "DnEntityDictionary",
   "DnEntityEditView",
   "DnEntityEditViewProps",
   "DnEntityFieldProps",

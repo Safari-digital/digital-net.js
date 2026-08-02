@@ -1,5 +1,5 @@
 import { Close as CloseIcon } from '@mui/icons-material';
-import { Dialog, Divider, Stack, useTheme } from '@mui/material';
+import { Dialog, Stack, useTheme } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { DnIconButton, type DnTab, DnTabs } from '../../ui';
 import { SettingsApplication } from './SettingsApplication';

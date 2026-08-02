@@ -1,5 +1,6 @@
 import type { Query } from '@tanstack/react-query';
-import { type MutationSignal, parseEntityName } from '@digital-net-org/digital-api-sdk';
+import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
+import type { DnEntityDictionary } from '../../entity/types';
 
 export interface InvalidationFilter {
     queryKey?: readonly unknown[];
@@ -11,39 +12,46 @@ export type DnInvalidationRules = Readonly<Record<string, ReadonlyArray<readonly
 
 export function resolveInvalidations(
     signal: MutationSignal,
+    entities: DnEntityDictionary,
     currentUserId?: string,
     rules?: DnInvalidationRules
 ): InvalidationFilter[] {
     const custom: InvalidationFilter[] = (rules?.[signal.entity] ?? []).map(queryKey => ({ queryKey }));
-    return [...custom, ...resolveRegistryInvalidations(signal, currentUserId)];
+    return [...custom, ...resolveRegistryInvalidations(signal, entities, currentUserId)];
 }
 
-function resolveRegistryInvalidations(signal: MutationSignal, currentUserId?: string): InvalidationFilter[] {
-    const entityName = parseEntityName(signal.entity);
-    if (!entityName) return [];
+function resolveRegistryInvalidations(
+    signal: MutationSignal,
+    entities: DnEntityDictionary,
+    currentUserId?: string
+): InvalidationFilter[] {
+    // Entity names are the backend entity types, so the signal indexes the registry directly.
+    // Anything tracked backend-side without an office entity (ApiKey, Document) is ignored.
+    const entityName = signal.entity;
+    if (!(entityName in entities)) return [];
 
     switch (entityName) {
         // Fields are embedded in the parent FormDto: the form caches are their only cache location.
-        case 'formField':
-            return [{ queryKey: ['form'] }];
+        case 'FormField':
+            return [{ queryKey: ['Form'] }];
         // The signal carries the submission id, not the parent form's: the paginated submissions
         // (stored under the form get key) are only reachable through a predicate.
-        case 'formSubmission':
+        case 'FormSubmission':
             return [
-                { queryKey: ['formSubmission'] },
-                { predicate: query => query.queryKey[0] === 'form' && query.queryKey.includes('submissions') },
+                { queryKey: ['FormSubmission'] },
+                { predicate: query => query.queryKey[0] === 'Form' && query.queryKey.includes('submissions') },
             ];
         // Restricted entity: received only when the stream credential belongs to an admin.
-        case 'user': {
-            const filters: InvalidationFilter[] = [{ queryKey: ['user'] }];
+        case 'User': {
+            const filters: InvalidationFilter[] = [{ queryKey: ['User'] }];
             if (currentUserId && signal.entityId === currentUserId) {
                 filters.push({ queryKey: ['dn-user'] });
             }
             return filters;
         }
         // Convention: consumer apps' config queries start with 'config-value'.
-        case 'configValue':
-            return [{ queryKey: ['configValue'] }, { queryKey: ['config-value'] }];
+        case 'ConfigValue':
+            return [{ queryKey: ['ConfigValue'] }, { queryKey: ['config-value'] }];
 
         default:
             return [{ queryKey: [entityName] }];

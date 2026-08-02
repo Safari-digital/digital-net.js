@@ -26,7 +26,7 @@ export function UserIdentityTab({ readOnlyData, formState, setFormState, disable
 
     return (
         <Stack spacing={2} sx={{ maxWidth: 720 }}>
-            {renderCustomNode({ entity: 'user', view: 'edit:tab:general:before' })}
+            {renderCustomNode({ entity: 'User', view: 'edit:tab:general:before' })}
             <Stack sx={{ gap: 2 }}>
                 {Object.entries(identityInfo).map(([key, value]) => (
                     <Stack key={key}>
@@ -63,7 +63,7 @@ export function UserIdentityTab({ readOnlyData, formState, setFormState, disable
                     </Stack>
                 ))}
             </Stack>
-            {renderCustomNode({ entity: 'user', view: 'edit:tab:general:after' })}
+            {renderCustomNode({ entity: 'User', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={{ updatedAt, createdAt }} />
         </Stack>
     );

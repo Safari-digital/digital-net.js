@@ -13,7 +13,7 @@ export function useArticleFormRelated(articleId: string | undefined) {
     const { inputValue, search, onInputChange } = useArticleAutocomplete();
 
     const { data: result, isFetching } = useQuery<QueryResult<ArticleListDto>>({
-        queryKey: [...dnBuildListKey('article'), { name: search, size: RELATED_PAGE_SIZE }],
+        queryKey: [...dnBuildListKey('Article'), { name: search, size: RELATED_PAGE_SIZE }],
         queryFn: async () => {
             const params: Record<string, unknown> = { size: RELATED_PAGE_SIZE, index: 1 };
             if (search) params.name = search;

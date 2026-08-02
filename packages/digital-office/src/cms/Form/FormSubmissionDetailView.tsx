@@ -3,7 +3,7 @@ import { ArrowBack as ArrowBackIcon, DeleteOutlined as DeleteIcon } from '@mui/i
 import { Box, Breadcrumbs, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
-import type { FormDto, FormFieldDto } from '@digital-net-org/digital-api-sdk';
+import type { FormFieldDto } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, useDigitalNetApi } from '../../api';
 import { NotFoundView, useDnToast } from '../../app';
 import { DnLoadingView, DnView } from '../../ui';
@@ -45,7 +45,7 @@ export function FormSubmissionDetailView() {
     const { showToast } = useDnToast();
 
     const submissionQuery = useQuery({
-        queryKey: dnBuildKeyFromId('formSubmission', id!),
+        queryKey: dnBuildKeyFromId('FormSubmission', id!),
         queryFn: async () => {
             const result = await api.catalog.form.getSubmissionById(id!);
             if (result.hasError) throw new Error(result.errors?.[0]?.message ?? 'Failed to fetch submission');
@@ -56,9 +56,9 @@ export function FormSubmissionDetailView() {
     });
 
     const formQuery = useQuery({
-        queryKey: dnBuildKeyFromId('form', formId!),
+        queryKey: dnBuildKeyFromId('Form', formId!),
         queryFn: async () => {
-            const result = await api.catalog.crud.getById<FormDto>('form', formId!);
+            const result = await api.catalog.form.getById(formId!);
             if (result.hasError) throw new Error(result.errors?.[0]?.message ?? 'Failed to fetch form');
             return result.value;
         },
@@ -74,7 +74,7 @@ export function FormSubmissionDetailView() {
             return;
         }
         showToast('Soumission supprimée', 'info');
-        await queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('formSubmission', id) });
+        await queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('FormSubmission', id) });
         navigate(`/content-manager/forms/${formId}`);
     }, [api.catalog, formId, id, navigate, queryClient, showToast]);
 

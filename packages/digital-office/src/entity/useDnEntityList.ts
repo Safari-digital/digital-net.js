@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
-import { type Entity, type EntityName, type QueryResult, resolveEntityPath } from '@digital-net-org/digital-api-sdk';
+import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
 import { dnBuildListKey, useDigitalNetApi } from '../api';
 import { type DnUrlParam, DnUrlParamBuilder, useDnUrlQueryState } from '../navigation';
 import { type DnFilterDefinition, type DnPaginationState, type DnSortState } from '../ui';
+import { useEntityDefinition } from './useEntityContext';
 
 export interface UseDnEntityListResult<T extends Entity> {
     entitiesResult: QueryResult<T> | undefined;
@@ -20,10 +21,9 @@ export interface UseDnEntityListResult<T extends Entity> {
 
 export function useDnEntityList<T extends Entity>(
     entityName: string,
-    filters?: DnFilterDefinition[],
-    apiPath?: string
+    filters?: DnFilterDefinition[]
 ): UseDnEntityListResult<T> {
-    const resolvedPath = apiPath ?? resolveEntityPath(entityName as EntityName);
+    const { path } = useEntityDefinition(entityName);
 
     const api = useDigitalNetApi();
     const [query, setQuery] = useDnUrlQueryState({
@@ -48,20 +48,10 @@ export function useDnEntityList<T extends Entity>(
     }, [filterValues]);
 
     const { data: entitiesResult, isLoading } = useQuery<QueryResult<T>>({
-        queryKey: [
-            ...dnBuildListKey(entityName, apiPath),
-            urlPage,
-            query.row,
-            query.orderBy,
-            query.order,
-            activeFilters,
-        ],
+        queryKey: [...dnBuildListKey(entityName), urlPage, query.row, query.orderBy, query.order, activeFilters],
         queryFn: async () => {
-            if (!resolvedPath) {
-                throw new Error(`useDnEntityList: no API path for entity "${entityName}" — pass apiPath.`);
-            }
             const result = await api.http.request<QueryResult<T>>({
-                path: resolvedPath,
+                path,
                 params: {
                     index: urlPage + 1,
                     size: query.row,

@@ -4,7 +4,6 @@ import {
     ArticleCatalog,
     AuthCatalog,
     ConfigValueCatalog,
-    CrudCatalog,
     FormCatalog,
     MediaCatalog,
     PageCatalog,
@@ -23,7 +22,6 @@ export class Catalog {
     public readonly article: ArticleCatalog;
     public readonly auth: AuthCatalog;
     public readonly configValue: ConfigValueCatalog;
-    public readonly crud: CrudCatalog;
     public readonly form: FormCatalog;
     public readonly media: MediaCatalog;
     public readonly page: PageCatalog;
@@ -38,7 +36,6 @@ export class Catalog {
         this.article = new ArticleCatalog(http);
         this.auth = new AuthCatalog(http);
         this.configValue = new ConfigValueCatalog(http);
-        this.crud = new CrudCatalog(http);
         this.form = new FormCatalog(http);
         this.media = new MediaCatalog(http);
         this.page = new PageCatalog(http);

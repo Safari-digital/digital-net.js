@@ -7,6 +7,8 @@ export * from './DnEntityEditView';
 export * from './DnEntityListView';
 export * from './DnEntityFormProvider';
 export { useDnEntityFormContext, type DnEntityFormBinding } from './useDnEntityFormContext';
+export * from './EntityProvider';
+export { useEntityContext, useEntityDefinition, type EntityContextValue } from './useEntityContext';
 export * from './EntitySchemaProvider';
 export { useEntitySchemaContext, type EntitySchemaContextValue } from './useEntitySchemaContext';
 export * from './EntityVariablesProvider';

@@ -16,9 +16,9 @@ export function PageTabOpenGraph() {
     const api = useDigitalNetApi();
     const pageId = values.id;
 
-    const { schemas: ogEntrySchemas } = useDnEntitySchema('openGraphEntry');
+    const { schemas: ogEntrySchemas } = useDnEntitySchema('OpenGraphEntry');
     const { data: initialEntries, isLoading: isLoadingEntries } = useQuery<OpenGraphEntry[] | undefined>({
-        queryKey: [...dnBuildKeyFromId('page', pageId!), 'openGraph'],
+        queryKey: [...dnBuildKeyFromId('Page', pageId!), 'openGraph'],
         queryFn: async () => {
             const result = await api.catalog.page.getOpenGraphForEdit(pageId!);
             if (result.hasError) {

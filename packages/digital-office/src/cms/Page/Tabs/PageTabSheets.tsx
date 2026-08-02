@@ -13,9 +13,9 @@ export function PageTabSheets() {
     const api = useDigitalNetApi();
     const pageId = values.id;
 
-    const { schemas: sheetSchemas } = useDnEntitySchema('pageSheet');
+    const { schemas: sheetSchemas } = useDnEntitySchema('Sheet');
     const { data: initialSheets, isLoading: isLoadingSheets } = useQuery<PageSheet[] | undefined>({
-        queryKey: [...dnBuildKeyFromId('page', pageId!), 'sheets'],
+        queryKey: [...dnBuildKeyFromId('Page', pageId!), 'sheets'],
         queryFn: async () => {
             const result = await api.catalog.page.getSheetsForEdit(pageId!);
             if (result.hasError) {

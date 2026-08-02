@@ -30,7 +30,7 @@ export function FormTabSubmissions() {
     });
 
     const { data, isLoading } = useQuery({
-        queryKey: [...dnBuildKeyFromId('form', formId!), 'submissions', pagination.page, pagination.rowsPerPage],
+        queryKey: [...dnBuildKeyFromId('Form', formId!), 'submissions', pagination.page, pagination.rowsPerPage],
         queryFn: async () => {
             const result = await api.catalog.form.getSubmissions({
                 formId,
@@ -53,7 +53,7 @@ export function FormTabSubmissions() {
                 return false;
             }
             showToast(`${ids.size} soumission${ids.size > 1 ? 's' : ''} supprimée${ids.size > 1 ? 's' : ''}`, 'info');
-            await queryClient.invalidateQueries({ queryKey: [...dnBuildKeyFromId('form', formId!), 'submissions'] });
+            await queryClient.invalidateQueries({ queryKey: [...dnBuildKeyFromId('Form', formId!), 'submissions'] });
             return true;
         },
         [api.catalog.form, formId, queryClient, showToast]

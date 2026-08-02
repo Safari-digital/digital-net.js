@@ -1,11 +1,13 @@
 import type { IDbConfig } from './IDbConfig';
 
 export class IDbAccessor {
-    // Missing stores require a version bump to trigger onupgradeneeded; deriving the version from
-    // the store list would throw VersionError as soon as a store is removed from it.
+    // Missing or obsolete stores require a version bump to trigger onupgradeneeded; deriving the
+    // version from the store list would throw VersionError as soon as a store is removed from it.
     public static async initDatabase(config: IDbConfig, onOutdated?: () => void): Promise<IDBDatabase> {
         const db = await IDbAccessor.open(config, undefined, onOutdated);
-        if (config.stores.every(store => db.objectStoreNames.contains(store))) return db;
+        const missing = config.stores.some(store => !db.objectStoreNames.contains(store));
+        const obsolete = (config.obsoleteStores ?? []).some(store => db.objectStoreNames.contains(store));
+        if (!missing && !obsolete) return db;
         const nextVersion = db.version + 1;
         db.close();
         return IDbAccessor.open(config, nextVersion, onOutdated);
@@ -20,6 +22,11 @@ export class IDbAccessor {
                 config.stores.forEach(store => {
                     if (!db.objectStoreNames.contains(store)) {
                         db.createObjectStore(store, { keyPath: 'id' });
+                    }
+                });
+                config.obsoleteStores?.forEach(store => {
+                    if (db.objectStoreNames.contains(store)) {
+                        db.deleteObjectStore(store);
                     }
                 });
             };

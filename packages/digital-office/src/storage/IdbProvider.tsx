@@ -1,4 +1,7 @@
 import * as React from 'react';
+// Imported by file rather than through the entity barrel, which reaches back into this module.
+import { resolveDraftEntities } from '../entity/entities';
+import { useEntityContext } from '../entity/useEntityContext';
 import { IDbAccessor } from './IDbAccessor';
 import type { IDbConfig } from './IDbConfig';
 
@@ -10,8 +13,19 @@ export interface IdbContextValue extends IDbConfig {
     notifyDraftChange: () => void;
 }
 
-export const DRAFT_STORES = ['pages', 'tags', 'media', 'articles', 'forms'] as const;
 const DRAFTS_DB_NAME = 'office-drafts';
+
+// Stores of the era when draft store names were free-form plurals, before they were derived from
+// entity names. Their drafts are unreachable now, so the stores are dropped on the next upgrade.
+const OBSOLETE_STORES = ['patch:pages', 'patch:tags', 'patch:media', 'patch:articles', 'patch:forms'];
+
+interface ConnectionState {
+    database: IDBDatabase | null;
+    isLoading: boolean;
+    hasError: boolean;
+}
+
+const CONNECTING: ConnectionState = { database: null, isLoading: true, hasError: false };
 
 export const IdbContext = React.createContext<IdbContextValue>({
     name: '',
@@ -25,30 +39,33 @@ export const IdbContext = React.createContext<IdbContextValue>({
 
 export interface IdbProviderProps {
     children: React.ReactNode;
-    draftStores?: ReadonlyArray<string>;
 }
 
-export function IdbProvider({ draftStores, children }: IdbProviderProps) {
-    const [database, setDatabase] = React.useState<IDBDatabase | null>(null);
-    const [isLoading, setIsLoading] = React.useState(true);
-    const [hasError, setHasError] = React.useState(false);
+export function IdbProvider({ children }: IdbProviderProps) {
+    const { entities } = useEntityContext();
+    const [connection, setConnection] = React.useState<ConnectionState>(CONNECTING);
     const [draftBump, setDraftBump] = React.useState(0);
     const [generation, setGeneration] = React.useState(0);
 
-    const stores = React.useMemo(
-        () => [...new Set([...DRAFT_STORES, ...(draftStores ?? [])])].map(name => `patch:${name}`),
-        [draftStores]
-    );
+    const storeKey = React.useMemo(() => resolveDraftEntities(entities).sort().join('|'), [entities]);
+    const stores = React.useMemo(() => storeKey.split('|').map(name => `patch:${name}`), [storeKey]);
+    const obsoleteStores = React.useMemo(() => OBSOLETE_STORES.filter(name => !stores.includes(name)), [stores]);
+
+    // Reopening: drop the previous handle straight away rather than exposing a closed database while
+    // the new connection settles.
+    const session = `${storeKey}#${generation}`;
+    const [openedSession, setOpenedSession] = React.useState(session);
+    if (openedSession !== session) {
+        setOpenedSession(session);
+        setConnection(CONNECTING);
+    }
 
     React.useEffect(() => {
         let cancelled = false;
         let db: IDBDatabase | null = null;
-        setDatabase(null);
-        setIsLoading(true);
-        setHasError(false);
         (async () => {
             try {
-                db = await IDbAccessor.initDatabase({ name: DRAFTS_DB_NAME, stores }, () => {
+                db = await IDbAccessor.initDatabase({ name: DRAFTS_DB_NAME, stores, obsoleteStores }, () => {
                     // Another tab upgraded the database and our connection was released: reopen.
                     if (!cancelled) setGeneration(n => n + 1);
                 });
@@ -56,25 +73,23 @@ export function IdbProvider({ draftStores, children }: IdbProviderProps) {
                     db.close();
                     return;
                 }
-                setDatabase(db);
-                setIsLoading(false);
+                setConnection({ database: db, isLoading: false, hasError: false });
             } catch {
                 if (cancelled) return;
-                setHasError(true);
-                setIsLoading(false);
+                setConnection({ database: null, isLoading: false, hasError: true });
             }
         })();
         return () => {
             cancelled = true;
             db?.close();
         };
-    }, [stores, generation]);
+    }, [stores, obsoleteStores, generation]);
 
     const notifyDraftChange = React.useCallback(() => setDraftBump(n => n + 1), []);
 
     const value = React.useMemo<IdbContextValue>(
-        () => ({ name: DRAFTS_DB_NAME, stores, database, isLoading, hasError, draftBump, notifyDraftChange }),
-        [stores, database, isLoading, hasError, draftBump, notifyDraftChange]
+        () => ({ name: DRAFTS_DB_NAME, stores, ...connection, draftBump, notifyDraftChange }),
+        [stores, connection, draftBump, notifyDraftChange]
     );
 
     return <IdbContext.Provider value={value}>{children}</IdbContext.Provider>;

@@ -1,7 +1,8 @@
 import type { Query } from '@tanstack/react-query';
 import { describe, expect, it } from 'vitest';
 import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
-import { resolveInvalidations } from './invalidationMap';
+import { OFFICE_ENTITIES } from '../../entity/entities';
+import { type DnInvalidationRules, resolveInvalidations } from './invalidationMap';
 
 function signal(entity: string, entityId = 'id-1'): MutationSignal {
     return { type: 'Updated', entity, entityId };
@@ -11,80 +12,81 @@ function fakeQuery(queryKey: readonly unknown[]): Query {
     return { queryKey } as unknown as Query;
 }
 
+function resolve(s: MutationSignal, currentUserId?: string, rules?: DnInvalidationRules) {
+    return resolveInvalidations(s, OFFICE_ENTITIES, currentUserId, rules);
+}
+
 describe('resolveInvalidations', () => {
-    it.each([
-        ['Article', 'article'],
-        ['Page', 'page'],
-        ['Media', 'media'],
-        ['Tag', 'tag'],
-        ['Form', 'form'],
-    ])('maps %s to its single entity prefix', (entity, entityName) => {
-        expect(resolveInvalidations(signal(entity, 'abc'))).toEqual([{ queryKey: [entityName] }]);
-    });
+    it.each([['Article'], ['Page'], ['Media'], ['Tag'], ['Form']])(
+        'maps %s to its single entity prefix',
+        entityName => {
+            expect(resolve(signal(entityName, 'abc'))).toEqual([{ queryKey: [entityName] }]);
+        }
+    );
 
     it('maps FormField to the form prefix (fields are embedded in the FormDto)', () => {
-        expect(resolveInvalidations(signal('FormField'))).toEqual([{ queryKey: ['form'] }]);
+        expect(resolve(signal('FormField'))).toEqual([{ queryKey: ['Form'] }]);
     });
 
     it('maps FormSubmission to its prefix and the submissions tabs of any form', () => {
-        const filters = resolveInvalidations(signal('FormSubmission', 'sub-1'));
+        const filters = resolve(signal('FormSubmission', 'sub-1'));
 
-        expect(filters[0]).toEqual({ queryKey: ['formSubmission'] });
+        expect(filters[0]).toEqual({ queryKey: ['FormSubmission'] });
         const predicate = filters[1].predicate!;
-        expect(predicate(fakeQuery(['form', 'dn-entity-get', 'f1', 'submissions', 1, 25]))).toBe(true);
-        expect(predicate(fakeQuery(['form', 'dn-entity-get', 'f1']))).toBe(false);
-        expect(predicate(fakeQuery(['form', 'dn-entity-list']))).toBe(false);
-        expect(predicate(fakeQuery(['formSubmission', 'dn-entity-get', 'sub-1']))).toBe(false);
+        expect(predicate(fakeQuery(['Form', 'dn-entity-get', 'f1', 'submissions', 1, 25]))).toBe(true);
+        expect(predicate(fakeQuery(['Form', 'dn-entity-get', 'f1']))).toBe(false);
+        expect(predicate(fakeQuery(['Form', 'dn-entity-list']))).toBe(false);
+        expect(predicate(fakeQuery(['FormSubmission', 'dn-entity-get', 'sub-1']))).toBe(false);
     });
 
     it('maps User to the user prefix only when the mutation targets someone else', () => {
-        expect(resolveInvalidations(signal('User', 'u1'), 'someone-else')).toEqual([{ queryKey: ['user'] }]);
+        expect(resolve(signal('User', 'u1'), 'someone-else')).toEqual([{ queryKey: ['User'] }]);
     });
 
     it('also invalidates the self user when the mutation targets the current user', () => {
-        expect(resolveInvalidations(signal('User', 'u1'), 'u1')).toEqual([
-            { queryKey: ['user'] },
-            { queryKey: ['dn-user'] },
-        ]);
+        expect(resolve(signal('User', 'u1'), 'u1')).toEqual([{ queryKey: ['User'] }, { queryKey: ['dn-user'] }]);
     });
 
-    it('maps ConfigValue to its prefix and the legacy config-value convention', () => {
-        expect(resolveInvalidations(signal('ConfigValue'))).toEqual([
-            { queryKey: ['configValue'] },
+    it('maps ConfigValue to its prefix and the consumer config-value convention', () => {
+        expect(resolve(signal('ConfigValue'))).toEqual([
+            { queryKey: ['ConfigValue'] },
             { queryKey: ['config-value'] },
         ]);
     });
 
-    it('ignores backend types without an SDK entity (Document, ApiKey, unknown)', () => {
-        expect(resolveInvalidations(signal('Document'))).toEqual([]);
-        expect(resolveInvalidations(signal('ApiKey'))).toEqual([]);
-        expect(resolveInvalidations(signal('SomethingNew'))).toEqual([]);
+    it('ignores backend types with no office entity (Document, ApiKey, unknown)', () => {
+        expect(resolve(signal('Document'))).toEqual([]);
+        expect(resolve(signal('ApiKey'))).toEqual([]);
+        expect(resolve(signal('SomethingNew'))).toEqual([]);
     });
 
-    it('matches entity names case-insensitively', () => {
-        expect(resolveInvalidations(signal('page', 'p1'))).toEqual([{ queryKey: ['page'] }]);
-        expect(resolveInvalidations(signal('FORMFIELD'))).toEqual([{ queryKey: ['form'] }]);
+    it('matches the CLR casing only, since entity names now are the CLR names', () => {
+        expect(resolve(signal('page', 'p1'))).toEqual([]);
+        expect(resolve(signal('FORMFIELD'))).toEqual([]);
     });
 
-    it('maps a client CLR entity through its injected rule', () => {
-        expect(resolveInvalidations(signal('Ticket'), undefined, { Ticket: [['ticket']] })).toEqual([
-            { queryKey: ['ticket'] },
-        ]);
+    it('invalidates a client entity declared in the registry', () => {
+        const entities = { ...OFFICE_ENTITIES, Ticket: { path: 'client/tickets' } };
+        expect(resolveInvalidations(signal('Ticket'), entities)).toEqual([{ queryKey: ['Ticket'] }]);
+    });
+
+    it('maps a CLR entity absent from the registry through its injected rule', () => {
+        expect(resolve(signal('Ticket'), undefined, { Ticket: [['ticket']] })).toEqual([{ queryKey: ['ticket'] }]);
     });
 
     it('prepends injected rules to the registry resolution of a known entity', () => {
-        expect(resolveInvalidations(signal('Page'), undefined, { Page: [['landing'], ['sitemap']] })).toEqual([
+        expect(resolve(signal('Page'), undefined, { Page: [['landing'], ['sitemap']] })).toEqual([
             { queryKey: ['landing'] },
             { queryKey: ['sitemap'] },
-            { queryKey: ['page'] },
+            { queryKey: ['Page'] },
         ]);
     });
 
     it('matches rule keys on the exact CLR casing only', () => {
-        expect(resolveInvalidations(signal('ticket'), undefined, { Ticket: [['ticket']] })).toEqual([]);
+        expect(resolve(signal('ticket'), undefined, { Ticket: [['ticket']] })).toEqual([]);
     });
 
     it('still ignores unknown entities without a rule', () => {
-        expect(resolveInvalidations(signal('Ticket'), undefined, {})).toEqual([]);
+        expect(resolve(signal('Ticket'), undefined, {})).toEqual([]);
     });
 });

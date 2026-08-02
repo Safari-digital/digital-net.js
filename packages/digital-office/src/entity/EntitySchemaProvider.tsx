@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { Result, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { useDigitalNetApi } from '../api';
 import { EntitySchemaContext, type EntitySchemaContextValue } from './useEntitySchemaContext';
+import { useEntityContext } from './useEntityContext';
 
 export interface DnEntitySchemaProviderProps {
     children: React.ReactNode;
@@ -9,32 +10,37 @@ export interface DnEntitySchemaProviderProps {
 
 export function EntitySchemaProvider({ children }: DnEntitySchemaProviderProps) {
     const api = useDigitalNetApi();
+    const { entities } = useEntityContext();
     const [schemas, setSchemas] = React.useState<Partial<Record<string, SchemaProperty[]>>>({});
     const [errors, setErrors] = React.useState<Partial<Record<string, Error>>>({});
-    const [loadingPaths, setLoadingPaths] = React.useState<ReadonlySet<string>>(() => new Set());
+    const [loadingNames, setLoadingNames] = React.useState<ReadonlySet<string>>(() => new Set());
     const inFlightRef = React.useRef<Set<string>>(new Set());
     const loadedRef = React.useRef<Set<string>>(new Set());
 
     const loadSchema = React.useCallback(
-        (apiPath: string, entityName: string) => {
-            if (loadedRef.current.has(apiPath) || inFlightRef.current.has(apiPath)) return;
-            inFlightRef.current.add(apiPath);
+        (entityName: string) => {
+            if (loadedRef.current.has(entityName) || inFlightRef.current.has(entityName)) return;
+            const definition = entities[entityName];
+            if (!definition) return;
+            inFlightRef.current.add(entityName);
             setErrors(prev => {
-                if (!prev[apiPath]) return prev;
+                if (!prev[entityName]) return prev;
                 const next = { ...prev };
-                delete next[apiPath];
+                delete next[entityName];
                 return next;
             });
-            setLoadingPaths(prev => {
+            setLoadingNames(prev => {
                 const next = new Set(prev);
-                next.add(apiPath);
+                next.add(entityName);
                 return next;
             });
             (async () => {
                 let schema: SchemaProperty[] | undefined;
                 let error: Error | undefined;
                 try {
-                    const response = await api.http.request<Result<SchemaProperty[]>>({ path: `${apiPath}/schema` });
+                    const response = await api.http.request<Result<SchemaProperty[]>>({
+                        path: `${definition.path}/schema`,
+                    });
                     const result = response.data;
                     if (result.hasError) {
                         const apiMessage =
@@ -50,28 +56,28 @@ export function EntitySchemaProvider({ children }: DnEntitySchemaProviderProps) 
                     const message = e instanceof Error ? e.message : String(e);
                     error = new Error(`Failed to load entity schema "${entityName}": ${message}`);
                 }
-                inFlightRef.current.delete(apiPath);
+                inFlightRef.current.delete(entityName);
                 if (error) {
                     // Left out of loadedRef so a transient failure can be retried on the next mount.
                     const loadError = error;
-                    setErrors(prev => ({ ...prev, [apiPath]: loadError }));
+                    setErrors(prev => ({ ...prev, [entityName]: loadError }));
                 } else {
-                    loadedRef.current.add(apiPath);
-                    setSchemas(prev => ({ ...prev, [apiPath]: schema }));
+                    loadedRef.current.add(entityName);
+                    setSchemas(prev => ({ ...prev, [entityName]: schema }));
                 }
-                setLoadingPaths(prev => {
+                setLoadingNames(prev => {
                     const next = new Set(prev);
-                    next.delete(apiPath);
+                    next.delete(entityName);
                     return next;
                 });
             })();
         },
-        [api]
+        [api, entities]
     );
 
     const value = React.useMemo<EntitySchemaContextValue>(
-        () => ({ schemas, errors, loadingPaths, loadSchema }),
-        [schemas, errors, loadingPaths, loadSchema]
+        () => ({ schemas, errors, loadingNames, loadSchema }),
+        [schemas, errors, loadingNames, loadSchema]
     );
 
     return <EntitySchemaContext.Provider value={value}>{children}</EntitySchemaContext.Provider>;

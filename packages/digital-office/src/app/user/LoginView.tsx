@@ -11,14 +11,19 @@ const IS_LOCKED_KEY = 'dn_is_locked';
 const PING_KEY = 'dn_ping';
 const PING_INTERVAL_MS = 30000;
 
+// @ts-ignore
+const DEV_AUTO_LOGIN = import.meta.env.VITE_DEV_AUTO_LOGIN;
+// @ts-ignore
+const DEV_AUTO_PSW = import.meta.env.VITE_DEV_AUTO_PASSWORD;
+
 export function LoginView() {
     const { AppLogo } = useDnLayout();
     const api = useDigitalNetApi();
     const { login } = useDigitalNetUser();
     const queryClient = useQueryClient();
 
-    const [loginInput, setLoginInput] = React.useState('');
-    const [passwordInput, setPasswordInput] = React.useState('');
+    const [loginInput, setLoginInput] = React.useState(DEV_AUTO_LOGIN ?? '');
+    const [passwordInput, setPasswordInput] = React.useState(DEV_AUTO_PSW ?? '');
     const [invalidCredentials, setInvalidCredentials] = React.useState(false);
 
     const { data: online, isLoading: isPingLoading } = useQuery<boolean>({

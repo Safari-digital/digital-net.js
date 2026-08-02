@@ -8,8 +8,7 @@ const staticProps: DnEntityListViewProps<FormListDto> = {
     description: 'Gérez les formulaires du site et consultez les réponses des visiteurs.',
     identifier: { singular: 'formulaire', plural: 'formulaires', gender: 'm' },
     identifierAccessor: 'name',
-    entityName: 'form',
-    draftStoreName: 'forms',
+    entityName: 'Form',
     filters: [
         { type: 'like', key: 'name', label: 'Nom', placeholder: 'rechercher…' },
         { type: 'boolean', key: 'published', label: 'Publiés uniquement' },

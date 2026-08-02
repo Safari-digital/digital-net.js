@@ -55,6 +55,8 @@ export {
     useDnEntityList,
     useDnEntitySchema,
     type DnEntityAuditBlockProps,
+    type DnEntityDefinition,
+    type DnEntityDictionary,
     type DnEntityEditViewProps,
     type DnEntityFieldProps,
     type DnEntityFormBinding,

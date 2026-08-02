@@ -6,10 +6,9 @@ import { MediaTabGeneral, MediaTabVariants } from './Tabs';
 export function MediaEditView() {
     return (
         <DnEntityEditView<MediaDto>
-            entityName="media"
+            entityName="Media"
             identifier={{ singular: 'média', plural: 'médias', gender: 'm' }}
             identifierAccessor="name"
-            draftStoreName="media"
             redirectPath="/content-manager/media"
             tabs={[
                 {

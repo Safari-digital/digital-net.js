@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { type EntityName, type SchemaProperty, resolveEntityPath } from '@digital-net-org/digital-api-sdk';
+import type { SchemaProperty } from '@digital-net-org/digital-api-sdk';
+import { useEntityDefinition } from './useEntityContext';
 import { useEntitySchemaContext } from './useEntitySchemaContext';
 
 export interface UseDnEntitySchemaResult {
@@ -7,28 +8,26 @@ export interface UseDnEntitySchemaResult {
     loading: boolean;
 }
 
-export function useDnEntitySchema(entityName: string, apiPath?: string): UseDnEntitySchemaResult {
-    const { schemas, errors, loadingPaths, loadSchema } = useEntitySchemaContext();
-    const resolvedPath = apiPath ?? resolveEntityPath(entityName as EntityName);
-    const [requestedPath, setRequestedPath] = React.useState<string | undefined>(undefined);
+export function useDnEntitySchema(entityName: string): UseDnEntitySchemaResult {
+    const { schemas, errors, loadingNames, loadSchema } = useEntitySchemaContext();
+    // Throws on an entity missing from the registry, before any request is attempted.
+    useEntityDefinition(entityName);
+
+    // An error the provider already held when this mount started belongs to an earlier load. Throwing
+    // it on the first render would kill the render pass before the effect could ask for a retry, so
+    // only an error raised after that point counts.
+    const [seen, setSeen] = React.useState(() => ({ entityName, error: errors[entityName] }));
+    if (seen.entityName !== entityName) setSeen({ entityName, error: errors[entityName] });
 
     React.useEffect(() => {
-        if (!resolvedPath) return;
-        setRequestedPath(resolvedPath);
-        loadSchema(resolvedPath, entityName);
-    }, [entityName, resolvedPath, loadSchema]);
+        loadSchema(entityName);
+    }, [entityName, loadSchema]);
 
-    // Only raise the error of a load this mount asked for: an error kept by the provider would throw
-    // on the first render, so the effect — and the retry it triggers — would never run again.
-    if (resolvedPath && requestedPath === resolvedPath) {
-        const error = errors[resolvedPath];
-        if (error) throw error;
-    }
-
-    if (!resolvedPath) return { schemas: [], loading: false };
+    const error = errors[entityName];
+    if (error && error !== seen.error) throw error;
 
     return {
-        schemas: schemas[resolvedPath] ?? [],
-        loading: loadingPaths.has(resolvedPath) || !(resolvedPath in schemas),
+        schemas: schemas[entityName] ?? [],
+        loading: loadingNames.has(entityName) || !(entityName in schemas),
     };
 }

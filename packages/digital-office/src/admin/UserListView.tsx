@@ -13,7 +13,7 @@ const staticProps: DnEntityListViewProps<UserDto> = {
         { key: 'isActive', label: 'Actif' },
         { key: 'isAdmin', label: 'Administrateur' },
     ],
-    entityName: 'user',
+    entityName: 'User',
     filters: [
         { type: 'boolean', key: 'isactive', label: 'Actif uniquement' },
         { type: 'like', key: 'username', label: "Nom d'utilisateur", placeholder: 'Benoit...' },

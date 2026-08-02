@@ -25,7 +25,7 @@ export function ArticleEditView() {
             );
             const result = await api.catalog.article.update(id, patched);
             if (!result.hasError && patched.some(op => op.path.startsWith('/tags')))
-                await queryClient.invalidateQueries({ queryKey: dnBuildListKey('tag') });
+                await queryClient.invalidateQueries({ queryKey: dnBuildListKey('Tag') });
             return result;
         },
         [api.catalog.article, queryClient]
@@ -53,7 +53,7 @@ export function ArticleEditView() {
             const extraOps = JsonPatch.fromValues(ObjectMapper.pick(values, ['tags', 'related']));
             if (extraOps.length > 0) await api.catalog.article.update(created.value, extraOps);
             if (extraOps.some(op => op.path.startsWith('/tags')))
-                await queryClient.invalidateQueries({ queryKey: dnBuildListKey('tag') });
+                await queryClient.invalidateQueries({ queryKey: dnBuildListKey('Tag') });
             return created;
         },
         [api.catalog.article, queryClient]
@@ -61,10 +61,9 @@ export function ArticleEditView() {
 
     return (
         <DnEntityEditView<ArticleDto>
-            entityName="article"
+            entityName="Article"
             identifier={{ singular: 'article', plural: 'articles', gender: 'm' }}
             identifierAccessor="title"
-            draftStoreName="articles"
             redirectPath="/content-manager/articles"
             tabs={[
                 {

@@ -42,7 +42,7 @@ export function DnMediaPicker({ value, label, disabled, error, helperText, onCha
         isLoading,
         isFetching,
     } = useQuery<QueryResult<MediaDto>>({
-        queryKey: [...dnBuildListKey('media'), { name: effectiveSearch, size }],
+        queryKey: [...dnBuildListKey('Media'), { name: effectiveSearch, size }],
         queryFn: async () => {
             const params: Record<string, unknown> = { size, index: 1 };
             if (effectiveSearch) params.name = effectiveSearch;

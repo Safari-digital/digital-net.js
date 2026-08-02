@@ -10,7 +10,13 @@ import {
     ToastProvider,
     VersionProvider,
 } from './app';
-import { EntitySchemaProvider, EntityVariablesProvider, OgSchemaProvider } from './entity';
+import {
+    type DnEntityDictionary,
+    EntityProvider,
+    EntitySchemaProvider,
+    EntityVariablesProvider,
+    OgSchemaProvider,
+} from './entity';
 import { IdbProvider } from './storage';
 import { Logo } from './ui/components/Logo';
 import { ThemeProvider } from './ui/theme';
@@ -20,7 +26,7 @@ export interface DigitalOfficeProviderProps {
     children: React.ReactNode;
     appLogo?: React.ReactNode;
     customRender?: DnCustomViewDict;
-    draftStores?: ReadonlyArray<string>;
+    entities?: DnEntityDictionary;
     invalidationRules?: DnInvalidationRules;
     version?: DnVersion;
 }
@@ -29,7 +35,7 @@ export function DigitalOfficeProvider({
     api,
     appLogo,
     customRender,
-    draftStores,
+    entities,
     invalidationRules,
     version,
     children,
@@ -39,23 +45,25 @@ export function DigitalOfficeProvider({
             <ThemeProvider>
                 <ToastProvider>
                     <DigitalNetUserProvider>
-                        <MutationStreamProvider invalidationRules={invalidationRules}>
-                            <IdbProvider draftStores={draftStores}>
-                                <EntitySchemaProvider>
-                                    <OgSchemaProvider>
-                                        <EntityVariablesProvider>
-                                            <LayoutProvider appLogo={appLogo ?? <Logo />}>
-                                                <VersionProvider version={version}>
-                                                    <CustomRenderProvider customRender={customRender}>
-                                                        {children}
-                                                    </CustomRenderProvider>
-                                                </VersionProvider>
-                                            </LayoutProvider>
-                                        </EntityVariablesProvider>
-                                    </OgSchemaProvider>
-                                </EntitySchemaProvider>
-                            </IdbProvider>
-                        </MutationStreamProvider>
+                        <EntityProvider entities={entities}>
+                            <MutationStreamProvider invalidationRules={invalidationRules}>
+                                <IdbProvider>
+                                    <EntitySchemaProvider>
+                                        <OgSchemaProvider>
+                                            <EntityVariablesProvider>
+                                                <LayoutProvider appLogo={appLogo ?? <Logo />}>
+                                                    <VersionProvider version={version}>
+                                                        <CustomRenderProvider customRender={customRender}>
+                                                            {children}
+                                                        </CustomRenderProvider>
+                                                    </VersionProvider>
+                                                </LayoutProvider>
+                                            </EntityVariablesProvider>
+                                        </OgSchemaProvider>
+                                    </EntitySchemaProvider>
+                                </IdbProvider>
+                            </MutationStreamProvider>
+                        </EntityProvider>
                     </DigitalNetUserProvider>
                 </ToastProvider>
             </ThemeProvider>

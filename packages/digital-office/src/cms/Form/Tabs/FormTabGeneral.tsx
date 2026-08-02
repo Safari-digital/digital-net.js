@@ -35,13 +35,13 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
 };
 
 export function FormTabGeneral() {
-    const { schemas } = useDnEntitySchema('form');
+    const { schemas } = useDnEntitySchema('Form');
     const { values, setField, errors, disabled } = useDnEntityFormContext<FormDto>();
     const { renderCustomNode } = useCustomNode();
 
     return (
         <Stack spacing={2}>
-            {renderCustomNode({ entity: 'form', view: 'edit:tab:general:before' })}
+            {renderCustomNode({ entity: 'Form', view: 'edit:tab:general:before' })}
             <DnEntityForm
                 schemas={schemas}
                 fieldProps={fieldProps}
@@ -50,7 +50,7 @@ export function FormTabGeneral() {
                 errors={errors}
                 disabled={disabled}
             />
-            {renderCustomNode({ entity: 'form', view: 'edit:tab:general:after' })}
+            {renderCustomNode({ entity: 'Form', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={values} />
         </Stack>
     );

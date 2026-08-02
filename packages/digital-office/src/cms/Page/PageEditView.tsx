@@ -14,8 +14,8 @@ import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from '
 export function PageEditView() {
     const api = useDigitalNetApi();
 
-    const { schemas: sheetSchemas, loading: sheetSchemaLoading } = useDnEntitySchema('pageSheet');
-    const { schemas: ogSchemas, loading: ogSchemaLoading } = useDnEntitySchema('openGraphEntry');
+    const { schemas: sheetSchemas, loading: sheetSchemaLoading } = useDnEntitySchema('Sheet');
+    const { schemas: ogSchemas, loading: ogSchemaLoading } = useDnEntitySchema('OpenGraphEntry');
     const validate = React.useCallback(
         (values: Partial<PageDto>, pageSchemas: SchemaProperty[]) => {
             const missing = schemaValidation(values, pageSchemas);
@@ -43,10 +43,9 @@ export function PageEditView() {
 
     return (
         <DnEntityEditView<PageDto>
-            entityName="page"
+            entityName="Page"
             identifier={{ singular: 'page', plural: 'pages', gender: 'f' }}
             identifierAccessor="path"
-            draftStoreName="pages"
             redirectPath="/content-manager/pages"
             tabs={[
                 {

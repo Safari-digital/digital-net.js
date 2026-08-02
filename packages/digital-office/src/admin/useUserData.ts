@@ -14,7 +14,7 @@ export function useUserData(id: string | undefined) {
     const { showToast } = useDnToast();
 
     const { data, isLoading, error } = useQuery<UserDto | undefined>({
-        queryKey: dnBuildKeyFromId('user', id!),
+        queryKey: dnBuildKeyFromId('User', id!),
         queryFn: async () => {
             const response = await api.http.request<unknown>({
                 path: 'user/:id',
@@ -99,7 +99,7 @@ export function useUserData(id: string | undefined) {
             if (deactivateForbidden) showToast('Un administrateur ne peut pas être désactivé.', 'error');
             if (otherError) showToast('Une erreur est survenue lors de la sauvegarde des modifications.', 'error');
 
-            await queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('user', id) });
+            await queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('User', id) });
             setPasswordDialogOpen(false);
             setIsSaving(false);
             return true;
@@ -141,7 +141,7 @@ export function useUserData(id: string | undefined) {
                 return true;
             }
 
-            await queryClient.invalidateQueries({ queryKey: dnBuildListKey('user') });
+            await queryClient.invalidateQueries({ queryKey: dnBuildListKey('User') });
             showToast('Utilisateur supprimé.', 'info');
             navigate('/admin/user');
             return true;

@@ -29,13 +29,13 @@ const fieldProps: DnEntityFormProps['fieldProps'] = {
 };
 
 export function MediaTabGeneral() {
-    const { schemas } = useDnEntitySchema('media');
+    const { schemas } = useDnEntitySchema('Media');
     const { values, setField, errors, disabled } = useDnEntityFormContext<MediaDto>();
     const { renderCustomNode } = useCustomNode();
 
     return (
         <Stack spacing={3}>
-            {renderCustomNode({ entity: 'media', view: 'edit:tab:general:before' })}
+            {renderCustomNode({ entity: 'Media', view: 'edit:tab:general:before' })}
             {values.id ? (
                 <Stack direction="row" spacing={3} sx={{ alignItems: 'flex-start' }}>
                     <MediaPreview mediaId={values.id} alt={values.alt ?? ''} />
@@ -55,7 +55,7 @@ export function MediaTabGeneral() {
                 errors={errors}
                 disabled={disabled}
             />
-            {renderCustomNode({ entity: 'media', view: 'edit:tab:general:after' })}
+            {renderCustomNode({ entity: 'Media', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={values} />
         </Stack>
     );

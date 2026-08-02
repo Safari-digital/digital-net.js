@@ -3,6 +3,7 @@ import { type Entity, JsonPatch, type JsonPatchOp } from '@digital-net-org/digit
 import { IDbStore, IdbContext } from '../storage';
 import { pathToAccessor } from './pathToAccessor';
 import type { EntityDraftRecord } from './types';
+import { useEntityDefinition } from './useEntityContext';
 
 const PERSIST_DEBOUNCE_MS = 500;
 
@@ -28,7 +29,8 @@ export function useDnEntityDraft<T extends Entity>(
     apiData: T | undefined,
     options: UseDnEntityDraftOptions = {}
 ): UseDnEntityDraftResult<T> {
-    const enabled = options.enabled ?? true;
+    const { disableDraftStore } = useEntityDefinition(entityName);
+    const enabled = (options.enabled ?? true) && !disableDraftStore;
     const { database, notifyDraftChange } = React.useContext(IdbContext);
     const [ops, setOps] = React.useState<JsonPatchOp[]>([]);
     const [baselineUpdatedAt, setBaseline] = React.useState<string | null>(null);
@@ -36,17 +38,13 @@ export function useDnEntityDraft<T extends Entity>(
     const store = `patch:${entityName}`;
 
     const warnDraftFailure = React.useCallback(
-        (error: unknown) =>
-            console.warn(
-                `useDnEntityDraft: draft persistence failed for "${store}" (is it declared in DigitalOfficeProvider draftStores?)`,
-                error
-            ),
+        (error: unknown) => console.warn(`useDnEntityDraft: draft persistence failed for "${store}"`, error),
         [store]
     );
 
     const persist = React.useCallback(
         async (nextOps: JsonPatchOp[], nextBaseline: string | null) => {
-            if (!database || !id) return;
+            if (!database || !enabled || !id) return;
             try {
                 if (nextOps.length === 0) {
                     await IDbStore.delete(database, store, id);
@@ -64,7 +62,7 @@ export function useDnEntityDraft<T extends Entity>(
                 warnDraftFailure(error);
             }
         },
-        [database, id, notifyDraftChange, store, warnDraftFailure]
+        [database, enabled, id, notifyDraftChange, store, warnDraftFailure]
     );
 
     const timerRef = React.useRef<number | null>(null);

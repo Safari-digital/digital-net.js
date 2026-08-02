@@ -2,6 +2,7 @@ import React from 'react';
 import type { JsonPatchOp } from '@digital-net-org/digital-api-sdk';
 import { IDbStore, IdbContext } from '../storage';
 import type { EntityDraftRecord } from './types';
+import { useEntityDefinition } from './useEntityContext';
 
 export interface UseDnEntityDraftIndexResult {
     drafts: Map<string, JsonPatchOp[]>;
@@ -10,11 +11,12 @@ export interface UseDnEntityDraftIndexResult {
 
 export function useDnEntityDraftIndex(entityName: string): UseDnEntityDraftIndexResult {
     const { database, draftBump } = React.useContext(IdbContext);
+    const { disableDraftStore } = useEntityDefinition(entityName);
     const [drafts, setDrafts] = React.useState<Map<string, JsonPatchOp[]>>(new Map());
     const [isLoading, setIsLoading] = React.useState(false);
 
     React.useEffect(() => {
-        if (!database) {
+        if (!database || disableDraftStore) {
             return;
         }
 
@@ -44,7 +46,7 @@ export function useDnEntityDraftIndex(entityName: string): UseDnEntityDraftIndex
         return () => {
             cancelled = true;
         };
-    }, [database, entityName, draftBump]);
+    }, [database, disableDraftStore, entityName, draftBump]);
 
     return { drafts, isLoading };
 }

@@ -24,7 +24,7 @@ export function DnMediaInsertDialog({ open, initial, onClose, onSubmit }: DnMedi
 
     // Pre-load the media being edited so the picker can show it selected.
     const { data: initialMedia } = useQuery({
-        queryKey: dnBuildKeyFromId('media', initialId ?? ''),
+        queryKey: dnBuildKeyFromId('Media', initialId ?? ''),
         queryFn: async () => {
             const result = await api.catalog.media.getById(initialId ?? '');
             if (result.hasError || !result.value) throw new Error(result.errors[0]?.message ?? 'Media fetch failed');
@@ -84,7 +84,7 @@ export function DnMediaInsertDialog({ open, initial, onClose, onSubmit }: DnMedi
             <DnMediaImportDialog
                 open={importOpen}
                 onClose={() => setImportOpen(false)}
-                onUploaded={() => void queryClient.invalidateQueries({ queryKey: dnBuildListKey('media') })}
+                onUploaded={() => void queryClient.invalidateQueries({ queryKey: dnBuildListKey('Media') })}
             />
         </React.Fragment>
     );

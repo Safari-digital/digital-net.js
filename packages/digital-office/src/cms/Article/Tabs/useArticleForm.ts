@@ -32,7 +32,7 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
 
 export function useArticleForm(articleId: string | undefined) {
     const api = useDigitalNetApi();
-    const { schemas } = useDnEntitySchema('article');
+    const { schemas } = useDnEntitySchema('Article');
     const { values, apiData, setField } = useDnEntityFormContext<ArticleDto>();
 
     const slugSchema = React.useMemo(() => schemas.find(s => s.name === 'Slug'), [schemas]);
@@ -70,7 +70,7 @@ export function useArticleForm(articleId: string | undefined) {
         isLoading: pagesLoading,
         isFetching: pagesFetching,
     } = useQuery<QueryResult<PageListDto>>({
-        queryKey: [...dnBuildListKey('page'), { entityType: 'Article', size: pagesSize }],
+        queryKey: [...dnBuildListKey('Page'), { entityType: 'Article', size: pagesSize }],
         queryFn: async () => {
             const result = await api.http.request<QueryResult<PageListDto>>({
                 path: 'cms/pages',

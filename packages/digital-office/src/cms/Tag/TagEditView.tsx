@@ -20,10 +20,9 @@ export function TagEditView() {
 
     return (
         <DnEntityEditView<TagDto>
-            entityName="tag"
+            entityName="Tag"
             identifier={{ singular: 'tag', plural: 'tags', gender: 'm' }}
             identifierAccessor="name"
-            draftStoreName="tags"
             redirectPath="/content-manager/tags"
             tabs={[
                 {

@@ -8,6 +8,7 @@ import { useDnEntityDelete } from '../useDnEntityDelete';
 import { useDnEntityDraftIndex } from '../useDnEntityDraftIndex';
 import { useDnEntityList } from '../useDnEntityList';
 import { useDnEntitySchema } from '../useDnEntitySchema';
+import { useEntityDefinition } from '../useEntityContext';
 import { EntityDialogFailure } from './EntityDialogFailure';
 
 function defaultRenderCell<T extends Entity>(...args: Parameters<DnRenderCell<T>>): React.ReactNode {
@@ -26,8 +27,6 @@ export interface DnEntityListViewProps<T extends Entity> {
     identifier: DnEntityIdentifier;
     identifierAccessor: keyof T;
     entityName: string;
-    apiPath?: string;
-    draftStoreName?: string;
     columns?: DnColumnDefinition<T>[];
     filters?: DnFilterDefinition[];
     protectedDelete?: boolean;
@@ -41,15 +40,14 @@ export function DnEntityListView<T extends Entity>({
     identifier,
     identifierAccessor,
     entityName,
-    apiPath,
-    draftStoreName,
     columns,
     filters,
     protectedDelete = false,
     onRowClick,
     onCreate,
 }: DnEntityListViewProps<T>) {
-    const { schemas, loading: isSchemaLoading } = useDnEntitySchema(entityName, apiPath);
+    const { disableDraftStore } = useEntityDefinition(entityName);
+    const { schemas, loading: isSchemaLoading } = useDnEntitySchema(entityName);
 
     const {
         entitiesResult,
@@ -62,26 +60,24 @@ export function DnEntityListView<T extends Entity>({
         setFilterValues,
         resetFilters,
         activeFilterCount,
-    } = useDnEntityList<T>(entityName, filters, apiPath);
+    } = useDnEntityList<T>(entityName, filters);
 
     const { handleDelete, passwordDialog, failureDialog } = useDnEntityDelete<T>({
         entityName,
-        apiPath,
         entitiesResult,
         identifier,
         identifierAccessor,
         protectedDelete,
     });
 
-    const { drafts } = useDnEntityDraftIndex(draftStoreName ?? '');
+    const { drafts } = useDnEntityDraftIndex(entityName);
 
     const getRowDraftInfo = React.useCallback(
         (row: T) => {
-            if (!draftStoreName) return undefined;
             const ops = drafts.get(row.id);
             return ops ? { ops } : undefined;
         },
-        [draftStoreName, drafts]
+        [drafts]
     );
 
     const handleRowClick = React.useCallback((row: T) => (onRowClick ? onRowClick(row) : void 0), [onRowClick]);
@@ -106,7 +102,7 @@ export function DnEntityListView<T extends Entity>({
                 onFilterChange={setFilterValues}
                 onFilterReset={resetFilters}
                 activeFilterCount={activeFilterCount}
-                getRowDraftInfo={draftStoreName ? getRowDraftInfo : undefined}
+                getRowDraftInfo={disableDraftStore ? undefined : getRowDraftInfo}
             />
             {protectedDelete ? <DialogConfirmPassword {...passwordDialog} /> : null}
             <EntityDialogFailure

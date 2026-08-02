@@ -19,7 +19,7 @@ import { type TagOption, useArticleFormTags } from './useArticleFormTags';
 
 export function ArticleTabGeneral() {
     const { id } = useParams<{ id: string }>();
-    const { schemas } = useDnEntitySchema('article');
+    const { schemas } = useDnEntitySchema('Article');
     const { values, errors, disabled } = useDnEntityFormContext<ArticleDto>();
     const { renderCustomNode } = useCustomNode();
 
@@ -63,7 +63,7 @@ export function ArticleTabGeneral() {
 
     return (
         <Stack spacing={2} sx={{ maxWidth: 720 }}>
-            {renderCustomNode({ entity: 'article', view: 'edit:tab:general:before' })}
+            {renderCustomNode({ entity: 'Article', view: 'edit:tab:general:before' })}
             <DnEntityForm
                 schemas={schemas}
                 fieldProps={resolvedFieldProps}
@@ -124,7 +124,7 @@ export function ArticleTabGeneral() {
                 disabled={disabled}
                 loading={related.isFetching}
             />
-            {renderCustomNode({ entity: 'article', view: 'edit:tab:general:after' })}
+            {renderCustomNode({ entity: 'Article', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={values} />
         </Stack>
     );

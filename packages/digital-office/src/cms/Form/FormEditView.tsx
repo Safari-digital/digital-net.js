@@ -33,7 +33,7 @@ export function FormEditView() {
     const { id } = useParams<{ id: string }>();
     const initialFieldsRef = React.useRef<FormFieldDto[]>([]);
 
-    const { schemas: fieldSchemas, loading: fieldSchemaLoading } = useDnEntitySchema('formField');
+    const { schemas: fieldSchemas, loading: fieldSchemaLoading } = useDnEntitySchema('FormField');
     const validate = React.useCallback(
         (values: Partial<FormDto>, formSchemas: SchemaProperty[]) => {
             const missing = schemaValidation(values, formSchemas);
@@ -46,7 +46,7 @@ export function FormEditView() {
 
     const handleGet = React.useCallback(
         async (id: string) => {
-            const result = await api.catalog.crud.getById<FormDto>('form', id);
+            const result = await api.catalog.form.getById(id);
             if (result.value) initialFieldsRef.current = result.value.fields ?? [];
             return result;
         },
@@ -135,10 +135,9 @@ export function FormEditView() {
 
     return (
         <DnEntityEditView<FormDto>
-            entityName="form"
+            entityName="Form"
             identifier={{ singular: 'formulaire', plural: 'formulaires', gender: 'm' }}
             identifierAccessor="name"
-            draftStoreName="forms"
             redirectPath="/content-manager/forms"
             tabs={[
                 { key: 'general', label: 'Général', content: <FormTabGeneral /> },

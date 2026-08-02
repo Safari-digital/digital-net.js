@@ -14,8 +14,7 @@ const staticProps: DnEntityListViewProps<MediaDto> = {
     description: 'Gérez les images uploadées dans le backoffice.',
     identifier: { singular: 'média', plural: 'médias', gender: 'm' },
     identifierAccessor: 'name',
-    entityName: 'media',
-    draftStoreName: 'media',
+    entityName: 'Media',
     filters: [
         { type: 'like', key: 'name', label: 'Nom', placeholder: 'logo, banner…' },
         { type: 'boolean', key: 'published', label: 'Publiés uniquement' },
@@ -64,7 +63,7 @@ export function MediaListView() {
             <DnMediaImportDialog
                 open={importOpen}
                 onClose={() => setImportOpen(false)}
-                onUploaded={() => queryClient.invalidateQueries({ queryKey: dnBuildListKey('media') })}
+                onUploaded={() => queryClient.invalidateQueries({ queryKey: dnBuildListKey('Media') })}
             />
         </React.Fragment>
     );

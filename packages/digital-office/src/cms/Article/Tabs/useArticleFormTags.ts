@@ -31,7 +31,7 @@ export function useArticleFormTags(): UseArticleFormTagsResult {
     const { inputValue, search, onInputChange } = useArticleAutocomplete();
 
     const { data: result, isFetching } = useQuery<QueryResult<TagDto>>({
-        queryKey: [...dnBuildListKey('tag'), { name: search, size: TAGS_PAGE_SIZE }],
+        queryKey: [...dnBuildListKey('Tag'), { name: search, size: TAGS_PAGE_SIZE }],
         queryFn: async () => {
             const params: Record<string, unknown> = { size: TAGS_PAGE_SIZE, index: 1 };
             if (search) params.name = search;

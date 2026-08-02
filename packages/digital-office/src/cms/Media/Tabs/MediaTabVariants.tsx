@@ -35,7 +35,7 @@ export function MediaTabVariants() {
 
     const refresh = React.useCallback(() => {
         if (!mediaId) return;
-        return queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('media', mediaId) });
+        return queryClient.invalidateQueries({ queryKey: dnBuildKeyFromId('Media', mediaId) });
     }, [queryClient, mediaId]);
 
     const handleConfirm = async () => {

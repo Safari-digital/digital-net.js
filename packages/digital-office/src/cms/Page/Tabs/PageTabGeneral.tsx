@@ -57,7 +57,7 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
 export function PageTabGeneral() {
     const api = useDigitalNetApi();
     const { id } = useParams<{ id: string }>();
-    const { schemas } = useDnEntitySchema('page');
+    const { schemas } = useDnEntitySchema('Page');
     const { values, apiData, setField, errors, disabled } = useDnEntityFormContext<PageDto>();
     const variables = usePageVariables();
     const { renderCustomNode } = useCustomNode();
@@ -118,7 +118,7 @@ export function PageTabGeneral() {
 
     return (
         <Stack spacing={2}>
-            {renderCustomNode({ entity: 'page', view: 'edit:tab:general:before' })}
+            {renderCustomNode({ entity: 'Page', view: 'edit:tab:general:before' })}
             <DnEntityForm
                 schemas={schemas}
                 fieldProps={fieldProps}
@@ -128,7 +128,7 @@ export function PageTabGeneral() {
                 disabled={disabled}
                 variables={variables}
             />
-            {renderCustomNode({ entity: 'page', view: 'edit:tab:general:after' })}
+            {renderCustomNode({ entity: 'Page', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={values} />
         </Stack>
     );

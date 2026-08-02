@@ -2,7 +2,9 @@ import * as React from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { MutationStreamClient } from '@digital-net-org/digital-api-sdk';
 import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
+import type { DnEntityDictionary } from '../../entity/types';
 import { useDigitalNetUser } from '../../app';
+import { useEntityContext } from '../../entity/useEntityContext';
 import { useDigitalNetApi } from '../useDigitalNetApi';
 import { type DnInvalidationRules, type InvalidationFilter, resolveInvalidations } from './invalidationMap';
 
@@ -22,14 +24,18 @@ export function MutationStreamProvider({ invalidationRules, children }: Mutation
     const api = useDigitalNetApi();
     const queryClient = useQueryClient();
     const { user } = useDigitalNetUser();
+    const { entities } = useEntityContext();
     const userId = user?.id;
     const clientId = api.http.getClientId();
 
-    // Latest user id and rules, kept available to the stable signal handler (never read/written during render).
+    // Latest user id, registry and rules, kept available to the stable signal handler (never read/written
+    // during render).
     const userIdRef = React.useRef<string | undefined>(undefined);
     React.useEffect(() => void (userIdRef.current = userId));
     const rulesRef = React.useRef<DnInvalidationRules | undefined>(undefined);
     React.useEffect(() => void (rulesRef.current = invalidationRules));
+    const entitiesRef = React.useRef<DnEntityDictionary>(entities);
+    React.useEffect(() => void (entitiesRef.current = entities));
 
     const pendingRef = React.useRef(new Map<string, InvalidationFilter>());
     const flushTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -48,7 +54,12 @@ export function MutationStreamProvider({ invalidationRules, children }: Mutation
             // Drop only this tab's own echo. The server stamps each live signal with the originating tab's
             // client id.
             if (signal.originClientId && signal.originClientId === clientId) return;
-            for (const filter of resolveInvalidations(signal, userIdRef.current, rulesRef.current)) {
+            for (const filter of resolveInvalidations(
+                signal,
+                entitiesRef.current,
+                userIdRef.current,
+                rulesRef.current
+            )) {
                 const key = filter.queryKey ? JSON.stringify(filter.queryKey) : `predicate:${signal.entity}`;
                 pendingRef.current.set(key, filter);
             }
