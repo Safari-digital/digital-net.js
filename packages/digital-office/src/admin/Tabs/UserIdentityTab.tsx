@@ -63,7 +63,7 @@ export function UserIdentityTab({ readOnlyData, formState, setFormState, disable
                     </Stack>
                 ))}
             </Stack>
-            {renderCustomNode({ entity: 'page', view: 'edit:tab:general:after' })}
+            {renderCustomNode({ entity: 'user', view: 'edit:tab:general:after' })}
             <DnEntityAuditBlock entity={{ updatedAt, createdAt }} />
         </Stack>
     );
