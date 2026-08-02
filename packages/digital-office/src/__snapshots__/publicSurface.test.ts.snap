@@ -77,6 +77,7 @@ exports[`public surface > exports of "." are stable 1`] = `
   "dnParseMediaImageUrl",
   "useDigitalNetApi",
   "useDigitalNetUser",
+  "useDnEntityChildSchema",
   "useDnEntityDelete",
   "useDnEntityDraft",
   "useDnEntityDraftIndex",

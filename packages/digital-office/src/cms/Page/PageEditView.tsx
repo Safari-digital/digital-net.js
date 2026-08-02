@@ -1,34 +1,11 @@
 import * as React from 'react';
-import {
-    JsonPatch,
-    type OpenGraphEntry,
-    type PageDto,
-    type PageSheet,
-    type SchemaProperty,
-    schemaValidation,
-} from '@digital-net-org/digital-api-sdk';
+import { JsonPatch, type PageDto } from '@digital-net-org/digital-api-sdk';
 import { useDigitalNetApi } from '../../api';
-import { DnEntityEditView, isCollectionValid, useDnEntitySchema } from '../../entity';
+import { DnEntityEditView } from '../../entity';
 import { PageTabGeneral, PageTabJsonLd, PageTabOpenGraph, PageTabSheets } from './Tabs';
 
 export function PageEditView() {
     const api = useDigitalNetApi();
-
-    const { schemas: sheetSchemas, loading: sheetSchemaLoading } = useDnEntitySchema('Sheet');
-    const { schemas: ogSchemas, loading: ogSchemaLoading } = useDnEntitySchema('OpenGraphEntry');
-    const validate = React.useCallback(
-        (values: Partial<PageDto>, pageSchemas: SchemaProperty[]) => {
-            const missing = schemaValidation(values, pageSchemas);
-            const sheets = (values as { sheets?: PageSheet[] }).sheets;
-            const openGraph = (values as { openGraph?: OpenGraphEntry[] }).openGraph;
-            if (sheets?.length && (sheetSchemaLoading || !isCollectionValid(sheets, sheetSchemas)))
-                missing.add('sheets');
-            if (openGraph?.length && (ogSchemaLoading || !isCollectionValid(openGraph, ogSchemas)))
-                missing.add('openGraph');
-            return missing;
-        },
-        [sheetSchemas, sheetSchemaLoading, ogSchemas, ogSchemaLoading]
-    );
 
     const handleCreate = React.useCallback(
         async (values: Partial<PageDto>) => {
@@ -69,7 +46,6 @@ export function PageEditView() {
                     content: <PageTabSheets />,
                 },
             ]}
-            validate={validate}
             onCreate={handleCreate}
         />
     );

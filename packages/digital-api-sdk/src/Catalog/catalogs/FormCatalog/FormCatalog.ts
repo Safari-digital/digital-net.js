@@ -2,7 +2,6 @@ import type { FormDto, FormListDto, FormSubmissionDto } from '../../../Dto';
 import type { HttpClient } from '../../../HttpClient';
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { QueryResult, Result } from '../../../Result';
-import type { SchemaProperty } from '../../../Schema';
 import { CatalogRunner } from '../../CatalogRunner';
 import type { CatalogCallbacks } from '../../types';
 import { FormPublicCatalog } from './FormPublicCatalog';
@@ -10,7 +9,6 @@ import type { FormCreatePayload, FormFieldPayload, FormQuery, FormSubmissionQuer
 
 export const DN_API_FORM = 'cms/forms' as const;
 export const DN_API_FORM_BY_ID = 'cms/forms/:id' as const;
-export const DN_API_FORM_FIELDS_SCHEMA = 'cms/forms/fields/schema' as const;
 export const DN_API_FORM_FIELDS_NESTED = 'cms/forms/:formId/fields' as const;
 export const DN_API_FORM_FIELD_BY_ID_NESTED = 'cms/forms/:formId/fields/:fieldId' as const;
 export const DN_API_FORM_SUBMISSIONS = 'cms/forms/submissions' as const;
@@ -75,11 +73,6 @@ export class FormCatalog {
             { method: 'DELETE', path: DN_API_FORM_BY_ID, slugs: { id } },
             options
         );
-    }
-
-    /** GET `cms/forms/fields/schema` — Returns the FormField schema. */
-    public async getFieldSchema(options: CatalogCallbacks<SchemaProperty[]> = {}): Promise<Result<SchemaProperty[]>> {
-        return CatalogRunner.run<SchemaProperty[]>(this.http, { path: DN_API_FORM_FIELDS_SCHEMA }, options);
     }
 
     /** POST `cms/forms/:formId/fields` — Creates a field attached to the form. */

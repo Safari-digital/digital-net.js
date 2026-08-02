@@ -8,7 +8,8 @@ export type SchemaValueType =
     | 'DateTime'
     | 'DateTimeOffset'
     | 'Guid'
-    | 'Enum';
+    | 'Enum'
+    | 'Collection';
 
 export interface SchemaProperty {
     name: string;
@@ -25,4 +26,9 @@ export interface SchemaProperty {
     regexValidation: string | null;
     enumValues: string[] | null;
     oneOfValues: string[] | null;
+    /**
+     * Child entity schema embedded on `Collection` properties whose rows are edited inline with the
+     * parent (cascade pivots, flagged navigations). Null on scalars and server-managed collections.
+     */
+    children?: SchemaProperty[] | null;
 }

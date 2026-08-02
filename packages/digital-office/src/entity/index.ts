@@ -26,7 +26,7 @@ export * from './useDnEntityDraftIndex';
 export * from './useEntityFormState';
 export * from './useDnEntityList';
 export * from './useDnEntitySchema';
+export * from './useDnEntityChildSchema';
 export * from './useEntityVariables';
 export * from './useEntityRowsState';
 export * from './computeRowErrors';
-export * from './isCollectionValid';

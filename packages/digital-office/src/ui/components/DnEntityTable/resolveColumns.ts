@@ -21,7 +21,7 @@ export type DnResolvedColumn<T = unknown> =
 
 export function resolveColumns<T>(schema: SchemaProperty[], columns?: DnColumnDefinition<T>[]): DnResolvedColumn<T>[] {
     const base: DnResolvedColumn<T>[] = schema
-        .filter(prop => !prop.isSecret && !prop.isIdentity)
+        .filter(prop => !prop.isSecret && !prop.isIdentity && prop.type !== 'Collection')
         .map(prop => ({
             kind: 'schema' as const,
             header: prop.name,

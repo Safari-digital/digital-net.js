@@ -53,6 +53,7 @@ export {
     useDnEntityDraftIndex,
     useDnEntityFormContext,
     useDnEntityList,
+    useDnEntityChildSchema,
     useDnEntitySchema,
     type DnEntityAuditBlockProps,
     type DnEntityDefinition,

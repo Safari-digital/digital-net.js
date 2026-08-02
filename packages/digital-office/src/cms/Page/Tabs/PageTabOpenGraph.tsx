@@ -3,7 +3,7 @@ import { Alert as MuiAlert, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { OpenGraphEntry, PageDto } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
-import { DnEntityTabHelper, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
+import { DnEntityTabHelper, useDnEntityChildSchema, useDnEntityFormContext } from '../../../entity';
 import { DnButton, DnDraggableList, DnExternalButton, DnLoadingView } from '../../../ui';
 import { EditOpenGraphRow } from './EditOpenGraphRow';
 import { useOgSchema } from './useOgSchema';
@@ -16,7 +16,7 @@ export function PageTabOpenGraph() {
     const api = useDigitalNetApi();
     const pageId = values.id;
 
-    const { schemas: ogEntrySchemas } = useDnEntitySchema('OpenGraphEntry');
+    const { schemas: ogEntrySchemas } = useDnEntityChildSchema('Page', 'openGraph');
     const { data: initialEntries, isLoading: isLoadingEntries } = useQuery<OpenGraphEntry[] | undefined>({
         queryKey: [...dnBuildKeyFromId('Page', pageId!), 'openGraph'],
         queryFn: async () => {

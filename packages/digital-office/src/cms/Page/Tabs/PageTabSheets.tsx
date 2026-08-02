@@ -3,7 +3,7 @@ import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import type { PageDto, PageSheet } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
-import { DnEntityTabHelper, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
+import { DnEntityTabHelper, useDnEntityChildSchema, useDnEntityFormContext } from '../../../entity';
 import { DnDraggableList, DnLoadingView } from '../../../ui';
 import { EditSheetRow } from './EditSheetRow';
 import { useSheetsState } from './useSheetsState';
@@ -13,7 +13,7 @@ export function PageTabSheets() {
     const api = useDigitalNetApi();
     const pageId = values.id;
 
-    const { schemas: sheetSchemas } = useDnEntitySchema('Sheet');
+    const { schemas: sheetSchemas } = useDnEntityChildSchema('Page', 'sheets');
     const { data: initialSheets, isLoading: isLoadingSheets } = useQuery<PageSheet[] | undefined>({
         queryKey: [...dnBuildKeyFromId('Page', pageId!), 'sheets'],
         queryFn: async () => {

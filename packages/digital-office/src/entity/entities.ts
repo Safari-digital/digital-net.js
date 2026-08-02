@@ -6,14 +6,15 @@ import type { DnEntityDictionary } from './types';
  *
  * Entities with no edit view get `disableDraftStore`: the five remaining ones are the only
  * IndexedDB draft stores the office creates.
+ *
+ * Child collections edited inline (page sheets and openGraph, form fields) have no entry: their
+ * schema is embedded in the parent schema (see useDnEntityChildSchema). FormField stays declared
+ * because its mutation signals must invalidate the form caches (see invalidationMap).
  */
 export const OFFICE_ENTITIES = {
     User: { path: 'user', disableDraftStore: true },
     ConfigValue: { path: 'admin/config-value', disableDraftStore: true },
     Page: { path: 'cms/pages' },
-    // `cms/pages/sheet` serves the schema of Sheet, not of the PageSheet pivot.
-    Sheet: { path: 'cms/pages/sheet', disableDraftStore: true },
-    OpenGraphEntry: { path: 'cms/pages/open-graph-entry', disableDraftStore: true },
     Article: { path: 'cms/articles' },
     ArticleMedia: { path: 'cms/articles/media', disableDraftStore: true },
     Tag: { path: 'cms/tags' },
