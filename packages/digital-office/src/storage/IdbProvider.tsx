@@ -33,6 +33,7 @@ export function IdbProvider({ draftStores, children }: IdbProviderProps) {
     const [isLoading, setIsLoading] = React.useState(true);
     const [hasError, setHasError] = React.useState(false);
     const [draftBump, setDraftBump] = React.useState(0);
+    const [generation, setGeneration] = React.useState(0);
 
     const stores = React.useMemo(
         () => [...new Set([...DRAFT_STORES, ...(draftStores ?? [])])].map(name => `patch:${name}`),
@@ -42,11 +43,15 @@ export function IdbProvider({ draftStores, children }: IdbProviderProps) {
     React.useEffect(() => {
         let cancelled = false;
         let db: IDBDatabase | null = null;
+        setDatabase(null);
         setIsLoading(true);
         setHasError(false);
         (async () => {
             try {
-                db = await IDbAccessor.initDatabase({ name: DRAFTS_DB_NAME, stores });
+                db = await IDbAccessor.initDatabase({ name: DRAFTS_DB_NAME, stores }, () => {
+                    // Another tab upgraded the database and our connection was released: reopen.
+                    if (!cancelled) setGeneration(n => n + 1);
+                });
                 if (cancelled) {
                     db.close();
                     return;
@@ -63,7 +68,7 @@ export function IdbProvider({ draftStores, children }: IdbProviderProps) {
             cancelled = true;
             db?.close();
         };
-    }, [stores]);
+    }, [stores, generation]);
 
     const notifyDraftChange = React.useCallback(() => setDraftBump(n => n + 1), []);
 

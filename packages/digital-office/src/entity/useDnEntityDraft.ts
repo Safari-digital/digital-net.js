@@ -35,23 +35,36 @@ export function useDnEntityDraft<T extends Entity>(
 
     const store = `patch:${entityName}`;
 
+    const warnDraftFailure = React.useCallback(
+        (error: unknown) =>
+            console.warn(
+                `useDnEntityDraft: draft persistence failed for "${store}" (is it declared in DigitalOfficeProvider draftStores?)`,
+                error
+            ),
+        [store]
+    );
+
     const persist = React.useCallback(
         async (nextOps: JsonPatchOp[], nextBaseline: string | null) => {
             if (!database || !id) return;
-            if (nextOps.length === 0) {
-                await IDbStore.delete(database, store, id);
-            } else {
-                const record: EntityDraftRecord = {
-                    id,
-                    ops: nextOps,
-                    baselineUpdatedAt: nextBaseline,
-                    updatedAt: new Date().toISOString(),
-                };
-                await IDbStore.save(database, store, record);
+            try {
+                if (nextOps.length === 0) {
+                    await IDbStore.delete(database, store, id);
+                } else {
+                    const record: EntityDraftRecord = {
+                        id,
+                        ops: nextOps,
+                        baselineUpdatedAt: nextBaseline,
+                        updatedAt: new Date().toISOString(),
+                    };
+                    await IDbStore.save(database, store, record);
+                }
+                notifyDraftChange();
+            } catch (error) {
+                warnDraftFailure(error);
             }
-            notifyDraftChange();
         },
-        [database, id, notifyDraftChange, store]
+        [database, id, notifyDraftChange, store, warnDraftFailure]
     );
 
     const timerRef = React.useRef<number | null>(null);
@@ -89,7 +102,12 @@ export function useDnEntityDraft<T extends Entity>(
                 setBaseline(null);
                 return;
             }
-            const record = await IDbStore.get<EntityDraftRecord>(database, store, id);
+            let record: EntityDraftRecord | undefined;
+            try {
+                record = await IDbStore.get<EntityDraftRecord>(database, store, id);
+            } catch (error) {
+                warnDraftFailure(error);
+            }
             if (cancelled) return;
             setOps(record?.ops ?? []);
             setBaseline(record?.baselineUpdatedAt ?? null);
@@ -109,7 +127,7 @@ export function useDnEntityDraft<T extends Entity>(
             }
             cancelled = true;
         };
-    }, [database, enabled, id, store, persist]);
+    }, [database, enabled, id, store, persist, warnDraftFailure]);
 
     const values = React.useMemo<Partial<T>>(
         () => JsonPatch.applyOps<T>(apiData as Partial<T> | undefined, ops),
@@ -149,11 +167,16 @@ export function useDnEntityDraft<T extends Entity>(
         cancelPending();
         setOps([]);
         setBaseline(null);
-        if (database && id) {
+        if (!database || !id) return;
+        // commit (=== discard) runs after a successful PATCH: an IDB failure must not mask the
+        // server success, so the cleanup is best-effort.
+        try {
             await IDbStore.delete(database, store, id);
             notifyDraftChange();
+        } catch (error) {
+            warnDraftFailure(error);
         }
-    }, [cancelPending, database, id, notifyDraftChange, store]);
+    }, [cancelPending, database, id, notifyDraftChange, store, warnDraftFailure]);
 
     const commit = discard;
 
