@@ -73,7 +73,7 @@ export class MediaCatalog {
 
     /**
      * GET `cms/media/labels?search=…` — distinct labels currently in use across all
-     * ArticleMedia/PageMedia pivots, alphabetically sorted. `search` is an optional case-insensitive
+     * ArticleMedia pivots, alphabetically sorted. `search` is an optional case-insensitive
      * substring filter.
      * Pass `options.signal` to cancel an in-flight request (debounced autocomplete pattern).
      */

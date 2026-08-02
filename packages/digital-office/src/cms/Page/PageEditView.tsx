@@ -34,7 +34,7 @@ export function PageEditView() {
         async (values: Partial<PageDto>) => {
             const created = await api.catalog.page.create({ path: String(values.path ?? '') });
             if (created.hasError || !created.value) return created;
-            const extraOps = JsonPatch.fromValues(values, { omit: ['path', 'media'] });
+            const extraOps = JsonPatch.fromValues(values, { omit: ['path'] });
             if (extraOps.length > 0) await api.catalog.page.update(created.value, extraOps);
             return created;
         },

@@ -4,7 +4,6 @@ const ENTITY_API_PATHS: Record<EntityName, string> = {
     user: 'user',
     page: 'cms/pages',
     pageSheet: 'cms/pages/sheet',
-    pageMedia: 'cms/pages/media',
     openGraphEntry: 'cms/pages/open-graph-entry',
     tag: 'cms/tags',
     media: 'cms/media',

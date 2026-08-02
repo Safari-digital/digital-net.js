@@ -21,8 +21,6 @@ export * from './MediaVariantDto';
 export * from './PageDto';
 export * from './PageEntityType';
 export * from './PageListDto';
-export * from './PageMedia';
-export * from './PageMediaPayload';
 export * from './PagePublicDto';
 export * from './PageSheet';
 export * from './PageSheetInfoDto';

@@ -2,7 +2,6 @@ export const ENTITY_NAMES = [
     'page',
     'user',
     'pageSheet',
-    'pageMedia',
     'openGraphEntry',
     'tag',
     'media',
