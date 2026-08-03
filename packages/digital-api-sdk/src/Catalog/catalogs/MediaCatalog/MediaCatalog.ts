@@ -109,6 +109,25 @@ export class MediaCatalog {
     }
 
     /**
+     * GET `cms/media/image/:id.:ext` — fetches the binary asset through the authenticated client.
+     * Prefer {@link getImageUrl} in a browser.
+     */
+    public async getImageBlob(
+        mediaId: string,
+        options: { width?: number; quality?: number; extension?: string } = {},
+        callbacks: CatalogCallbacks<Blob> = {}
+    ): Promise<Result<Blob>> {
+        const params: Record<string, unknown> = {};
+        if (options.width !== undefined) params.w = options.width;
+        if (options.quality !== undefined) params.q = options.quality;
+        return CatalogRunner.run<Blob>(
+            this.http,
+            { path: DN_API_MEDIA_IMAGE, slugs: { id: mediaId, ext: options.extension ?? 'webp' }, params },
+            callbacks
+        );
+    }
+
+    /**
      * Builds the absolute URL of a media image, optionally resized/recompressed by the backend.
      * Pure helper — no HTTP call. Usable straight in `<img src>`: the endpoint authenticates from the
      * session cookie, which the browser attaches on its own (same-site). SVGs are pass-through on the
