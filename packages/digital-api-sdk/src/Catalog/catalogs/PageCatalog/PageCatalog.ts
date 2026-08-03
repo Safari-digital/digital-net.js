@@ -17,6 +17,7 @@ import type { PagePayload } from './types';
 export const DN_API_PAGE = 'cms/pages' as const;
 export const DN_API_PAGE_BY_ID = 'cms/pages/:id' as const;
 export const DN_API_PAGE_PATH_AVAILABILITY = 'cms/pages/path/availability' as const;
+export const DN_API_PAGE_TEMPLATE = 'cms/pages/template' as const;
 export const DN_API_PAGE_OG_SCHEMA = 'cms/pages/open-graph-values/schema' as const;
 export const DN_API_PAGE_OPENGRAPH = 'cms/pages/:id/open-graph' as const;
 export const DN_API_PAGE_SHEETS = 'cms/pages/:id/sheets' as const;
@@ -57,6 +58,22 @@ export class PageCatalog {
                 params: { path, ...(excludeId ? { excludeId } : {}) },
                 signal,
             },
+            cbs
+        );
+    }
+
+    /**
+     * GET `cms/pages/template?path=...` — Resolves the published dynamic page whose pattern covers
+     * the given path (the template it inherits from). Value is null when no template applies.
+     */
+    public async getTemplate(
+        path: string,
+        options: CatalogCallbacks<PageDto | null> & { signal?: AbortSignal } = {}
+    ): Promise<Result<PageDto | null>> {
+        const { signal, ...cbs } = options;
+        return CatalogRunner.run<PageDto | null>(
+            this.http,
+            { path: DN_API_PAGE_TEMPLATE, params: { path }, signal },
             cbs
         );
     }

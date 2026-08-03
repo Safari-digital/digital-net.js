@@ -9,6 +9,7 @@ export interface EntityInputProps {
     onChange: (_value: any) => void;
     label?: string;
     helperText?: React.ReactNode;
+    placeholder?: string;
     disabled?: boolean;
     multiline?: boolean;
     rows?: number;
@@ -22,6 +23,7 @@ export function EntityInput({
     onChange,
     label,
     helperText,
+    placeholder,
     disabled,
     multiline,
     rows,
@@ -40,9 +42,10 @@ export function EntityInput({
             disabled: resolvedDisabled,
             required: schema.isRequired,
             helperText: helperText,
+            placeholder: placeholder,
             error: error,
         }),
-        [error, helperText, resolvedDisabled, resolvedLabel, schema.isRequired, value]
+        [error, helperText, placeholder, resolvedDisabled, resolvedLabel, schema.isRequired, value]
     );
 
     const handleChange = (next: unknown) => onChange(next);

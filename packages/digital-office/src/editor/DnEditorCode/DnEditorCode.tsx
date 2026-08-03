@@ -27,6 +27,7 @@ import { useHoverErrorTooltip } from './useHoverErrorTooltip';
 export interface DnEditorCodeProps extends DnEditorBaseProps {
     language: DnEditorLanguage;
     templateVariables?: DnEditorTemplateVariable[];
+    placeholder?: string;
 }
 
 export function DnEditorCode({
@@ -37,6 +38,7 @@ export function DnEditorCode({
     error,
     sx,
     templateVariables,
+    placeholder,
     getInitialScrollTop,
     onScrollTopChange,
 }: DnEditorCodeProps) {
@@ -65,6 +67,11 @@ export function DnEditorCode({
         if (!editor) return;
         resolveEditorTheme(editor, theme);
     }, [editor, theme]);
+
+    React.useEffect(() => {
+        if (!editor) return;
+        editor.setOption('placeholder', placeholder ?? '');
+    }, [editor, placeholder]);
 
     // State hydration
     React.useEffect(() => {
@@ -164,6 +171,14 @@ const CodeFrame = styled(EditorFrame)(
     ({ theme }) => css`
         & .ace_editor {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        /* Ace styles the placeholder as arial + scale(0.9) + 10px margin: realign it on the text
+           grid, whose own horizontal offset is the renderer padding (4px). */
+        & .ace_placeholder {
+            font-family: inherit;
+            transform: none;
+            margin: 0 4px;
         }
 
         & .dn-jsonld-warning {

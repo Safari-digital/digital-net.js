@@ -83,11 +83,11 @@ const DragHandle = styled('button', { shouldForwardProp: prop => prop !== 'disab
         background: transparent;
         border: none;
         padding: 0.5rem 0.5rem 0 0;
-        color: ${theme.palette.text.secondary};
-        cursor: ${disabled ? 'not-allowed' : 'grab'};
+        color: ${disabled ? theme.palette.text.disabled : theme.palette.text.secondary};
+        cursor: ${disabled ? 'default' : 'grab'};
 
         &:active {
-            cursor: ${disabled ? 'not-allowed' : 'grabbing'};
+            cursor: ${disabled ? 'default' : 'grabbing'};
         }
 
         &:focus-visible {

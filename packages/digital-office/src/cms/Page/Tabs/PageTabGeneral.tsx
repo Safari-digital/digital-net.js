@@ -13,6 +13,7 @@ import {
     useDnEntitySchema,
 } from '../../../entity';
 import { DnInputDebounced } from '../../../ui';
+import { usePageTemplate } from './usePageTemplate';
 import { usePageVariables } from './usePageVariables';
 
 const ENTITY_TYPE_HELPER = "Définit l'entité DB associée au dernier slug dynamique du chemin.";
@@ -69,6 +70,7 @@ export function PageTabGeneral() {
     const apiPath = String(apiData?.path ?? '');
     const slugPresent = PathAnalyzer.hasDynamicSlug(currentPath);
     const currentEntityType = values.entityType ?? null;
+    const template = usePageTemplate(currentPath);
 
     React.useEffect(
         () => (!slugPresent && currentEntityType != null ? setField('/entityType', null) : void 0),
@@ -113,6 +115,18 @@ export function PageTabGeneral() {
             ...baseFieldProps.EntityType,
             disabled: !slugPresent,
             helperText: slugPresent ? ENTITY_TYPE_HELPER : ENTITY_TYPE_LOCKED_HELPER,
+        },
+        Title: {
+            ...baseFieldProps.Title,
+            placeholder: template?.title ?? undefined,
+        },
+        Description: {
+            ...baseFieldProps.Description,
+            placeholder: template?.description ?? undefined,
+        },
+        Redirect: {
+            ...baseFieldProps.Redirect,
+            placeholder: template?.redirect ?? undefined,
         },
     };
 

@@ -100,6 +100,8 @@ export function DnInput({
                 variant={({ default: 'outlined', text: 'filled' } as const)[variant ?? 'default']}
                 disabled={disabled || loading}
                 slotProps={{
+                    // MUI hides the placeholder of an empty unfocused field unless the label is shrunk.
+                    ...(muiProps.placeholder && muiProps.label ? { inputLabel: { shrink: true } } : {}),
                     htmlInput: {
                         spellCheck: false,
                         autoCorrect: 'off',

@@ -8,7 +8,7 @@ import {
     type SchemaProperty,
     schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
-import { dnBuildKeyFromId, dnBuildListKey } from '../../api';
+import { dnBuildKeyFromId } from '../../api';
 import { NotFoundView, useDnToast } from '../../app';
 import { useDnRouterBlocker } from '../../navigation';
 import { DnDialog, DnLoadingView, type DnViewTab } from '../../ui';
@@ -130,8 +130,10 @@ export function DnEntityEditView<T extends Entity>({
               resetSignal,
           };
 
-    const invalidateList = React.useCallback(
-        () => queryClient.invalidateQueries({ queryKey: dnBuildListKey(entityName) }),
+    // Mirrors the SSE prefix invalidation: the stream drops this tab's own echo, so local
+    // mutations must cover every entityName-first key (get, list, template…) themselves.
+    const invalidateEntity = React.useCallback(
+        () => queryClient.invalidateQueries({ queryKey: [entityName] }),
         [entityName, queryClient]
     );
 
@@ -168,7 +170,7 @@ export function DnEntityEditView<T extends Entity>({
                     showToast(buildCreateErrorToast(identifier), 'error');
                     return;
                 }
-                await invalidateList();
+                await invalidateEntity();
                 showToast(buildCreatedToast(identifier), 'info');
                 navigate(`${redirectPath}/${created.value}`);
                 return;
@@ -179,8 +181,7 @@ export function DnEntityEditView<T extends Entity>({
                 return;
             }
             await edit.commit();
-            await invalidateGet();
-            await invalidateList();
+            await invalidateEntity();
             showToast('Modifications enregistrées', 'info');
         } finally {
             setIsSaving(false);
@@ -191,8 +192,7 @@ export function DnEntityEditView<T extends Entity>({
         edit,
         id,
         identifier,
-        invalidateGet,
-        invalidateList,
+        invalidateEntity,
         isNew,
         isSaving,
         navigate,
@@ -215,13 +215,13 @@ export function DnEntityEditView<T extends Entity>({
                 return;
             }
             await edit.discard();
-            await invalidateList();
+            await invalidateEntity();
             showToast(buildDeletedToast(identifier), 'info');
             navigate(redirectPath);
         } finally {
             setIsDeleting(false);
         }
-    }, [crud, edit, id, identifier, invalidateList, navigate, onDelete, redirectPath, showToast]);
+    }, [crud, edit, id, identifier, invalidateEntity, navigate, onDelete, redirectPath, showToast]);
 
     if (!isNew && isLoading) return <DnLoadingView />;
     if (!isNew && isError) return <NotFoundView />;

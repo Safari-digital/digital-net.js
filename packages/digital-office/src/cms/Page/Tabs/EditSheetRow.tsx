@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Box, Collapse, FormControlLabel, MenuItem, Stack, TextField } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import type { SheetType } from '@digital-net-org/digital-api-sdk';
-import { DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
 import { LazyDnEditorCode } from '../../../editor';
+import { DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
 import { usePageVariables } from './usePageVariables';
 import type { SheetRow } from './useSheetsState';
 
@@ -21,7 +21,7 @@ export interface EditSheetRowProps {
         _value: SheetRow[K]
     ) => void;
     onToggleExpand: (_rowId: string) => void;
-    onDelete: (_rowId: string) => void;
+    onDelete?: (_rowId: string) => void;
 }
 
 export function EditSheetRow({

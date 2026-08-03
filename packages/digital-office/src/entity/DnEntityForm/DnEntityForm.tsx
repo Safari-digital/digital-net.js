@@ -6,6 +6,7 @@ import { EntityInput } from '../EntityInput';
 export interface DnEntityFieldProps {
     label: string;
     helperText?: React.ReactNode;
+    placeholder?: string;
     disabled?: boolean;
     error?: boolean;
     render?: React.ReactNode;
@@ -67,6 +68,7 @@ export function DnEntityForm({
                         schema={s.schema}
                         label={s.label}
                         helperText={s.helperText}
+                        placeholder={s.placeholder}
                         value={values[accessor]}
                         onChange={next => onFieldChange(path, next)}
                         error={s.error ?? errors?.has(accessor)}
