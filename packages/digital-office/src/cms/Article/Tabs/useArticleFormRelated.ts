@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useQuery } from '@tanstack/react-query';
 import type { ArticleDto, ArticleListDto, ArticleRefDto, QueryResult } from '@digital-net-org/digital-api-sdk';
+import { useQuery } from '@tanstack/react-query';
 import { dnBuildListKey, useDigitalNetApi } from '../../../api';
 import { useDnEntityFormContext } from '../../../entity';
 import { useArticleAutocomplete } from './useArticleAutocomplete';

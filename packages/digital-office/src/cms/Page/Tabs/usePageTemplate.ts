@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useQuery } from '@tanstack/react-query';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { PathAnalyzer } from '@digital-net-org/digital-core';
+import { useQuery } from '@tanstack/react-query';
 import { useDigitalNetApi } from '../../../api';
 import { useDebouncedCallback } from '../../../ui/hooks';
 

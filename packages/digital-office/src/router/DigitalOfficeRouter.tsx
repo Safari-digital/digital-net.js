@@ -4,7 +4,7 @@ import { Layout, useDigitalNetUser } from '../app';
 import { DnLoadingView } from '../ui';
 import { buildNavSections, mergeNavGroupDefs } from './buildNavSections';
 import { AuthGuard, Guards, GuestGuard } from './guards';
-import { NAV_GROUP_DEFS, type DigitalOfficeNavGroupDef } from './navGroups';
+import { type DigitalOfficeNavGroupDef, NAV_GROUP_DEFS } from './navGroups';
 import { ADMIN_ROUTES, APP_ROUTES, CMS_ROUTES } from './routes';
 import type { DigitalOfficeRoute } from './types';
 
@@ -20,7 +20,13 @@ function guardFor(route: DigitalOfficeRoute): React.ReactNode {
     return <AuthGuard>{route.element}</AuthGuard>;
 }
 
-function RouterLayout({ allRoutes, navGroups }: { allRoutes: DigitalOfficeRoute[]; navGroups?: DigitalOfficeNavGroupDef[] }) {
+function RouterLayout({
+    allRoutes,
+    navGroups,
+}: {
+    allRoutes: DigitalOfficeRoute[];
+    navGroups?: DigitalOfficeNavGroupDef[];
+}) {
     const { isAdmin } = useDigitalNetUser();
 
     const navigation = React.useMemo(

@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router';
 import {
     type Entity,
     type JsonPatchOp,
@@ -8,6 +6,8 @@ import {
     type SchemaProperty,
     schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router';
 import { dnBuildKeyFromId } from '../../api';
 import { NotFoundView, useDnToast } from '../../app';
 import { useDnRouterBlocker } from '../../navigation';

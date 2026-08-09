@@ -1,7 +1,7 @@
 import * as React from 'react';
+import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { ClickAwayListener, MenuItem, MenuList, Paper, Popper, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { getVirtualAnchor } from './utils';
 import { buildAvailableVariables } from './utils/interpolated';
 

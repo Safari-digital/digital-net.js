@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
 import { type HttpClient, HttpClientError } from '@digital-net-org/digital-api-sdk';
+import { describe, expect, it, vi } from 'vitest';
 import { entityRequest } from './entityRequest';
 
 function clientReturning(data: unknown): HttpClient {
@@ -28,9 +28,9 @@ describe('entityRequest', () => {
 
     it('returns the error Result of a 4xx instead of throwing', async () => {
         const errorResult = { value: null, hasError: true, errors: [{ message: 'slug taken' }], infos: [] };
-        await expect(entityRequest(clientThrowing(new HttpClientError(409, errorResult)), { path: 'p' })).resolves.toEqual(
-            errorResult
-        );
+        await expect(
+            entityRequest(clientThrowing(new HttpClientError(409, errorResult)), { path: 'p' })
+        ).resolves.toEqual(errorResult);
     });
 
     it('synthesizes a Result when the failing response carries no body', async () => {

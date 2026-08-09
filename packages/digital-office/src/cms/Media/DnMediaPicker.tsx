@@ -1,7 +1,7 @@
 import * as React from 'react';
+import type { MediaDto, QueryResult } from '@digital-net-org/digital-api-sdk';
 import { Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import type { MediaDto, QueryResult } from '@digital-net-org/digital-api-sdk';
 import { dnBuildListKey, useDigitalNetApi } from '../../api';
 import { DnButton, DnInputAutocomplete } from '../../ui';
 import { useDebouncedCallback } from '../../ui/hooks';

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { type Entity, HttpClientError, type QueryResult } from '@digital-net-org/digital-api-sdk';
 import { ArrayBuilder, URLResolver } from '@digital-net-org/digital-core';
+import { useQueryClient } from '@tanstack/react-query';
 import { dnBuildListKey, useDigitalNetApi } from '../api';
 import { useDnToast } from '../app';
 import { type EntityFailureDialogContentProps } from './DnEntityListView/EntityDialogFailure';

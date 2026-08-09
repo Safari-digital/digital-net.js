@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { MutationStreamClient } from '@digital-net-org/digital-api-sdk';
 import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
-import type { DnEntityDictionary } from '../../entity/types';
+import { useQueryClient } from '@tanstack/react-query';
 import { useDigitalNetUser } from '../../app';
+import type { DnEntityDictionary } from '../../entity/types';
 import { useEntityContext } from '../../entity/useEntityContext';
 import { useDigitalNetApi } from '../useDigitalNetApi';
 import { type DnInvalidationRules, type InvalidationFilter, resolveInvalidations } from './invalidationMap';

@@ -1,9 +1,9 @@
 import * as React from 'react';
+import type { FormFieldDto } from '@digital-net-org/digital-api-sdk';
 import { ArrowBack as ArrowBackIcon, DeleteOutlined as DeleteIcon } from '@mui/icons-material';
 import { Box, Breadcrumbs, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
-import type { FormFieldDto } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, useDigitalNetApi } from '../../api';
 import { NotFoundView, useDnToast } from '../../app';
 import { DnLoadingView, DnView } from '../../ui';

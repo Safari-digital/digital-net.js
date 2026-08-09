@@ -1,7 +1,7 @@
 import * as React from 'react';
+import type { SheetType } from '@digital-net-org/digital-api-sdk';
 import { Box, Collapse, FormControlLabel, MenuItem, Stack, TextField } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import type { SheetType } from '@digital-net-org/digital-api-sdk';
 import { LazyDnEditorCode } from '../../../editor';
 import { DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
 import { usePageVariables } from './usePageVariables';

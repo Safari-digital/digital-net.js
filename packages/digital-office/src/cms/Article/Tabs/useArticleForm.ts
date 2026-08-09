@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useQuery } from '@tanstack/react-query';
 import type { ArticleDto, PageListDto, QueryResult } from '@digital-net-org/digital-api-sdk';
 import { StringResolver } from '@digital-net-org/digital-core';
+import { useQuery } from '@tanstack/react-query';
 import { dnBuildListKey, useDigitalNetApi } from '../../../api';
 import { type DnEntityFormProps, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
 

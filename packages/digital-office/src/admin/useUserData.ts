@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { type UserDto, unwrapResult } from '@digital-net-org/digital-api-sdk';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import { type UserDto, unwrapResult } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, dnBuildListKey, useDigitalNetApi } from '../api';
 import { NotFoundException, useDnToast } from '../app';
 

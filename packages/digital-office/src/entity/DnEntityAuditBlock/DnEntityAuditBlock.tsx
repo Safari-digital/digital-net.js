@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Stack, Typography } from '@mui/material';
 import type { Entity } from '@digital-net-org/digital-api-sdk';
+import { Stack, Typography } from '@mui/material';
 import { formatDate } from '../../ui/format';
 
 export interface DnEntityAuditBlockProps {

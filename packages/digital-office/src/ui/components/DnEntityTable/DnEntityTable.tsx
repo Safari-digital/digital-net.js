@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { Entity, JsonPatchOp, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import {
     Checkbox,
     Table as MuiTable,
@@ -15,7 +16,6 @@ import {
     alpha,
 } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
-import type { Entity, JsonPatchOp, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { DnDialog } from '../DnDialog';
 import { EntityTableToolbar } from './EntityTableToolbar';
 import { type DnColumnDefinition, type DnResolvedColumn, resolveColumns } from './resolveColumns';

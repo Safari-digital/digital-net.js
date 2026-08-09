@@ -1,7 +1,7 @@
 import * as React from 'react';
+import { FORM_FIELD_TYPES, type FormFieldType } from '@digital-net-org/digital-api-sdk';
 import { ExpandLess as ExpandLessIcon, ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { Collapse, FormControlLabel, IconButton, Stack, Typography } from '@mui/material';
-import { FORM_FIELD_TYPES, type FormFieldType } from '@digital-net-org/digital-api-sdk';
 import { DnDraggableRow, DnInput, DnInputAutocomplete, DnSwitch } from '../../../ui';
 import { FormFieldRowAdvanced } from './FormFieldRowAdvanced';
 import type { FieldChangeHandler, FieldRow, FieldRowField } from './useFieldsState';

@@ -1,4 +1,9 @@
-import { type HttpClient, HttpClientError, type HttpRequestConfig, type Result } from '@digital-net-org/digital-api-sdk';
+import {
+    type HttpClient,
+    HttpClientError,
+    type HttpRequestConfig,
+    type Result,
+} from '@digital-net-org/digital-api-sdk';
 
 function isResult<T>(value: unknown): value is Result<T> {
     return typeof value === 'object' && value !== null && 'hasError' in value && 'errors' in value && 'infos' in value;

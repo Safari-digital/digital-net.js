@@ -1,7 +1,7 @@
 import * as React from 'react';
+import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
-import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { dnBuildListKey } from '../../api';
 import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
 import { type DnColumnDefinition } from '../../ui';

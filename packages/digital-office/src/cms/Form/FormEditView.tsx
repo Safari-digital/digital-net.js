@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useParams } from 'react-router';
 import {
     type FormDto,
     type FormFieldDto,
@@ -10,6 +9,7 @@ import {
     defaultResult,
 } from '@digital-net-org/digital-api-sdk';
 import { ObjectMapper } from '@digital-net-org/digital-core';
+import { useParams } from 'react-router';
 import { useDigitalNetApi } from '../../api';
 import { DnEntityEditView } from '../../entity';
 import { FormTabFields, FormTabGeneral, FormTabSubmissions } from './Tabs';

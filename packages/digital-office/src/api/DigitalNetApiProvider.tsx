@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { QueryClientProvider } from '@tanstack/react-query';
 import type { DigitalApi } from '@digital-net-org/digital-api-sdk';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './queryClient';
 import { DigitalNetApiContext } from './useDigitalNetApi';
 

@@ -1,5 +1,5 @@
-import type { Query } from '@tanstack/react-query';
 import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
+import type { Query } from '@tanstack/react-query';
 import type { DnEntityDictionary } from '../../entity/types';
 
 export interface InvalidationFilter {

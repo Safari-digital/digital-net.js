@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Stack } from '@mui/material';
-import { useParams } from 'react-router';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
 import { PathAnalyzer } from '@digital-net-org/digital-core';
+import { Stack } from '@mui/material';
+import { useParams } from 'react-router';
 import { useDigitalNetApi } from '../../../api';
 import { useCustomNode } from '../../../app';
 import {

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Stack } from '@mui/material';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
+import { Stack } from '@mui/material';
+import { LazyDnEditorCode } from '../../../editor';
 import { DnEntityTabHelper, useDnEntityFormContext } from '../../../entity';
 import { DnExternalButton } from '../../../ui';
-import { LazyDnEditorCode } from '../../../editor';
 import { usePageTemplate } from './usePageTemplate';
 import { usePageVariables } from './usePageVariables';
 

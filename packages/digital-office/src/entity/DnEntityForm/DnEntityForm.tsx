@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Stack } from '@mui/material';
 import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
+import { Stack } from '@mui/material';
 import { EntityInput } from '../EntityInput';
 
 export interface DnEntityFieldProps {

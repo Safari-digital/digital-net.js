@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { type Entity, type QueryResult } from '@digital-net-org/digital-api-sdk';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { dnBuildListKey, useDigitalNetApi } from '../api';
 import { type DnUrlParam, DnUrlParamBuilder, useDnUrlQueryState } from '../navigation';
 import { type DnFilterDefinition, type DnPaginationState, type DnSortState } from '../ui';

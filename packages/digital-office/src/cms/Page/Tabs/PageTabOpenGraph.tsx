@@ -1,7 +1,7 @@
 import * as React from 'react';
+import type { OpenGraphEntry, PageDto } from '@digital-net-org/digital-api-sdk';
 import { Alert as MuiAlert, Stack } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import type { OpenGraphEntry, PageDto } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
 import { DnEntityTabHelper, useDnEntityChildSchema, useDnEntityFormContext } from '../../../entity';
 import { DnButton, DnDraggableList, DnExternalButton, DnLoadingView } from '../../../ui';

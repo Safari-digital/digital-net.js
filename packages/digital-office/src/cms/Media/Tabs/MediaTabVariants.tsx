@@ -1,4 +1,5 @@
 import * as React from 'react';
+import type { MediaDto, MediaVariantDto } from '@digital-net-org/digital-api-sdk';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import {
     IconButton,
@@ -12,7 +13,6 @@ import {
     Typography,
 } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import type { MediaDto, MediaVariantDto } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
 import { useDnToast } from '../../../app';
 import { useDnEntityFormContext } from '../../../entity';

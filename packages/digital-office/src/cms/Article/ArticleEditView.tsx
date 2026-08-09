@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import {
     type ArticleDto,
     JsonPatch,
@@ -8,6 +7,7 @@ import {
     schemaValidation,
 } from '@digital-net-org/digital-api-sdk';
 import { ObjectMapper } from '@digital-net-org/digital-core';
+import { useQueryClient } from '@tanstack/react-query';
 import { dnBuildListKey, useDigitalNetApi } from '../../api';
 import { DnEntityEditView } from '../../entity';
 import { ArticleTabContent, ArticleTabGeneral } from './Tabs';

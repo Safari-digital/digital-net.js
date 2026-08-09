@@ -19,9 +19,7 @@ export function useEntityDefinition(entityName: string): DnEntityDefinition {
     const { entities } = useEntityContext();
     const definition = entities[entityName];
     if (!definition) {
-        throw new Error(
-            `Unknown entity "${entityName}". Declare it in the entities prop of DigitalOfficeProvider.`
-        );
+        throw new Error(`Unknown entity "${entityName}". Declare it in the entities prop of DigitalOfficeProvider.`);
     }
     return definition;
 }

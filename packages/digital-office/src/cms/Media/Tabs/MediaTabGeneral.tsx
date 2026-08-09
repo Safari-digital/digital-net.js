@@ -1,7 +1,7 @@
 import * as React from 'react';
+import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { useCustomNode } from '../../../app';
 import {
     DnEntityAuditBlock,

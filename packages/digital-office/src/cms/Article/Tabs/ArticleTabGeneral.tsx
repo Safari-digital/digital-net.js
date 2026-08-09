@@ -1,8 +1,8 @@
 import * as React from 'react';
+import type { ArticleDto, ArticleRefDto } from '@digital-net-org/digital-api-sdk';
 import { AutoAwesome as AutoAwesomeIcon } from '@mui/icons-material';
 import { Stack } from '@mui/material';
 import { useParams } from 'react-router';
-import type { ArticleDto, ArticleRefDto } from '@digital-net-org/digital-api-sdk';
 import { useCustomNode } from '../../../app';
 import { DnEntityAuditBlock, DnEntityForm, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
 import {

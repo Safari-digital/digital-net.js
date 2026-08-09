@@ -1,6 +1,6 @@
+import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
 import type { Query } from '@tanstack/react-query';
 import { describe, expect, it } from 'vitest';
-import type { MutationSignal } from '@digital-net-org/digital-api-sdk';
 import { OFFICE_ENTITIES } from '../../entity/entities';
 import { type DnInvalidationRules, resolveInvalidations } from './invalidationMap';
 
@@ -48,10 +48,7 @@ describe('resolveInvalidations', () => {
     });
 
     it('maps ConfigValue to its prefix and the consumer config-value convention', () => {
-        expect(resolve(signal('ConfigValue'))).toEqual([
-            { queryKey: ['ConfigValue'] },
-            { queryKey: ['config-value'] },
-        ]);
+        expect(resolve(signal('ConfigValue'))).toEqual([{ queryKey: ['ConfigValue'] }, { queryKey: ['config-value'] }]);
     });
 
     it('ignores backend types with no office entity (Document, ApiKey, unknown)', () => {

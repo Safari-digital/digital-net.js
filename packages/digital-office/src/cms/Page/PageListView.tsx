@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router';
 import type { PageListDto } from '@digital-net-org/digital-api-sdk';
+import { useNavigate } from 'react-router';
 import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
 
 const staticProps: DnEntityListViewProps<PageListDto> = {

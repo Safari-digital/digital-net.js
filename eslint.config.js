@@ -1,21 +1,13 @@
-import jsRules from './eslint/eslint-rules-js.js';
-import tsRules from './eslint/eslint-rules-ts.js';
-import { plugin as tsPlugin, parser as tsParser } from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
+import vanilla from 'safaridigital-eslint/vanilla';
 
-/** @type {import('eslint').Linter.Config[]} */
+/**
+ * `safaridigital-eslint/vanilla` plus the React layer, which the shared config does not carry.
+ * @type {import('eslint').Linter.Config[]}
+ */
 const config = [
-    {
-        rules: { ...jsRules },
-        files: ['**/*.js'],
-    },
-    {
-        plugins: { '@typescript-eslint': tsPlugin },
-        languageOptions: { parser: tsParser },
-        rules: { ...jsRules, ...tsRules },
-        files: ['**/*.ts', '**/*.tsx'],
-    },
+    ...vanilla,
     {
         files: ['**/*.{js,jsx,ts,tsx}'],
         plugins: {
@@ -37,9 +29,6 @@ const config = [
             ...reactPlugin.configs['jsx-runtime'].rules,
             ...reactHooksPlugin.configs.recommended.rules,
         },
-    },
-    {
-        ignores: ['**/dist/**', '**/node_modules/**'],
     },
 ];
 

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import type { Result, SchemaProperty } from '@digital-net-org/digital-api-sdk';
 import { useDigitalNetApi } from '../api';
-import { EntitySchemaContext, type EntitySchemaContextValue } from './useEntitySchemaContext';
 import { useEntityContext } from './useEntityContext';
+import { EntitySchemaContext, type EntitySchemaContextValue } from './useEntitySchemaContext';
 
 export interface DnEntitySchemaProviderProps {
     children: React.ReactNode;

@@ -1,6 +1,6 @@
+import type { ArticleListDto } from '@digital-net-org/digital-api-sdk';
 import { Chip, Stack } from '@mui/material';
 import { useNavigate } from 'react-router';
-import type { ArticleListDto } from '@digital-net-org/digital-api-sdk';
 import { DnEntityListView, type DnEntityListViewProps } from '../../entity';
 import type { DnColumnDefinition } from '../../ui';
 

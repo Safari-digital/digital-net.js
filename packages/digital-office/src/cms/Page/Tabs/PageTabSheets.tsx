@@ -1,8 +1,8 @@
 import * as React from 'react';
+import type { PageDto, PageSheet } from '@digital-net-org/digital-api-sdk';
 import { Divider, Link, Stack, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router';
-import type { PageDto, PageSheet } from '@digital-net-org/digital-api-sdk';
 import { dnBuildKeyFromId, useDigitalNetApi } from '../../../api';
 import { DnEntityTabHelper, useDnEntityChildSchema, useDnEntityFormContext } from '../../../entity';
 import { DnDraggableList, DnLoadingView } from '../../../ui';

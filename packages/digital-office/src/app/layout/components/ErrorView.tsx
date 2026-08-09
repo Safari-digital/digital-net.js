@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { HttpClientError } from '@digital-net-org/digital-api-sdk';
 import { Button, Stack, Typography } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router';
-import { HttpClientError } from '@digital-net-org/digital-api-sdk';
 import { DnView } from '../../../ui';
 
 export interface ErrorViewProps {
