@@ -5,8 +5,6 @@ import type { DigitalOfficeRoute } from '../types';
 
 const PageListView = dnLazyView(() => import('../../cms/Page/PageListView'), 'PageListView');
 const PageEditView = dnLazyView(() => import('../../cms/Page/PageEditView'), 'PageEditView');
-const ArticleListView = dnLazyView(() => import('../../cms/Article/ArticleListView'), 'ArticleListView');
-const ArticleEditView = dnLazyView(() => import('../../cms/Article/ArticleEditView'), 'ArticleEditView');
 const FormListView = dnLazyView(() => import('../../cms/Form/FormListView'), 'FormListView');
 const FormEditView = dnLazyView(() => import('../../cms/Form/FormEditView'), 'FormEditView');
 const FormSubmissionDetailView = dnLazyView(
@@ -15,9 +13,11 @@ const FormSubmissionDetailView = dnLazyView(
 );
 const MediaListView = dnLazyView(() => import('../../cms/Media/MediaListView'), 'MediaListView');
 const MediaEditView = dnLazyView(() => import('../../cms/Media/MediaEditView'), 'MediaEditView');
-const TagListView = dnLazyView(() => import('../../cms/Tag/TagListView'), 'TagListView');
-const TagEditView = dnLazyView(() => import('../../cms/Tag/TagEditView'), 'TagEditView');
 
+/**
+ * The framework's own content screens. Articles and tags are gone from here: they belong to whichever
+ * application declares them, which mounts its own screens through the routes prop.
+ */
 export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
         path: '/content-manager/pages',
@@ -33,21 +33,6 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
         path: '/content-manager/pages/:id',
         element: <PageEditView />,
-    },
-    {
-        path: '/content-manager/articles',
-        navGroup: DigitalOfficeNavGroup.ContentManager,
-        navLabel: 'Articles',
-        navOrder: 20,
-        element: <ArticleListView />,
-    },
-    {
-        path: '/content-manager/articles/new',
-        element: <ArticleEditView />,
-    },
-    {
-        path: '/content-manager/articles/:id',
-        element: <ArticleEditView />,
     },
     {
         path: '/content-manager/forms',
@@ -78,20 +63,5 @@ export const CMS_ROUTES: DigitalOfficeRoute[] = [
     {
         path: '/content-manager/media/:id',
         element: <MediaEditView />,
-    },
-    {
-        path: '/content-manager/tags',
-        navGroup: DigitalOfficeNavGroup.ContentManager,
-        navLabel: 'Tags',
-        navOrder: 50,
-        element: <TagListView />,
-    },
-    {
-        path: '/content-manager/tags/new',
-        element: <TagEditView />,
-    },
-    {
-        path: '/content-manager/tags/:id',
-        element: <TagEditView />,
     },
 ];
