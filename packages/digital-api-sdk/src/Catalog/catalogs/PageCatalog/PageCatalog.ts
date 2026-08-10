@@ -1,11 +1,4 @@
-import type {
-    OpenGraphEntry,
-    OpenGraphPropertySchema,
-    PageDto,
-    PageEntityType,
-    PageSheet,
-    TemplateVariable,
-} from '../../../Dto';
+import type { OpenGraphEntry, OpenGraphPropertySchema, PageDto, PageSheet, TemplateVariable } from '../../../Dto';
 import type { HttpClient } from '../../../HttpClient';
 import type { JsonPatchOp } from '../../../JsonPatch';
 import type { Result } from '../../../Result';
@@ -21,7 +14,7 @@ export const DN_API_PAGE_TEMPLATE = 'cms/pages/template' as const;
 export const DN_API_PAGE_OG_SCHEMA = 'cms/pages/open-graph-values/schema' as const;
 export const DN_API_PAGE_OPENGRAPH = 'cms/pages/:id/open-graph' as const;
 export const DN_API_PAGE_SHEETS = 'cms/pages/:id/sheets' as const;
-export const DN_API_PAGE_TEMPLATE_VARIABLES = 'cms/pages/template-variables/:entityType' as const;
+export const DN_API_PAGE_TEMPLATE_VARIABLES = 'cms/pages/template-variables' as const;
 
 export class PageCatalog {
     private readonly http: HttpClient;
@@ -39,7 +32,7 @@ export class PageCatalog {
         return CatalogRunner.run<PageDto>(this.http, { path: DN_API_PAGE_BY_ID, slugs: { id } }, options);
     }
 
-    /** POST `cms/pages` — body accepts `{ path, entityType? }`. Returns the new id. */
+    /** POST `cms/pages` — body accepts `{ path }`. Returns the new id. */
     public async create(payload: PagePayload, options: CatalogCallbacks<string> = {}): Promise<Result<string>> {
         return CatalogRunner.run<string>(this.http, { method: 'POST', path: DN_API_PAGE, body: payload }, options);
     }
@@ -127,18 +120,12 @@ export class PageCatalog {
     }
 
     /**
-     * GET `cms/pages/template-variables/:entityType` — Lists `{{ source.field }}` placeholders
-     * exposed for a given PageEntityType. Empty when the entity exposes no `[Templatable]`
-     * field.
+     * GET `cms/pages/template-variables` — Lists the `{{ source.field }}` placeholders exposed by
+     * every declared source. Empty when no source exposes a `[TemplateSource]` field.
      */
     public async getTemplateVariables(
-        entityType: PageEntityType,
         options: CatalogCallbacks<TemplateVariable[]> = {}
     ): Promise<Result<TemplateVariable[]>> {
-        return CatalogRunner.run<TemplateVariable[]>(
-            this.http,
-            { path: DN_API_PAGE_TEMPLATE_VARIABLES, slugs: { entityType } },
-            options
-        );
+        return CatalogRunner.run<TemplateVariable[]>(this.http, { path: DN_API_PAGE_TEMPLATE_VARIABLES }, options);
     }
 }

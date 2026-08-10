@@ -50,7 +50,7 @@ export function EntityInput({
 
     const handleChange = (next: unknown) => onChange(next);
     const useTemplatableInput =
-        schema.isTemplatable && variables.length > 0 && (schema.type === 'String' || schema.type === 'Guid');
+        schema.isTemplateTarget && variables.length > 0 && (schema.type === 'String' || schema.type === 'Guid');
 
     switch (schema.type) {
         case 'Boolean':

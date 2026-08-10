@@ -19,7 +19,10 @@ export interface SchemaProperty {
     isSecret: boolean;
     isRequired: boolean;
     isUnique: boolean;
-    isTemplatable: boolean;
+    /** The value may hold `{{ source.field }}` placeholders: offer autocompletion here. */
+    isTemplateTarget: boolean;
+    /** The field is exposed as a `{{ entity.field }}` variable. */
+    isTemplateSource: boolean;
     maxLength: number | null;
     isIdentity: boolean;
     isForeignKey: boolean;

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import type { SheetType } from '@digital-net-org/digital-api-sdk';
+import type { SchemaProperty, SheetType } from '@digital-net-org/digital-api-sdk';
 import { Box, Collapse, FormControlLabel, MenuItem, Stack, TextField } from '@mui/material';
 import { css, styled } from '@mui/material/styles';
 import { LazyDnEditorCode } from '../../../editor';
-import { DnDraggableRow, DnExpandButton, DnInput, DnSwitch } from '../../../ui';
+import { DnDraggableRow, DnExpandButton, DnInput, DnInputInterpolated, DnSwitch } from '../../../ui';
 import { usePageVariables } from './usePageVariables';
 import type { SheetRow } from './useSheetsState';
 
@@ -12,6 +12,8 @@ const LANGUAGE_TYPES_MAP = Object.keys(LANGUAGE_TYPES) as (keyof typeof LANGUAGE
 
 export interface EditSheetRowProps {
     row: SheetRow;
+    /** Child schema of Page.sheets: decides which fields offer `{{ }}` autocompletion. */
+    schemas: SchemaProperty[];
     disabled: boolean;
     showErrors: boolean;
     errors: Set<'name' | 'type' | 'content' | 'published'> | undefined;
@@ -26,6 +28,7 @@ export interface EditSheetRowProps {
 
 export function EditSheetRow({
     row,
+    schemas,
     disabled,
     showErrors,
     errors,
@@ -37,6 +40,14 @@ export function EditSheetRow({
     const contentError = showErrors && (errors?.has('content') ?? false);
     const variables = usePageVariables();
 
+    // The schema decides where placeholders are hydrated, so it decides where to offer them.
+    const isTemplateTarget = React.useCallback(
+        (field: string) => schemas.some(schema => schema.name === field && schema.isTemplateTarget),
+        [schemas]
+    );
+    const nameVariables = isTemplateTarget('Name') ? variables : [];
+    const contentVariables = isTemplateTarget('Content') ? variables : [];
+
     React.useEffect(() => {
         if (row.expanded || !contentError) return;
         onToggleExpand(row.id);
@@ -45,15 +56,28 @@ export function EditSheetRow({
     return (
         <DnDraggableRow id={row.id} disabled={disabled} onDelete={onDelete}>
             <Header>
-                <DnInput
-                    label="Nom"
-                    value={row.name}
-                    onChange={e => onFieldChange(row.id, 'name', e.target.value)}
-                    disabled={disabled}
-                    required
-                    error={nameError}
-                    sx={{ flex: 2 }}
-                />
+                {nameVariables.length > 0 ? (
+                    <DnInputInterpolated
+                        variables={nameVariables}
+                        label="Nom"
+                        value={row.name}
+                        onChange={e => onFieldChange(row.id, 'name', e.target.value)}
+                        disabled={disabled}
+                        required
+                        error={nameError}
+                        sx={{ flex: 2 }}
+                    />
+                ) : (
+                    <DnInput
+                        label="Nom"
+                        value={row.name}
+                        onChange={e => onFieldChange(row.id, 'name', e.target.value)}
+                        disabled={disabled}
+                        required
+                        error={nameError}
+                        sx={{ flex: 2 }}
+                    />
+                )}
                 <TextField
                     select
                     value={row.type}
@@ -101,7 +125,7 @@ export function EditSheetRow({
                         language={LANGUAGE_TYPES[row.type]}
                         disabled={disabled}
                         error={contentError}
-                        templateVariables={variables}
+                        templateVariables={contentVariables}
                     />
                 </Box>
             </Collapse>

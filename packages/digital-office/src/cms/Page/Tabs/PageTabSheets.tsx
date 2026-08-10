@@ -97,6 +97,7 @@ export function PageTabSheets() {
                             renderRow={row => (
                                 <EditSheetRow
                                     row={row}
+                                    schemas={sheetSchemas}
                                     disabled
                                     showErrors={false}
                                     errors={undefined}
@@ -121,6 +122,7 @@ export function PageTabSheets() {
                     renderRow={row => (
                         <EditSheetRow
                             row={row}
+                            schemas={sheetSchemas}
                             disabled={disabled ?? false}
                             showErrors={showErrors}
                             errors={state.rowErrors.get(row.id)}

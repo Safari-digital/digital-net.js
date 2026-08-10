@@ -1,23 +1,28 @@
 import * as React from 'react';
 import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
-import { type EntityVariableKey, useEntityVariablesContext } from './useEntityVariablesContext';
+import { useEntityVariablesContext } from './useEntityVariablesContext';
 
 export interface UseEntityVariablesResult {
     variables: TemplateVariable[];
     loading: boolean;
 }
 
-export function useEntityVariables(key: EntityVariableKey | null | undefined): UseEntityVariablesResult {
-    const { variables, errors, loadingKeys, loadVariables } = useEntityVariablesContext();
+export function useEntityVariables(): UseEntityVariablesResult {
+    const { variables, error, loading, loadVariables } = useEntityVariablesContext();
+
+    // An error the provider already held when this mount started belongs to an earlier load. Throwing
+    // it on the first render would kill the render pass before the effect could ask for a retry, so
+    // only an error raised after that point counts.
+    const [seen] = React.useState(() => error);
 
     React.useEffect(() => {
-        if (key) loadVariables(key);
-    }, [key, loadVariables]);
+        loadVariables();
+    }, [loadVariables]);
 
-    if (key && errors[key]) throw errors[key];
+    if (error && error !== seen) throw error;
 
     return {
-        variables: key ? (variables[key] ?? []) : [],
-        loading: !!key && (loadingKeys.has(key) || !(key in variables)),
+        variables: variables ?? [],
+        loading: loading || variables === null,
     };
 }

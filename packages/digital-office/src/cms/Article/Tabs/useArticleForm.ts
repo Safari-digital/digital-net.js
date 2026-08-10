@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { ArticleDto, PageListDto, QueryResult } from '@digital-net-org/digital-api-sdk';
-import { StringResolver } from '@digital-net-org/digital-core';
+import { PathAnalyzer, StringResolver } from '@digital-net-org/digital-core';
 import { useQuery } from '@tanstack/react-query';
 import { dnBuildListKey, useDigitalNetApi } from '../../../api';
 import { type DnEntityFormProps, useDnEntityFormContext, useDnEntitySchema } from '../../../entity';
@@ -70,19 +70,25 @@ export function useArticleForm(articleId: string | undefined) {
         isLoading: pagesLoading,
         isFetching: pagesFetching,
     } = useQuery<QueryResult<PageListDto>>({
-        queryKey: [...dnBuildListKey('Page'), { entityType: 'Article', size: pagesSize }],
+        queryKey: [...dnBuildListKey('Page'), { size: pagesSize }],
         queryFn: async () => {
             const result = await api.http.request<QueryResult<PageListDto>>({
                 path: 'cms/pages',
-                params: { size: pagesSize, index: 1, entityType: 'Article' },
+                params: { size: pagesSize, index: 1 },
             });
             return result.data;
         },
     });
 
-    const pagesItems = React.useMemo(() => pagesResult?.value ?? [], [pagesResult]);
+    // A page no longer declares the entity feeding it, so the server cannot filter on it. Only a page
+    // whose path carries a dynamic slug can serve an article, which is the filter that matters here.
+    const fetchedPages = React.useMemo(() => pagesResult?.value ?? [], [pagesResult]);
+    const pagesItems = React.useMemo(
+        () => fetchedPages.filter(page => PathAnalyzer.hasDynamicSlug(page.path)),
+        [fetchedPages]
+    );
     const selectedPage = pagesItems.find(p => p.id === values.pageId) ?? null;
-    const hasMorePages = pagesResult ? pagesItems.length < pagesResult.total : false;
+    const hasMorePages = pagesResult ? fetchedPages.length < pagesResult.total : false;
     const loadMorePages = React.useCallback(() => setPagesSize(size => size + INTERPOLABLE_PAGES_PAGE_SIZE), []);
 
     const setFieldWithAutoSlug = React.useCallback(
