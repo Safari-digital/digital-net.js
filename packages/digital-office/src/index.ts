@@ -31,9 +31,13 @@ export {
 } from './app';
 
 export {
+    dnHasDynamicSlug,
     DnUrlParamBuilder,
+    useDnNavigate,
     useDnRouterBlocker,
     useDnUrlQueryState,
+    type DnNavigate,
+    type DnNavigateOptions,
     type DnUrlParam,
     type DnUrlQuerySchema,
     type DnUrlQueryState,
