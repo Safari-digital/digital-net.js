@@ -2,7 +2,9 @@ import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
 
 const PUBLIC_NAMING = /^(Dn[A-Z]|useDn[A-Z]|UseDn[A-Z]|LazyDn[A-Z]|dn[A-Z]|DN_|(use)?DigitalOffice|(use)?DigitalNet)/;
-const SRC_DIR = import.meta.url.slice('file://'.length, import.meta.url.lastIndexOf('/') + 1);
+const SRC_DIR = decodeURIComponent(
+    import.meta.url.slice('file://'.length, import.meta.url.lastIndexOf('/') + 1)
+).replace(/^\/(?=[a-zA-Z]:)/, '');
 
 const ENTRY_POINTS = {
     '.': `${SRC_DIR}index.ts`,
