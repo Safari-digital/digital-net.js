@@ -14,6 +14,7 @@ export function templatePlugin(variables: DnEditorTemplateVariable[]): EditorPlu
                 className: 'dn-template-error',
             })),
         completers: [createTemplateCompleter(variables)],
-        autocompleteTriggers: [{ pattern: '{{' }],
+        // `??` opens the next term of a fallback chain, so it deserves the same prompt as `{{`.
+        autocompleteTriggers: [{ pattern: '{{' }, { pattern: '??' }],
     };
 }

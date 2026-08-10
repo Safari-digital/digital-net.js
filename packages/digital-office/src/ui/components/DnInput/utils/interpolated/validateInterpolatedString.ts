@@ -11,6 +11,9 @@ interface InvalidPlaceholder {
 const PLACEHOLDER_REGEX = /\{\{([^{}]*)\}\}/g;
 const DOTTED_VARIABLE_REGEX = /^([a-z][a-z0-9_]*)\.([a-z_][a-z0-9_]*)$/;
 
+/** Separates the terms of a fallback chain: `{{ article.metaTitle ?? article.title }}`. */
+export const FALLBACK_SEPARATOR = '??';
+
 const buildVariableSet = (variables: TemplateVariable[]) =>
     new Set(variables.map(v => `${v.source.toLowerCase()}.${v.field.toLowerCase()}`));
 
@@ -32,22 +35,32 @@ export function validateInterpolatedString(
         const inner = match[1].trim();
         if (inner.length === 0) continue;
 
-        const lower = inner.toLowerCase();
-        if (known.has(lower)) continue;
-
-        const dotted = lower.match(DOTTED_VARIABLE_REGEX);
-        const message = dotted
-            ? `La variable "{{ ${inner} }}" n'existe pas.`
-            : `Expression invalide. Format attendu : "{{ source.champ }}".`;
+        // Every term of the chain is checked: one unknown term does not invalidate the others, but it
+        // is still worth flagging — the engine skips it silently.
+        const terms = inner.split(FALLBACK_SEPARATOR).map(term => term.trim());
+        const malformed = terms.filter(term => !DOTTED_VARIABLE_REGEX.test(term.toLowerCase()));
+        const unknown = terms.filter(
+            term => DOTTED_VARIABLE_REGEX.test(term.toLowerCase()) && !known.has(term.toLowerCase())
+        );
+        if (malformed.length === 0 && unknown.length === 0) continue;
 
         invalid.push({
             start: match.index,
             end: match.index + match[0].length,
             raw: match[0],
             inner,
-            message,
+            message: buildMessage(malformed, unknown),
         });
     }
 
     return invalid;
+}
+
+function buildMessage(malformed: string[], unknown: string[]): string {
+    if (malformed.length > 0) {
+        return `Expression invalide. Format attendu : "{{ source.champ }}", termes séparés par "${FALLBACK_SEPARATOR}".`;
+    }
+    return unknown.length === 1
+        ? `La variable "{{ ${unknown[0]} }}" n'existe pas.`
+        : `Ces variables n'existent pas : ${unknown.map(term => `"${term}"`).join(', ')}.`;
 }

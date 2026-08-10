@@ -19,7 +19,7 @@ export function DnInputInterpolated({
     const inputRef = React.useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
     const [anchor, setAnchor] = React.useState<{ top: number; left: number } | null>(null);
     const [query, setQuery] = React.useState('');
-    const [contextStart, setContextStart] = React.useState<number | null>(null);
+    const [context, setContext] = React.useState<{ start: number; insideChain: boolean } | null>(null);
 
     const effectiveValue = typeof value === 'string' ? value : '';
 
@@ -30,7 +30,7 @@ export function DnInputInterpolated({
 
     const closePopover = React.useCallback(() => {
         setAnchor(null);
-        setContextStart(null);
+        setContext(null);
         setQuery('');
     }, []);
 
@@ -50,7 +50,7 @@ export function DnInputInterpolated({
         const rect = node.getBoundingClientRect();
         setAnchor({ top: rect.bottom, left: rect.left });
         setQuery(ctx.query);
-        setContextStart(ctx.start);
+        setContext({ start: ctx.start, insideChain: ctx.insideChain });
     }, [variables.length, closePopover]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -64,11 +64,13 @@ export function DnInputInterpolated({
 
     const handleSelect = (token: string) => {
         const node = inputRef.current;
-        if (!node || contextStart === null) return;
+        if (!node || context === null) return;
         const current = node.value;
         const caret = node.selectionStart ?? current.length;
-        const next = current.slice(0, contextStart) + token + current.slice(caret);
-        const newCaret = contextStart + token.length;
+        // A later term of a chain carries no braces of its own — they already opened the token.
+        const inserted = context.insideChain ? ` ${token.replace(/^\{\{\s*|\s*\}\}$/g, '')}` : token;
+        const next = current.slice(0, context.start) + inserted + current.slice(caret);
+        const newCaret = context.start + inserted.length;
 
         const setter = Object.getOwnPropertyDescriptor(
             node instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype,

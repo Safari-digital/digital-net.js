@@ -8,6 +8,9 @@ interface AceRangeCtor {
 
 const AceRange = (ace as unknown as { require: (_: string) => { Range: AceRangeCtor } }).require('ace/range').Range;
 
+/** Mirrors the interpolation grammar: `{{ article.metaTitle ?? article.title }}`. */
+const FALLBACK_SEPARATOR = '??';
+
 interface TemplateCompletion {
     caption: string;
     value: string;
@@ -41,8 +44,14 @@ export function createTemplateCompleter(variables: DnEditorTemplateVariable[]): 
                     editor.insert(data.value);
                     return;
                 }
-                const range = new AceRange(cursor.row, openIdx, cursor.row, cursor.column);
-                editor.session.replace(range, data.value);
+                // Inside a fallback chain only the term being typed is replaced, and it carries no
+                // braces of its own — they already opened the token.
+                const fallbackIdx = lineToCursor.lastIndexOf(FALLBACK_SEPARATOR);
+                const insideChain = fallbackIdx > openIdx;
+                const from = insideChain ? fallbackIdx + FALLBACK_SEPARATOR.length : openIdx;
+                const value = insideChain ? ` ${data.value.replace(/^\{\{\s*|\s*\}\}$/g, '')}` : data.value;
+                const range = new AceRange(cursor.row, from, cursor.row, cursor.column);
+                editor.session.replace(range, value);
             };
 
             const items: TemplateCompletion[] = variables.map(v => ({
