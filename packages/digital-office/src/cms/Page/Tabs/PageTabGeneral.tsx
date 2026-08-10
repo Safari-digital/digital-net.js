@@ -1,6 +1,5 @@
 import * as React from 'react';
 import type { PageDto } from '@digital-net-org/digital-api-sdk';
-import { PathAnalyzer } from '@digital-net-org/digital-core';
 import { Stack } from '@mui/material';
 import { useParams } from 'react-router';
 import { useDigitalNetApi } from '../../../api';
@@ -16,8 +15,6 @@ import { DnInputDebounced } from '../../../ui';
 import { usePageTemplate } from './usePageTemplate';
 import { usePageVariables } from './usePageVariables';
 
-const ENTITY_TYPE_HELPER = "Définit l'entité DB associée au dernier slug dynamique du chemin.";
-const ENTITY_TYPE_LOCKED_HELPER = 'Ajoutez un slug dynamique (:xxx) dans le chemin pour activer ce champ.';
 const PATH_HELPER = "Chemin d'accès vers la page depuis le site client.";
 const PATH_AVAILABILITY_ERROR = 'Ce chemin est déjà utilisé.';
 const PATH_DEBOUNCE_MS = 1500;
@@ -26,10 +23,6 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
     Path: {
         label: 'Chemin',
         helperText: PATH_HELPER,
-    },
-    EntityType: {
-        label: "Type d'entité",
-        helperText: ENTITY_TYPE_HELPER,
     },
     Title: {
         label: 'Titre',
@@ -68,14 +61,7 @@ export function PageTabGeneral() {
 
     const currentPath = String(values.path ?? '');
     const apiPath = String(apiData?.path ?? '');
-    const slugPresent = PathAnalyzer.hasDynamicSlug(currentPath);
-    const currentEntityType = values.entityType ?? null;
     const template = usePageTemplate(currentPath);
-
-    React.useEffect(
-        () => (!slugPresent && currentEntityType != null ? setField('/entityType', null) : void 0),
-        [slugPresent, currentEntityType, setField]
-    );
 
     const [pathAvailabilityError, setPathAvailabilityError] = React.useState(false);
     const handlePathChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -110,11 +96,6 @@ export function PageTabGeneral() {
                         onDebounced={handlePathDebounced}
                     />
                 ) : null,
-        },
-        EntityType: {
-            ...baseFieldProps.EntityType,
-            disabled: !slugPresent,
-            helperText: slugPresent ? ENTITY_TYPE_HELPER : ENTITY_TYPE_LOCKED_HELPER,
         },
         Title: {
             ...baseFieldProps.Title,

@@ -12,11 +12,7 @@ export { useEntityContext, useEntityDefinition, type EntityContextValue } from '
 export * from './EntitySchemaProvider';
 export { useEntitySchemaContext, type EntitySchemaContextValue } from './useEntitySchemaContext';
 export * from './EntityVariablesProvider';
-export {
-    useEntityVariablesContext,
-    type EntityVariablesContextValue,
-    type EntityVariableKey,
-} from './useEntityVariablesContext';
+export { useEntityVariablesContext, type EntityVariablesContextValue } from './useEntityVariablesContext';
 export * from './OgSchemaProvider';
 export { useOgSchemaContext, type OgSchemaContextValue } from './useOgSchemaContext';
 export * from './EntityView';

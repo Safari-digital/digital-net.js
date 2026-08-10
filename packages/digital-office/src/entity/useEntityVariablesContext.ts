@@ -1,13 +1,11 @@
 import * as React from 'react';
 import type { TemplateVariable } from '@digital-net-org/digital-api-sdk';
 
-export type EntityVariableKey = string;
-
 export interface EntityVariablesContextValue {
-    variables: Partial<Record<EntityVariableKey, TemplateVariable[]>>;
-    errors: Partial<Record<EntityVariableKey, Error>>;
-    loadingKeys: ReadonlySet<EntityVariableKey>;
-    loadVariables: (_key: EntityVariableKey) => void;
+    variables: TemplateVariable[] | null;
+    error: Error | null;
+    loading: boolean;
+    loadVariables: () => void;
 }
 
 export const EntityVariablesContext = React.createContext<EntityVariablesContextValue | null>(null);

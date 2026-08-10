@@ -19,7 +19,6 @@ export * from './FormSubmissionDto';
 export * from './MediaDto';
 export * from './MediaVariantDto';
 export * from './PageDto';
-export * from './PageEntityType';
 export * from './PageListDto';
 export * from './PagePublicDto';
 export * from './PageSheet';
