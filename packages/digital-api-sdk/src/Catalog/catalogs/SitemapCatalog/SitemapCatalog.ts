@@ -13,7 +13,10 @@ export class SitemapCatalog {
         this.http = http;
     }
 
-    /** GET `cms/sitemaps/data` — published & indexed pages/articles for sitemap generation.  */
+    /**
+     * GET `cms/sitemaps/data` — published & indexed pages for sitemap generation. Templates are left
+     * out: a path carrying a dynamic slug is a pattern, not an address.
+     */
     public async getData(options: CatalogCallbacks<SitemapEntryDto[]> = {}): Promise<Result<SitemapEntryDto[]>> {
         return CatalogRunner.run<SitemapEntryDto[]>(this.http, { path: DN_API_SITEMAP_DATA }, options);
     }

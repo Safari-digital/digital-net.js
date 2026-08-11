@@ -72,9 +72,9 @@ export class MediaCatalog {
     }
 
     /**
-     * GET `cms/media/labels?search=…` — distinct labels currently in use across all
-     * ArticleMedia pivots, alphabetically sorted. `search` is an optional case-insensitive
-     * substring filter.
+     * GET `cms/media/labels?search=…` — distinct media labels known to the CMS, alphabetically
+     * sorted. `search` is an optional case-insensitive substring filter. Always empty today: labels
+     * live on the pivots of whichever application owns them, and none belongs to this library.
      * Pass `options.signal` to cancel an in-flight request (debounced autocomplete pattern).
      */
     public async getLabels(
