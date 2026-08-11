@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { Divider, FormControl, FormControlLabel, FormHelperText, MenuItem, TextField } from '@mui/material';
 import { DnInput, DnInputDate, DnInputInterpolated, type DnInputProps, DnSwitch } from '../../ui';
+import { fromDateTimeLocal, toDateTimeLocal } from './dateTimeLocal';
 
 export interface EntityInputProps {
     schema: SchemaProperty;
@@ -122,7 +123,8 @@ export function EntityInput({
                 <DnInputDate
                     type="datetime-local"
                     {...resolvedInputProps}
-                    onChange={event => handleChange(event.target.value)}
+                    value={toDateTimeLocal(value)}
+                    onChange={event => handleChange(fromDateTimeLocal(event.target.value))}
                 />
             );
         case 'Guid':
