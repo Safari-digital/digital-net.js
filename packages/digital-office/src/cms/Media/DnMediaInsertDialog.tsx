@@ -1,11 +1,10 @@
 import * as React from 'react';
 import type { MediaDto } from '@digital-net-org/digital-api-sdk';
 import { Stack, css, styled } from '@mui/material';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { dnBuildKeyFromId, dnBuildListKey, useDigitalNetApi } from '../../api';
+import { useQuery } from '@tanstack/react-query';
+import { dnBuildKeyFromId, useDigitalNetApi } from '../../api';
 import type { DnEditorRichTextImageDialogProps } from '../../editor';
-import { DnButton, DnDialog, DnInput } from '../../ui';
-import { DnMediaImportDialog } from './DnMediaImportDialog';
+import { DnDialog, DnInput } from '../../ui';
 import { DnMediaPicker } from './DnMediaPicker';
 import { dnParseMediaImageUrl } from './dnParseMediaImageUrl';
 
@@ -13,11 +12,9 @@ export type DnMediaInsertDialogProps = DnEditorRichTextImageDialogProps;
 
 export function DnMediaInsertDialog({ open, initial, onClose, onSubmit }: DnMediaInsertDialogProps) {
     const api = useDigitalNetApi();
-    const queryClient = useQueryClient();
 
     const [media, setMedia] = React.useState<MediaDto | null>(null);
     const [alt, setAlt] = React.useState('');
-    const [importOpen, setImportOpen] = React.useState(false);
     const [prevOpen, setPrevOpen] = React.useState(open);
 
     const initialId = initial ? (dnParseMediaImageUrl(initial.src)?.id ?? null) : null;
@@ -58,8 +55,7 @@ export function DnMediaInsertDialog({ open, initial, onClose, onSubmit }: DnMedi
     };
 
     return (
-        <React.Fragment>
-            <DnDialog
+        <DnDialog
                 open={open}
                 title={initial ? "Modifier l'image" : 'Insérer une image'}
                 onClose={onClose}
@@ -68,9 +64,6 @@ export function DnMediaInsertDialog({ open, initial, onClose, onSubmit }: DnMedi
             >
                 <DialogContent>
                     <DnMediaPicker value={media} onChange={handleMediaChange} />
-                    <DnButton variant="outlined" onClick={() => setImportOpen(true)}>
-                        Importer un média
-                    </DnButton>
                     <DnInput
                         className="Alt-input"
                         label="Texte alternatif"
@@ -80,13 +73,7 @@ export function DnMediaInsertDialog({ open, initial, onClose, onSubmit }: DnMedi
                         fullWidth
                     />
                 </DialogContent>
-            </DnDialog>
-            <DnMediaImportDialog
-                open={importOpen}
-                onClose={() => setImportOpen(false)}
-                onUploaded={() => void queryClient.invalidateQueries({ queryKey: dnBuildListKey('Media') })}
-            />
-        </React.Fragment>
+        </DnDialog>
     );
 }
 
