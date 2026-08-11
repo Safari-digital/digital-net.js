@@ -1,8 +1,7 @@
 import * as React from 'react';
 import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { Divider, FormControl, FormControlLabel, FormHelperText, MenuItem, TextField } from '@mui/material';
-import { DnInput, DnInputDate, DnInputInterpolated, type DnInputProps, DnSwitch } from '../../ui';
-import { fromDateTimeLocal, toDateTimeLocal } from './dateTimeLocal';
+import { type DnDateFormat, DnInput, DnInputDate, DnInputInterpolated, type DnInputProps, DnSwitch } from '../../ui';
 
 export interface EntityInputProps {
     schema: SchemaProperty;
@@ -16,6 +15,12 @@ export interface EntityInputProps {
     rows?: number;
     error?: boolean;
     variables: TemplateVariable[];
+    /** Date fields only: the precision the value is edited at. Defaults to the minute. */
+    format?: DnDateFormat;
+    /** Date fields only: hour given to a value the format does not ask one for. */
+    defaultHour?: number;
+    /** Date fields only: minutes given to a value the format does not ask them for. */
+    defaultMinutes?: number;
 }
 
 export function EntityInput({
@@ -30,6 +35,9 @@ export function EntityInput({
     rows,
     error,
     variables,
+    format,
+    defaultHour,
+    defaultMinutes,
 }: EntityInputProps) {
     const resolvedLabel = React.useMemo(() => label ?? schema.name, [label, schema]);
     const resolvedDisabled = React.useMemo(
@@ -121,10 +129,11 @@ export function EntityInput({
         case 'DateTimeOffset':
             return (
                 <DnInputDate
-                    type="datetime-local"
+                    format={format}
+                    defaultHour={defaultHour}
+                    defaultMinutes={defaultMinutes}
                     {...resolvedInputProps}
-                    value={toDateTimeLocal(value)}
-                    onChange={event => handleChange(fromDateTimeLocal(event.target.value))}
+                    onChange={handleChange}
                 />
             );
         case 'Guid':

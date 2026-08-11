@@ -1,6 +1,7 @@
 import * as React from 'react';
 import type { SchemaProperty, TemplateVariable } from '@digital-net-org/digital-api-sdk';
 import { Stack } from '@mui/material';
+import type { DnDateFormat } from '../../ui';
 import { EntityInput } from '../EntityInput';
 
 export interface DnEntityFieldProps {
@@ -10,6 +11,12 @@ export interface DnEntityFieldProps {
     disabled?: boolean;
     error?: boolean;
     render?: React.ReactNode;
+    /** Date fields only: the precision the value is edited at. Defaults to the minute. */
+    format?: DnDateFormat;
+    /** Date fields only: hour given to a value the format does not ask one for. */
+    defaultHour?: number;
+    /** Date fields only: minutes given to a value the format does not ask them for. */
+    defaultMinutes?: number;
 }
 
 export interface DnEntityFormProps {
@@ -74,6 +81,9 @@ export function DnEntityForm({
                         error={s.error ?? errors?.has(accessor)}
                         disabled={disabled || s.disabled}
                         variables={variables ?? []}
+                        format={s.format}
+                        defaultHour={s.defaultHour}
+                        defaultMinutes={s.defaultMinutes}
                     />
                 );
             })}

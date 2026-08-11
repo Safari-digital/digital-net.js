@@ -98,9 +98,11 @@ exports[`public surface > exports of "." are stable 1`] = `
 
 exports[`public surface > exports of "./ui" are stable 1`] = `
 [
+  "DN_DATE_FORMATS",
   "DnButton",
   "DnButtonProps",
   "DnColumnDefinition",
+  "DnDateFormat",
   "DnDialog",
   "DnDialogProps",
   "DnDraggableList",
