@@ -41,6 +41,11 @@ const baseFieldProps: DnEntityFormProps['fieldProps'] = {
         label: 'Publiée',
         helperText: 'Si activée, la page est accessible aux visiteurs du site. Sinon elle reste en brouillon.',
     },
+    PublishedAt: {
+        label: 'Mise en ligne',
+        helperText:
+            'Si renseignée, la page reste invisible jusqu’à cette date, y compris dans le sitemap. Vide, elle est en ligne dès sa publication.',
+    },
     Indexed: {
         label: 'Indexée',
         helperText:
