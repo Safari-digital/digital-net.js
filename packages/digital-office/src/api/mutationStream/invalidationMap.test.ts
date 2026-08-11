@@ -17,12 +17,9 @@ function resolve(s: MutationSignal, currentUserId?: string, rules?: DnInvalidati
 }
 
 describe('resolveInvalidations', () => {
-    it.each([['Article'], ['Page'], ['Media'], ['Tag'], ['Form']])(
-        'maps %s to its single entity prefix',
-        entityName => {
-            expect(resolve(signal(entityName, 'abc'))).toEqual([{ queryKey: [entityName] }]);
-        }
-    );
+    it.each([['Page'], ['Media'], ['Form']])('maps %s to its single entity prefix', entityName => {
+        expect(resolve(signal(entityName, 'abc'))).toEqual([{ queryKey: [entityName] }]);
+    });
 
     it('maps FormField to the form prefix (fields are embedded in the FormDto)', () => {
         expect(resolve(signal('FormField'))).toEqual([{ queryKey: ['Form'] }]);

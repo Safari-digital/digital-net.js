@@ -17,14 +17,20 @@ describe('buildEntityRegistry', () => {
     });
 
     it('names every colliding key at once', () => {
-        const build = () => buildEntityRegistry({ Page: { path: 'a' }, Tag: { path: 'b' } });
-        expect(build).toThrow(/"Page", "Tag"/);
+        const build = () => buildEntityRegistry({ Page: { path: 'a' }, Media: { path: 'b' } });
+        expect(build).toThrow(/"Page", "Media"/);
+    });
+
+    it('leaves the blog entities to the application', () => {
+        const registry = buildEntityRegistry({ Article: { path: 'articles' }, Tag: { path: 'tags' } });
+        expect(registry.Article).toEqual({ path: 'articles' });
+        expect(registry.Tag).toEqual({ path: 'tags' });
     });
 });
 
 describe('resolveDraftEntities', () => {
     it('keeps the entities that persist drafts', () => {
-        expect(resolveDraftEntities(OFFICE_ENTITIES).sort()).toEqual(['Article', 'Form', 'Media', 'Page', 'Tag']);
+        expect(resolveDraftEntities(OFFICE_ENTITIES).sort()).toEqual(['Form', 'Media', 'Page']);
     });
 
     it('excludes entities opting out', () => {
