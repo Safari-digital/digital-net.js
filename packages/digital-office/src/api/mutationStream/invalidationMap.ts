@@ -49,10 +49,6 @@ function resolveRegistryInvalidations(
             }
             return filters;
         }
-        // Convention: consumer apps' config queries start with 'config-value'.
-        case 'ConfigValue':
-            return [{ queryKey: ['ConfigValue'] }, { queryKey: ['config-value'] }];
-
         default:
             return [{ queryKey: [entityName] }];
     }

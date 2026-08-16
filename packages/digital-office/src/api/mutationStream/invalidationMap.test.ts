@@ -44,10 +44,6 @@ describe('resolveInvalidations', () => {
         expect(resolve(signal('User', 'u1'), 'u1')).toEqual([{ queryKey: ['User'] }, { queryKey: ['dn-user'] }]);
     });
 
-    it('maps ConfigValue to its prefix and the consumer config-value convention', () => {
-        expect(resolve(signal('ConfigValue'))).toEqual([{ queryKey: ['ConfigValue'] }, { queryKey: ['config-value'] }]);
-    });
-
     it('ignores backend types with no office entity (Document, ApiKey, unknown)', () => {
         expect(resolve(signal('Document'))).toEqual([]);
         expect(resolve(signal('ApiKey'))).toEqual([]);

@@ -1,6 +1,5 @@
 export * from './ApplicationCatalog';
 export * from './AuthCatalog';
-export * from './ConfigValueCatalog';
 export * from './FormCatalog';
 export * from './MediaCatalog';
 export * from './PageCatalog';

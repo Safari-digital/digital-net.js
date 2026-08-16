@@ -1,7 +1,5 @@
 export * from './ApplicationVersionDto';
 export * from './AvatarDto';
-export * from './ConfigValueDto';
-export * from './ConfigValueType';
 export * from './FormDto';
 export * from './FormFieldDto';
 export * from './FormFieldType';

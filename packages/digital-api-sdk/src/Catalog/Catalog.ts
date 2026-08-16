@@ -2,7 +2,6 @@ import type { HttpClient } from '../HttpClient';
 import {
     ApplicationCatalog,
     AuthCatalog,
-    ConfigValueCatalog,
     FormCatalog,
     MediaCatalog,
     PageCatalog,
@@ -18,7 +17,6 @@ export class Catalog {
     private readonly http: HttpClient;
     public readonly application: ApplicationCatalog;
     public readonly auth: AuthCatalog;
-    public readonly configValue: ConfigValueCatalog;
     public readonly form: FormCatalog;
     public readonly media: MediaCatalog;
     public readonly page: PageCatalog;
@@ -30,7 +28,6 @@ export class Catalog {
         this.http = http;
         this.application = new ApplicationCatalog(http);
         this.auth = new AuthCatalog(http);
-        this.configValue = new ConfigValueCatalog(http);
         this.form = new FormCatalog(http);
         this.media = new MediaCatalog(http);
         this.page = new PageCatalog(http);
