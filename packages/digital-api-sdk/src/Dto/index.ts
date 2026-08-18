@@ -14,7 +14,6 @@ export * from './PageDto';
 export * from './PageListDto';
 export * from './PagePublicDto';
 export * from './PageSheet';
-export * from './PageSheetInfoDto';
 export * from './PageSheetResourceDto';
 export * from './OpenGraphEntry';
 export * from './OpenGraphEntryPublicDto';
